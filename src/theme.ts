@@ -5,7 +5,7 @@ import { Roboto } from "@next/font/google"
 const theme = createTheme({
   palette:{
     primary:{
-      main: "#0B41E3"
+      main: "#12BB59"
     },
   },
 })
