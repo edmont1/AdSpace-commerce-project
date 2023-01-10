@@ -9,10 +9,9 @@ const Footer = () => {
       <Box sx={{
         bgcolor: theme.palette.primary.main,
         padding: "50px 0",
+        marginTop: "80px",
         textAlign: "center",
-        position: "absolute",
-        bottom: "0",
-        width: "100%"
+        color: theme.palette.primary.contrastText
       }}>
         footer
       </Box>

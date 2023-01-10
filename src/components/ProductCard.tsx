@@ -1,10 +1,10 @@
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-
+import { 
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Button,
+  Typography } from '@mui/material'
 
 interface Props{
   title: string,
@@ -13,10 +13,14 @@ interface Props{
 }
 const ProductCard = ({title, price, description}:Props) => {
   return (
-    <Card sx={{ maxWidth: 280 }}>
+    <Card sx={{
+      maxWidth: {
+        sm: "260px",
+        }}}>
       <CardMedia
         sx={{ 
-          height: 200 }}
+          height: 200,
+          backgroundSize: "cover"}}
         image="http://cbissn.ibict.br/images/phocagallery/galeria2/thumbs/phoca_thumb_l_image03_grd.png"
         title="green iguana"
       />

@@ -12,6 +12,7 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
+import { useTheme } from '@mui/material'
 
 const pages = ['Products', 'Pricing', 'Blog']
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
@@ -35,12 +36,18 @@ const Header = () => {
     setAnchorElUser(null)
   }
 
+  const theme = useTheme()
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <AdbIcon sx={{ 
+            display: { xs: 'none', md: 'flex' }, 
+            mr: 1,
+            }} />
           <Typography
+            color="inherit"
             variant="h6"
             noWrap
             component="a"
@@ -51,7 +58,6 @@ const Header = () => {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'inherit',
               textDecoration: 'none',
             }}
           >
