@@ -1,8 +1,9 @@
-import { Box, useTheme } from "@mui/material"
+import { Box, Theme } from "@mui/material"
+import { useTheme } from "@mui/material"
 
 const Footer = () => {
 
-  const theme = useTheme()
+  const theme = useTheme() as Theme
 
   return(
     <>

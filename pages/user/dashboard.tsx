@@ -1,12 +1,11 @@
-import { useTheme } from "@emotion/react"
-import { Button, Container, Theme, Typography } from "@mui/material"
+import { Button, Container, Theme, Typography, useTheme } from "@mui/material"
 import { NextPage } from "next"
 import ProductCard from "../../src/components/ProductCard"
 import DefaultTemplate from "../../src/templates/Default"
 
 
 const Home:NextPage = () => {
-  const theme = useTheme() as Theme
+  const theme = useTheme()
   return (
     <DefaultTemplate>
       <Container maxWidth="sm" sx={{

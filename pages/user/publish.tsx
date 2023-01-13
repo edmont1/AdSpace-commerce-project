@@ -4,13 +4,20 @@ import {
   Container, 
   Input, 
   NativeSelect, 
-  Paper, 
-  styled, 
+  Paper,
   TextField, 
+  Theme,
+  useTheme,
+  styled,
   Typography, 
-  useTheme } from "@mui/material"
+  } from "@mui/material"
 import { NextPage } from "next/types"
 import DefaultTemplate from "../../src/templates/Default"
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { useState } from "react"
+import {MouseEvent} from "react"
+
+import {useDropzone} from 'react-dropzone'
 
 declare module "@mui/material"{
   interface TypeBackground{
@@ -18,12 +25,35 @@ declare module "@mui/material"{
   }
 }
 
-const Publish:NextPage = () => {
-  const theme = useTheme()
+const CustomDiv = styled("div")(({theme}) => `
+  padding-bottom: ${theme.spacing(3)};
+`)
 
-  const CustomDiv = styled("div")(() => ({
-    paddingBottom: theme.spacing(3)
-  }))
+const Publish:NextPage = () => {
+  const theme = useTheme() as Theme
+
+  const [files, setFiles] = useState<any []>([])
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: {
+      "image/*": [".png", ".jpeg"]
+
+    },
+    maxFiles: 3,
+    onDrop: (acceptedFiles) => {
+      const newFiles = acceptedFiles.map((file) => (
+        Object.assign(file, {
+          url: URL.createObjectURL(file)
+
+        })
+      ))
+      setFiles([...files, ...newFiles])
+    }
+  })
+
+  function handleDeleteButton(photo:{url: string}){
+    const filterFiles = files.filter((file) => file.url !== photo.url)
+    setFiles(filterFiles)
+  }
   
   return(
     <DefaultTemplate>
@@ -89,12 +119,92 @@ const Publish:NextPage = () => {
             margin: theme.spacing(3, 0)
             }}>
             <CustomDiv>
-              <Typography fontWeight={600} component="h3" variant="body1">
+              <Typography fontWeight={600} component={"h4"} variant="body1">
                 Imagens
               </Typography>
-              <Typography component="p" variant="body2">
-                A primeira imagem é a foto principal.
+              <Typography sx={{mb: "10px"}} component="p" variant="body2">
+                A primeira imagem é a foto principal do anúncio.
               </Typography>
+              <Box sx={{
+                display: "grid",
+                gridTemplateColumns: "24% 24% 24% 24%",
+                justifyContent: "space-between",
+                gap: "20px 0"
+                }}>
+                
+                <Box {...getRootProps()} sx={{
+                  cursor: "pointer",
+                  border: "2px dashed grey",
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "center",
+                  padding: "10px",
+                  height: "150px"
+                  }} >
+                  <input {...getInputProps()} type="text" />
+                  <Typography variant="body1" sx={{
+                    color: "grey"
+                  }}>
+                    Clique para adicionar ou arraste a imagem até aqui.
+                  </Typography>
+                </Box>
+      
+                
+                {files.map((photo, index) => {return (
+
+                  <Box key={index} sx={{
+                    display: "flex",
+                    height: "150px",
+                    position: "relative",
+                    "&:hover":{
+                      "#delete-icon":{
+                        display: "block"
+                      },
+                      ".overlay":{
+                        bgcolor: "#0000009d"
+                      }
+                    },
+                    backgroundImage: `url(${photo.url})`,
+                    backgroundSize: "cover"
+                    }}  
+                    >
+                    <Box sx={{
+                        height: "100%",
+                        width: "100%",
+                        position: "relative"
+                      }} className="overlay">
+                    </Box>
+                    {index === 0 && 
+                    <Box sx={{
+                      position: "absolute",
+                      bottom: "0",
+                      left: "0",
+                      padding: "5px",
+                      bgcolor: theme.palette.primary.main,
+                      borderRadius: "3px"
+                      }}
+                      >
+                      <Typography className="principal" variant="body2">
+                        Principal
+                      </Typography>
+                    </Box>}
+                    <a onClick={() => handleDeleteButton(photo)}>
+                      <DeleteForeverIcon id="delete-icon" color="primary" sx={{
+                        cursor: "pointer",
+                        display: "none",
+                        fontSize: "40px",
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        marginRight: "-50%",
+                        transform: "translate(-50%, -50%)",
+                        }} />
+                    </a>
+                  </Box>
+
+                )})}
+                
+              </Box>
             </CustomDiv>
           </Paper>
 
