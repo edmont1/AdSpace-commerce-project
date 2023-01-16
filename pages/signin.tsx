@@ -11,6 +11,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { NextPage } from 'next/types';
+import { setCookie } from 'nookies';
+import { useRouter } from 'next/router';
 
 function Copyright(props: any) {
   return (
@@ -26,13 +28,24 @@ function Copyright(props: any) {
 }
 
 const SigninPage:NextPage = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const router = useRouter()
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
+
+    setCookie(null, 'isLogged', 'true', {
+      maxAge: 30 * 24 * 60 * 60,
+      path: '/',
+    })
+
+    router.push("user/dashboard")
+
   };
 
   return (

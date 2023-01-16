@@ -15,16 +15,21 @@ import AdbIcon from '@mui/icons-material/Adb'
 import { useTheme } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { destroyCookie, parseCookies } from 'nookies'
 
 const pages = ['Products', 'Pricing', 'Blog']
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+const settings = ['Profile', 'Account', 'Dashboard', 'Sair']
 
 const Header = () => {
-  let isLogged = false
+
+  const cookies = parseCookies()
+
+  const [isLogged, setIsLogged] = useState(cookies.isLogged)
   const router = useRouter()
 
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -42,9 +47,23 @@ const Header = () => {
     if(setting === "Dashboard"){
       router.push("/user/dashboard")
     }
+    if(setting === "Sair"){
+      destroyCookie(null, 'isLogged')
+      window.location.href = "/"
+    }
+  }
+
+  function handleCreateAd(){
+    if(!isLogged){
+      router.push("/signin")
+    }
+    else{
+      router.push("/user/publish")
+    }
   }
 
   const theme = useTheme()
+  let name = "Eduardo"
 
   return (
     <AppBar sx={{
@@ -67,11 +86,11 @@ const Header = () => {
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'monospace',
               fontWeight: theme.typography.fontWeightBold,
-              letterSpacing: '.3rem',
+              letterSpacing: '.2rem',
               textDecoration: 'none',
             }}
           >
-            LOGO
+            AdSpace
           </Typography>
 
           <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
@@ -149,68 +168,79 @@ const Header = () => {
             ))}
           </Box>
 
-          {isLogged ? 
-          <>
-            <Box>
-              <Button color='inherit'
-              sx={{
-                border: `1px solid ${theme.palette.primary.contrastText}`,
-                mr: theme.spacing(4),
-                padding: theme.spacing(0.5, 2)
-              }}>
-                <Typography sx={{
-                  fontWeight: theme.typography.fontWeightBold,
-                  fontSize: "15px",
-                }}>
-                  Criar Anúncio
-                </Typography>
-              </Button>
-            </Box>
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="#" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-          </>
-          :
-          <Button 
-            color="inherit"
+
+          <Box>
+            <Button color='inherit'
+            variant='outlined'
             sx={{
-              fontWeight: theme.typography.fontWeightBold
+              mr: theme.spacing(1),
+              padding: theme.spacing(0.5, 2)
             }}
+            onClick={handleCreateAd}
             >
-            <Link style={{
-              textDecoration: "none",
-              color: "inherit"
-            }} 
-            href="/signin">
-              Login
-            </Link>
-          </Button>
+              <Typography sx={{
+                fontWeight: theme.typography.fontWeightBold,
+                fontSize: "15px",
+              }}>
+                Criar Anúncio
+              </Typography>
+            </Button>
+          </Box>
+
+          {isLogged ? 
+          <Box sx={{ flexGrow: 0, ml: theme.spacing(3) }}>
+            <Tooltip title="Open settings">
+              <IconButton  onClick={handleOpenUserMenu} sx={{ p: 0, borderRadius: "100px"}}>
+                <Avatar alt={name} src="#" />
+                <Typography 
+                variant="subtitle2"
+                color={theme.palette.primary.contrastText} 
+                fontWeight={700} 
+                sx={{
+                  padding: theme.spacing(0,1)
+                }}>
+                  {name}
+                </Typography>
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem divider={setting === "Dashboard"} key={setting} onClick={() => handleCloseUserMenu(setting)}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+                
+              ))}
+            </Menu>
+          </Box>
+          :
+          <Link href="/signin"
+          legacyBehavior
+          passHref
+          >
+            <Button 
+              color="inherit"
+              sx={{
+                fontWeight: theme.typography.fontWeightBold
+              }}
+              >
+                Login
+            </Button>
+          </Link>
           }
 
         </Toolbar>

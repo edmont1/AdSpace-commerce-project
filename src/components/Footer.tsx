@@ -1,21 +1,76 @@
-import { Box, Theme } from "@mui/material"
+import { Box, Container, Divider, styled, Theme, Typography } from "@mui/material"
 import { useTheme } from "@mui/material"
+import Link from "next/link"
 
 const Footer = () => {
 
-  const theme = useTheme() as Theme
+  const theme = useTheme()
+
+  const CustomUl = styled("ul")(({}) => `
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+    margin-bottom: 50px;
+    & li {
+      padding: 20px;
+    }
+    & li a {
+      text-decoration: none;
+      color: grey;
+      font-weight: 500
+    }
+    & li a:hover{
+      text-decoration: underline;
+      color: ${theme.palette.primary.main}
+    }
+  `)
 
   return(
-    <Box sx={{
-      bgcolor: theme.palette.primary.main,
-      padding: "50px 0",
-      marginTop: "80px",
-      textAlign: "center",
-      color: theme.palette.primary.contrastText,
-      fontWeight: theme.typography.fontWeightBold
-    }}>
-      Developed by Eduardo Monteiro
-    </Box>
+    <Container maxWidth="xl">
+      <Box sx={{
+        p: "50px 0 0 0",
+        marginTop: "80px",
+        textAlign: "center",
+        color: theme.palette.primary.contrastText,
+        fontWeight: theme.typography.fontWeightBold
+      }}>
+        <Divider sx={{
+          mb: "10px"
+        }} />
+        <CustomUl>
+          <li>
+            <Link href="#">
+              Ajuda e contato
+            </Link>
+          </li>
+          <li>
+            <Link href="#">
+              Dicas de segurança
+            </Link>
+          </li>
+          <li>
+            <Link href="#">
+              Plano Profissional
+            </Link>
+          </li>
+          <li>
+            <Link href="#">
+              Mapa do site
+            </Link>
+          </li>
+        </CustomUl>
+        <Typography color={theme.palette.primary.main} variant="subtitle2" sx={{
+          textAlign: "center",
+          height: "80px",
+          bgcolor: "black",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "end"
+        }}>
+          Copyright © Developed by Eduardo Monteiro.
+        </Typography>
+      </Box>
+    </Container>
 
   )
 }
