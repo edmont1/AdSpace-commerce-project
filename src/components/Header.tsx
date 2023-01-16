@@ -12,11 +12,17 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
+import { useTheme } from '@mui/material'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 const pages = ['Products', 'Pricing', 'Blog']
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
 const Header = () => {
+  let isLogged = false
+  const router = useRouter()
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
 
@@ -31,12 +37,19 @@ const Header = () => {
     setAnchorElNav(null)
   }
 
-  const handleCloseUserMenu = () => {
+  function handleCloseUserMenu(setting:string){
     setAnchorElUser(null)
+    if(setting === "Dashboard"){
+      router.push("/user/dashboard")
+    }
   }
 
+  const theme = useTheme()
+
   return (
-    <AppBar position="static">
+    <AppBar sx={{
+      mb: theme.spacing(10),
+    }} position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ 
@@ -53,7 +66,7 @@ const Header = () => {
               mr: 2,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'monospace',
-              fontWeight: 700,
+              fontWeight: theme.typography.fontWeightBold,
               letterSpacing: '.3rem',
               textDecoration: 'none',
             }}
@@ -92,7 +105,10 @@ const Header = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Typography 
+                    textAlign="center"
+                    >{page}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -108,7 +124,7 @@ const Header = () => {
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
               fontFamily: 'monospace',
-              fontWeight: 700,
+              fontWeight: theme.typography.fontWeightBold,
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
@@ -121,42 +137,82 @@ const Header = () => {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'inherit', display: 'block' }}
+                sx={{ 
+                  my: 2, 
+                  color: 'inherit', 
+                  display: 'block', 
+                  fontWeight: theme.typography.fontWeightBold
+                }}
               >
                 {page}
               </Button>
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="#" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+          {isLogged ? 
+          <>
+            <Box>
+              <Button color='inherit'
+              sx={{
+                border: `1px solid ${theme.palette.primary.contrastText}`,
+                mr: theme.spacing(4),
+                padding: theme.spacing(0.5, 2)
+              }}>
+                <Typography sx={{
+                  fontWeight: theme.typography.fontWeightBold,
+                  fontSize: "15px",
+                }}>
+                  Criar Anúncio
+                </Typography>
+              </Button>
+            </Box>
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="#" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </>
+          :
+          <Button 
+            color="inherit"
+            sx={{
+              fontWeight: theme.typography.fontWeightBold
+            }}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+            <Link style={{
+              textDecoration: "none",
+              color: "inherit"
+            }} 
+            href="/signin">
+              Login
+            </Link>
+          </Button>
+          }
+
         </Toolbar>
       </Container>
     </AppBar>

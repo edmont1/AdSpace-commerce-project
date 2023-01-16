@@ -5,23 +5,29 @@ import {
   CardMedia,
   Button,
   Typography } from '@mui/material'
+import { ReactNode } from 'react';
 
 interface Props{
   title: string,
-  price?: number,
-  description: string
+  description: string,
+  buttons?: ReactNode [],
+  image?: string
 }
-const ProductCard = ({title, price, description}:Props) => {
+const ProductCard = ({title, description, buttons, image}:Props) => {
   return (
     <Card sx={{
       maxWidth: {
         sm: "260px",
-        }}}>
+        },
+      width: {
+        xs: "100%"
+      }
+      }}>
       <CardMedia
         sx={{ 
           height: 200,
           backgroundSize: "cover"}}
-        image="http://cbissn.ibict.br/images/phocagallery/galeria2/thumbs/phoca_thumb_l_image03_grd.png"
+        image={image}
         title="green iguana"
       />
       <CardContent>
@@ -33,8 +39,7 @@ const ProductCard = ({title, price, description}:Props) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Editar</Button>
-        <Button size="small">Remover</Button>
+        {buttons}
       </CardActions>
     </Card>
   );

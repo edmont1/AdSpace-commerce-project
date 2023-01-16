@@ -2,6 +2,13 @@ import { createTheme, Theme, ThemeOptions } from "@mui/material"
 import { Roboto } from "@next/font/google"
 
 
+declare module "@mui/material/styles"{
+  interface TypeBackground{
+    white: string
+  }
+}
+
+
 const theme = createTheme({
   palette:{
     primary:{
@@ -14,6 +21,5 @@ const theme = createTheme({
     }
   },
 } as Theme)
-
 
 export default theme
