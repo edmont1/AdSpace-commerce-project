@@ -2,11 +2,7 @@ import { Box, Container, Divider, styled, Theme, Typography } from "@mui/materia
 import { useTheme } from "@mui/material"
 import Link from "next/link"
 
-const Footer = () => {
-
-  const theme = useTheme()
-
-  const CustomUl = styled("ul")(({}) => `
+const CustomUl = styled("ul")(({theme}) => `
     display: flex;
     justify-content: space-around;
     list-style: none;
@@ -25,11 +21,14 @@ const Footer = () => {
     }
   `)
 
+const Footer = () => {
+
+  const theme = useTheme()
+
   return(
     <Container maxWidth="xl">
       <Box sx={{
         p: "50px 0 0 0",
-        marginTop: "80px",
         textAlign: "center",
         color: theme.palette.primary.contrastText,
         fontWeight: theme.typography.fontWeightBold
@@ -37,7 +36,12 @@ const Footer = () => {
         <Divider sx={{
           mb: "10px"
         }} />
-        <CustomUl>
+        <CustomUl sx={{
+          fontSize: {
+            xs: "10px",
+            sm: "13px"
+          }
+        }}>
           <li>
             <Link href="#">
               Ajuda e contato

@@ -38,9 +38,14 @@ const ProductCard = ({title, description, buttons, image}:Props) => {
           {description}
         </Typography>
       </CardContent>
-      <CardActions>
+      {
+        buttons? 
+        <CardActions>
         {buttons}
-      </CardActions>
+        </CardActions>
+        :
+        null
+      }
     </Card>
   );
 }

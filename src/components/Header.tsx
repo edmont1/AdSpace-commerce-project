@@ -66,9 +66,7 @@ const Header = () => {
   let name = "Eduardo"
 
   return (
-    <AppBar sx={{
-      mb: theme.spacing(10),
-    }} position="static">
+    <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ 
@@ -144,12 +142,12 @@ const Header = () => {
               flexGrow: 1,
               fontFamily: 'monospace',
               fontWeight: theme.typography.fontWeightBold,
-              letterSpacing: '.3rem',
+              letterSpacing: '.2rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            LOGO
+            AdSpace
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
@@ -180,7 +178,10 @@ const Header = () => {
             >
               <Typography sx={{
                 fontWeight: theme.typography.fontWeightBold,
-                fontSize: "15px",
+                fontSize: {
+                  md: "15px",
+                  xs: "10px"
+                },
               }}>
                 Criar Anúncio
               </Typography>
@@ -232,10 +233,14 @@ const Header = () => {
           legacyBehavior
           passHref
           >
-            <Button 
+            <Button
               color="inherit"
               sx={{
-                fontWeight: theme.typography.fontWeightBold
+                fontWeight: theme.typography.fontWeightBold,
+                fontSize: {
+                  md: "15px",
+                  xs: "12px"
+                },
               }}
               >
                 Login

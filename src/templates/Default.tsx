@@ -1,13 +1,21 @@
+import { Box, styled } from "@mui/material"
 import React, { PropsWithChildren } from "react"
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 
 
+const CustomBox = styled(Box)(({theme}) => `
+  padding: ${theme.spacing(10, 0)};
+
+`)
+
 const DefaultTemplate = ({children}:PropsWithChildren) =>{
   return(
     <>
       <Header />
-      {children}
+      <CustomBox>
+        {children}
+      </CustomBox>
       <Footer />
     </>
   )
