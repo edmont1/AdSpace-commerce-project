@@ -1,4 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This project is still in progess and aiming to build a complete commerce website where the advetiser can register and login to upload your advertise like MercadoLivre, OLX, E-bay, etc. Users can see the advertises and interact with the products and contact the owner to buy them
+
+Este projeto ainda está em andamento e tem como objetivo construir um site de comércio completo onde o anunciante possa se cadastrar e fazer login para enviar seus anúncios como MercadoLivre, OLX, E-bay, etc. Os usuários poderão ver os anúncios, interagir com os produtos e contactar o proprietário do anúncio para comprar os produtos anunciados
+
+
 
 ## Getting Started
 
