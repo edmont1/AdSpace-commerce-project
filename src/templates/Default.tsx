@@ -5,8 +5,7 @@ import Header from "../components/Header"
 
 
 const CustomBox = styled(Box)(({theme}) => `
-  padding: ${theme.spacing(10, 0)};
-
+  padding: ${theme.spacing(10, 1)};
 `)
 
 const DefaultTemplate = ({children}:PropsWithChildren) =>{

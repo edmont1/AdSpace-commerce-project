@@ -1,19 +1,18 @@
 import {
-  Box, 
-  Container, 
-  Paper, 
-  Typography, 
-  useTheme } from "@mui/material"
-import IconButton from "@mui/material/IconButton"
-import InputBase from "@mui/material/InputBase"
+  Box,
+  Container,
+  Paper,
+  Typography,
+  useTheme
+} from "@mui/material"
 import { NextPage } from "next"
 import DefaultTemplate from "../src/templates/Default"
-import SearchIcon from "@mui/icons-material/Search"
 import ProductCard from "../src/components/ProductCard"
+import SearchField from "../src/components/SearchField"
 
-const Home:NextPage = () => {
+const Home: NextPage = () => {
   const theme = useTheme()
-  return(
+  return (
     <DefaultTemplate>
       <Container maxWidth="sm" >
         <Typography component="h1" variant="h3" align="center" sx={{
@@ -21,17 +20,7 @@ const Home:NextPage = () => {
         }}>
           Busque um produto
         </Typography>
-        <Paper sx={{
-          padding: theme.spacing(0, 2),
-          display:"flex",
-          bgcolor: theme.palette.background.white
-          }}>
-          <InputBase placeholder="Ex.:iPhone, Computador, Notebook" fullWidth />
-          <IconButton>
-            <SearchIcon />
-          </IconButton>
-        </Paper>
-
+        <SearchField />
         <Typography align="center" variant="h4" component="h2" sx={{
           margin: theme.spacing(6, 0, 4, 0)
         }}>
@@ -42,14 +31,9 @@ const Home:NextPage = () => {
       <Container maxWidth="md">
         <Box sx={{
           display: "grid",
-          gridTemplateColumns: {
-            sm: "50% 50%",
-            md: "33.33% 33.33% 33.33%",
-            xs: "100%",
-          },
-          justifyItems: "center",
-          gap: theme.spacing(3, 0),
-          }}>
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: theme.spacing(4)
+        }}>
           <ProductCard image="http://cbissn.ibict.br/images/phocagallery/galeria2/thumbs/phoca_thumb_l_image03_grd.png" title="Produto1" description="R$100" />
           <ProductCard title="Produto1" description="R$100" />
           <ProductCard title="Produto1" description="R$100" />

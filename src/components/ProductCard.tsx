@@ -15,14 +15,7 @@ interface Props{
 }
 const ProductCard = ({title, description, buttons, image}:Props) => {
   return (
-    <Card sx={{
-      maxWidth: {
-        sm: "260px",
-        },
-      width: {
-        xs: "100%"
-      }
-      }}>
+    <Card>
       <CardMedia
         sx={{ 
           height: 200,

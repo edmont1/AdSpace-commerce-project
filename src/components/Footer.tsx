@@ -1,4 +1,4 @@
-import { Box, Container, Divider, styled, Theme, Typography } from "@mui/material"
+import { Box, Container, Divider, styled, Typography } from "@mui/material"
 import { useTheme } from "@mui/material"
 import Link from "next/link"
 
@@ -26,12 +26,21 @@ const Footer = () => {
   const theme = useTheme()
 
   return(
-    <Container maxWidth="xl">
+    <Container maxWidth="xl"
+    sx={{
+      position: "absolute",
+      right: 0,
+      bottom: 0,
+      left: 0,
+    }}
+    >
       <Box sx={{
-        p: "50px 0 0 0",
         textAlign: "center",
         color: theme.palette.primary.contrastText,
-        fontWeight: theme.typography.fontWeightBold
+        fontWeight: theme.typography.fontWeightBold,
+        display: 'flex',
+        flexDirection: "column",
+        justifyContent: "end",
       }}>
         <Divider sx={{
           mb: "10px"
@@ -71,7 +80,7 @@ const Footer = () => {
           justifyContent: "center",
           alignItems: "end"
         }}>
-          Copyright © Developed by Eduardo Monteiro.
+          Copyright © Developed by Eduardo Monteiro
         </Typography>
       </Box>
     </Container>

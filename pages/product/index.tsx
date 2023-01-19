@@ -6,10 +6,11 @@ import {
   Paper, 
   Typography, 
   useTheme } from "@mui/material"
+import { NextPage } from "next"
 import Carousel from "react-material-ui-carousel"
-import DefaultTemplate from "../src/templates/Default"
+import DefaultTemplate from "../../src/templates/Default"
 
-const Product = () => {
+const Product:NextPage = () => {
   const theme = useTheme()
 
   var items = [
@@ -42,10 +43,10 @@ const Product = () => {
             p: theme.spacing(3),
             mb: theme.spacing(3)
           }}>
-            <Carousel>
+            <Carousel autoPlay={false} animation="slide">
               {
                 items.map((item, index) => (
-                  <Box key={index} height="300px">
+                  <Box key={index} height="500px">
                     <img style={{width: "100%", height: "100%", objectFit: "cover"}} src={item.description} alt="" />
                   </Box>
                 ))
@@ -77,6 +78,7 @@ const Product = () => {
           <Paper 
           sx={{
             p: theme.spacing(3),
+            mb: theme.spacing(3)
           }}>
             <Typography component="p" fontWeight={700}>
               Descrição
