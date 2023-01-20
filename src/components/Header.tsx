@@ -12,7 +12,7 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
-import { useTheme } from '@mui/material'
+import { styled, useTheme } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -20,6 +20,31 @@ import { destroyCookie, parseCookies } from 'nookies'
 
 const pages = ['Products', 'Pricing', 'Blog']
 const settings = ['Profile', 'Account', 'Dashboard', 'Sair']
+
+const StyledButton = styled(Button)(({theme}) => `
+  position: relative;
+  margin: 0 5px;
+  &::after{
+    content: "";
+    height: 1px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: ${theme.palette.primary.contrastText};
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: .3s ease-in-out .0s;
+  }
+  &:hover{
+    filter: brightness(0);
+  }
+  &:hover::after{
+    visibility: visible;
+    transform: scaleX(1);
+  }
+
+`)
 
 const Header = () => {
 
@@ -151,7 +176,7 @@ const Header = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Button
+              <StyledButton
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ 
@@ -162,7 +187,7 @@ const Header = () => {
                 }}
               >
                 {page}
-              </Button>
+              </StyledButton>
             ))}
           </Box>
 

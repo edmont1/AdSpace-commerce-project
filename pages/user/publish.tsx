@@ -1,32 +1,34 @@
-import { 
+import {
   Box,
   Button,
-  Container, 
-  Input, 
-  NativeSelect, 
+  Container,
+  Input,
+  NativeSelect,
   Paper,
-  TextField, 
+  TextField,
   Theme,
   useTheme,
   styled,
-  Typography, 
-  InputAdornment
-  } from "@mui/material"
+  Typography,
+  InputAdornment,
+  FormHelperText,
+  FormControl
+} from "@mui/material"
 import { NextPage } from "next/types"
 import DefaultTemplate from "../../src/templates/Default"
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { useState } from "react"
 
-import {useDropzone} from 'react-dropzone'
+import { useDropzone } from 'react-dropzone'
 
-const CustomDiv = styled("div")(({theme}) => `
+const CustomDiv = styled("div")(({ theme }) => `
   padding-bottom: ${theme.spacing(3)};
 `)
 
-const Publish:NextPage = () => {
+const Publish: NextPage = () => {
   const theme = useTheme() as Theme
 
-  const [files, setFiles] = useState<any []>([])
+  const [files, setFiles] = useState<any[]>([])
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/*": [".png", ".jpeg"]
@@ -43,16 +45,16 @@ const Publish:NextPage = () => {
     }
   })
 
-  function handleDeleteButton(photo:{url: string}){
+  function handleDeleteButton(photo: { url: string }) {
     const filterFiles = files.filter((file) => file.url !== photo.url)
     setFiles(filterFiles)
   }
-  
-  return(
+
+  return (
     <DefaultTemplate>
       <Container maxWidth="sm" sx={{
-          pb: theme.spacing(4),
-        }}>
+        pb: theme.spacing(4),
+      }}>
         <Typography align="center" component="h1" variant="h3" >
           Publicar Anúncio
         </Typography>
@@ -66,12 +68,15 @@ const Publish:NextPage = () => {
           padding: theme.spacing(3, 3, 0, 3),
           bgcolor: theme.palette.background.white,
           margin: theme.spacing(3, 0)
-          }}>
+        }}>
           <CustomDiv>
             <Typography fontWeight={600} component="h3" variant="body1">
               Título do anúncio
             </Typography>
-            <Input sx={{mt: "10px"}} size="small" fullWidth placeholder="ex.:Computador"/>
+            <FormControl error variant="standard" fullWidth>
+              <Input sx={{ mt: "10px" }} size="small" placeholder="ex.:Computador" />
+              <FormHelperText id="component-error-text">Campo obrigatório</FormHelperText>
+            </FormControl>
           </CustomDiv>
 
           <CustomDiv>
@@ -79,7 +84,7 @@ const Publish:NextPage = () => {
               Categoria
             </Typography>
             <NativeSelect
-              onChange={()=>{}}
+              onChange={() => { }}
               fullWidth
               defaultValue={0}
               inputProps={{
@@ -110,21 +115,24 @@ const Publish:NextPage = () => {
           padding: theme.spacing(3, 3, 0, 3),
           bgcolor: theme.palette.background.white,
           margin: theme.spacing(3, 0)
-          }}>
+        }}>
           <CustomDiv>
             <Typography fontWeight={600} component={"h4"} variant="body1">
               Imagens
             </Typography>
-            <Typography sx={{mb: "10px"}} component="p" variant="body2">
+            <Typography sx={{ mb: "10px" }} component="p" variant="body2">
               A primeira imagem é a foto principal do anúncio.
             </Typography>
             <Box sx={{
               display: "grid",
-              gridTemplateColumns: "24% 24% 24% 24%",
-              justifyContent: "space-between",
-              gap: "20px 0"
-              }}>
-              
+              gridTemplateColumns: {
+                xs: "repeat(2, minmax(100px, 1fr))",
+                sm: "repeat(3, minmax(100px, 1fr))",
+                md: "repeat(4, minmax(100px, 1fr))"
+              },
+              gap: "10px",
+            }}>
+
               <Box {...getRootProps()} sx={{
                 cursor: "pointer",
                 border: "2px dashed grey",
@@ -132,8 +140,8 @@ const Publish:NextPage = () => {
                 alignItems: "center",
                 textAlign: "center",
                 padding: "10px",
-                height: "150px"
-                }} >
+                height: "250px",
+              }} >
                 <input {...getInputProps()} type="text" />
                 <Typography variant="body1" sx={{
                   color: "grey"
@@ -141,62 +149,61 @@ const Publish:NextPage = () => {
                   Clique para adicionar ou arraste a imagem até aqui.
                 </Typography>
               </Box>
-    
-              
-              {files.map((photo, index) => {return (
 
-                <Box key={index} sx={{
-                  display: "flex",
-                  height: "150px",
-                  position: "relative",
-                  "&:hover":{
-                    "#delete-icon":{
-                      display: "block"
+
+              {files.map((photo, index) => {
+                return (
+                  <Box key={index} sx={{
+                    height: "250px",
+                    position: "relative",
+                    "&:hover": {
+                      "#delete-icon": {
+                        display: "block"
+                      },
+                      ".overlay": {
+                        bgcolor: "#0000009d"
+                      }
                     },
-                    ".overlay":{
-                      bgcolor: "#0000009d"
-                    }
-                  },
-                  backgroundImage: `url(${photo.url})`,
-                  backgroundSize: "cover"
-                  }}  
+                    backgroundImage: `url(${photo.url})`,
+                    backgroundSize: "cover",
+                  }}
                   >
-                  <Box sx={{
+                    <Box sx={{
                       height: "100%",
                       width: "100%",
-                      position: "relative"
                     }} className="overlay">
-                  </Box>
-                  {index === 0 && 
-                  <Box sx={{
-                    position: "absolute",
-                    bottom: "0",
-                    left: "0",
-                    padding: "5px",
-                    bgcolor: theme.palette.primary.main,
-                    borderRadius: "3px"
-                    }}
-                    >
-                    <Typography className="principal" variant="body2">
-                      Principal
-                    </Typography>
-                  </Box>}
-                  <a onClick={() => handleDeleteButton(photo)}>
-                    <DeleteForeverIcon id="delete-icon" color="primary" sx={{
-                      cursor: "pointer",
-                      display: "none",
-                      fontSize: "40px",
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      marginRight: "-50%",
-                      transform: "translate(-50%, -50%)",
+                    </Box>
+                    {index === 0 &&
+                      <Box sx={{
+                        position: "absolute",
+                        bottom: "0",
+                        left: "0",
+                        padding: "5px",
+                        bgcolor: theme.palette.primary.main,
+                        borderRadius: "3px"
+                      }}
+                      >
+                        <Typography className="principal" variant="body2">
+                          Principal
+                        </Typography>
+                      </Box>}
+                    <a onClick={() => handleDeleteButton(photo)}>
+                      <DeleteForeverIcon id="delete-icon" color="primary" sx={{
+                        cursor: "pointer",
+                        display: "none",
+                        fontSize: "40px",
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        marginRight: "-50%",
+                        transform: "translate(-50%, -50%)",
                       }} />
-                  </a>
-                </Box>
+                    </a>
+                  </Box>
 
-              )})}
-              
+                )
+              })}
+
             </Box>
           </CustomDiv>
         </Paper>
@@ -205,7 +212,7 @@ const Publish:NextPage = () => {
           padding: theme.spacing(3, 3, 0, 3),
           bgcolor: theme.palette.background.white,
           margin: theme.spacing(3, 0)
-          }}>
+        }}>
           <CustomDiv>
             <Typography fontWeight={600} component="h3" variant="body1">
               Descrição
@@ -218,24 +225,24 @@ const Publish:NextPage = () => {
               multiline
               rows={4}
               fullWidth
-              sx={{mt: "10px"}}
+              sx={{ mt: "10px" }}
             />
           </CustomDiv>
         </Paper>
-          
+
         <Paper sx={{
-          padding: theme.spacing(3,3,0,3),
+          padding: theme.spacing(3, 3, 0, 3),
           margin: theme.spacing(3, 0),
           bgcolor: theme.palette.background.white,
         }}>
           <Typography fontWeight={600} component="h3" variant="body1">
             Preço
           </Typography>
-          <Input 
-          onChange={()=>{}}
-          startAdornment={ <InputAdornment position="start">R$</InputAdornment>}
-          fullWidth 
-          sx={{mb: theme.spacing(3)}} 
+          <Input
+            onChange={() => { }}
+            startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+            fullWidth
+            sx={{ mb: theme.spacing(3) }}
           />
         </Paper>
 
@@ -243,20 +250,20 @@ const Publish:NextPage = () => {
           padding: theme.spacing(3, 3, 0, 3),
           bgcolor: theme.palette.background.white,
           margin: theme.spacing(3, 0),
-          }}>
+        }}>
           <CustomDiv>
             <Typography fontWeight={600} component="h3" variant="body1">
               Dados de Contato
             </Typography>
-            <Input sx={{ mb:theme.spacing(3) }} size="small" fullWidth placeholder="Nome"/>
-            <Input sx={{ mb:theme.spacing(3) }} size="small" fullWidth placeholder="E-mail"/>
-            <Input size="small" fullWidth placeholder="Telefone"/>
+            <Input sx={{ mb: theme.spacing(3) }} size="small" fullWidth placeholder="Nome" />
+            <Input sx={{ mb: theme.spacing(3) }} size="small" fullWidth placeholder="E-mail" />
+            <Input size="small" fullWidth placeholder="Telefone" />
           </CustomDiv>
-          
+
         </Paper>
 
         <Box textAlign="right">
-          <Button sx={{fontWeight: 600, color: theme.palette.primary.contrastText}} variant="contained">
+          <Button sx={{ fontWeight: 600, color: theme.palette.primary.contrastText }} variant="contained">
             Publicar Anúncio
           </Button>
         </Box>
