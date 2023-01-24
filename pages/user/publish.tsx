@@ -49,6 +49,9 @@ const validationSchema = yup.object().shape({
     .required("Campo obrigatório"),
   tel: yup.number()
     .typeError("Digite apenas números")
+    .required("Campo obrigatório"),
+  files: yup.array()
+    .min(1, "Selecione pelo menos uma foto")
     .required("Campo obrigatório")
 })
 
@@ -57,32 +60,12 @@ const Publish: NextPage = () => {
   const theme = useTheme() as Theme
 
   const [files, setFiles] = useState<any[]>([])
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: {
-      "image/*": [".png", ".jpeg"]
-
-    },
-    onDrop: (acceptedFiles) => {
-      console.log(typeof acceptedFiles)
-      const newFiles = acceptedFiles.map((file) => (
-        Object.assign(file, {
-          url: URL.createObjectURL(file)
-        })
-      ))
-      setFiles([...files, ...newFiles])
-    }
-  })
-
-  function handleDeleteButton(photo: { url: string }) {
-    const filterFiles = files.filter((file) => file.url !== photo.url)
-    setFiles(filterFiles)
-  }
 
 
   interface FormValues {
     title: string,
     category: string,
-    images: {},
+    files: any[],
     description: string,
     price: string,
     name: string,
@@ -92,7 +75,7 @@ const Publish: NextPage = () => {
   const initialValues: FormValues = {
     title: "",
     category: "",
-    images: {},
+    files: [],
     description: "",
     price: "",
     name: "",
@@ -124,12 +107,31 @@ const Publish: NextPage = () => {
           ({
             values,
             errors,
+            touched,
             handleChange,
             handleSubmit,
-            isSubmitting
+            setFieldValue
           }) => {
 
-            
+            const { getRootProps, getInputProps } = useDropzone({
+              accept: {
+                "image/*": [".png", ".jpeg"]
+
+              },
+              onDrop: (acceptedFiles) => {
+                const newFiles = acceptedFiles.map((file) => (
+                  Object.assign(file, {
+                    url: URL.createObjectURL(file)
+                  })
+                ))
+                setFieldValue("files", [...values.files, ...newFiles])
+              }
+            })
+
+            function handleDeleteButton(photo: { url: string }) {
+              const filterFiles = values.files.filter((file) => file.url !== photo.url)
+              setFieldValue("files", filterFiles)
+            }
 
 
             return (
@@ -145,7 +147,7 @@ const Publish: NextPage = () => {
                       <Typography fontWeight={600} component="h3" variant="body1">
                         Título do anúncio
                       </Typography>
-                      <FormControl error={Boolean(errors.title)} variant="standard" fullWidth>
+                      <FormControl error={Boolean(errors.title && touched.title)} variant="standard" fullWidth>
                         <Input
                           id="title"
                           name="title"
@@ -154,7 +156,10 @@ const Publish: NextPage = () => {
                           sx={{ mt: "10px" }}
                           size="small"
                           placeholder="ex.:Computador" />
-                        <FormHelperText >{errors.title}</FormHelperText>
+                        {
+                          errors.title && touched.title &&
+                          <FormHelperText>{errors.title}</FormHelperText>
+                        }
                       </FormControl>
                     </CustomDiv>
 
@@ -162,7 +167,7 @@ const Publish: NextPage = () => {
                       <Typography fontWeight={600} component="h3" variant="body1">
                         Categoria
                       </Typography>
-                      <FormControl error={Boolean(errors.category)} variant="standard" fullWidth>
+                      <FormControl error={Boolean(errors.category && touched.category)} variant="standard" fullWidth>
                         <Select
                           onChange={handleChange}
                           id="category"
@@ -185,7 +190,10 @@ const Publish: NextPage = () => {
                           <MenuItem value="Option 13">Option 13</MenuItem>
                           <MenuItem value="Option 14">Option 14</MenuItem>
                         </Select>
-                        <FormHelperText>{errors.category}</FormHelperText>
+                        {
+                          errors.category && touched.category &&
+                          <FormHelperText>{errors.category}</FormHelperText>
+                        }
                       </FormControl>
                     </CustomDiv>
                   </Paper>
@@ -202,6 +210,12 @@ const Publish: NextPage = () => {
                       <Typography sx={{ mb: "10px" }} component="p" variant="body2">
                         A primeira imagem é a foto principal do anúncio.
                       </Typography>
+                      {
+                        errors.files && touched.files &&
+                        <FormHelperText sx={{ mb: "5px" }} error={Boolean(errors.files && touched.files)}>
+                          {errors.files as string}
+                        </FormHelperText>
+                      }
                       <Box sx={{
                         display: "grid",
                         gridTemplateColumns: {
@@ -211,26 +225,23 @@ const Publish: NextPage = () => {
                         },
                         gap: "10px",
                       }}>
-
                         <Box {...getRootProps()} sx={{
                           cursor: "pointer",
-                          border: "2px dashed grey",
+                          border: "2px dashed",
                           display: "flex",
                           alignItems: "center",
                           textAlign: "center",
                           padding: "10px",
                           height: "250px",
-                        }} >
-                          <input {...getInputProps()} type="text" />
-                          <Typography variant="body1" sx={{
-                            color: "grey"
-                          }}>
+                        }} color={errors.files && touched.files ? "#d32f2f" : "grey"} >
+                          <input id="files" name="files" {...getInputProps()} type="text" />
+                          <Typography variant="body1" color={errors.files && touched.files ? "error" : "grey"}>
                             Clique para adicionar ou arraste a imagem até aqui.
                           </Typography>
                         </Box>
 
 
-                        {files.map((photo, index) => {
+                        {values.files.map((photo, index) => {
                           return (
                             <Box key={index} sx={{
                               height: "250px",
@@ -308,9 +319,14 @@ const Publish: NextPage = () => {
                         sx={{ mt: "10px" }}
                         onChange={handleChange}
                         value={values.description}
-                        error={Boolean(errors.description)}
+                        error={Boolean(errors.description && touched.description)}
                       />
-                      <FormHelperText error={Boolean(errors.description)}>{errors.description}</FormHelperText>
+                      {
+                        errors.description && touched.description &&
+                        <FormHelperText error={Boolean(errors.description && touched.description)}>
+                          {errors.description}
+                        </FormHelperText>
+                      }
                     </Box>
                   </Paper>
 
@@ -319,7 +335,7 @@ const Publish: NextPage = () => {
                     margin: theme.spacing(3, 0),
                     bgcolor: theme.palette.background.white,
                   }}>
-                    <FormControl error={Boolean(errors.price)} variant="standard" fullWidth>
+                    <FormControl error={Boolean(errors.price && touched.price)} variant="standard" fullWidth>
                       <Typography fontWeight={600} component="h3" variant="body1">
                         Preço
                       </Typography>
@@ -332,7 +348,10 @@ const Publish: NextPage = () => {
                         id="price"
                         name="price"
                       />
-                      <FormHelperText>{errors.price}</FormHelperText>
+                      {
+                        errors.price && touched.price &&
+                        <FormHelperText>{errors.price}</FormHelperText>
+                      }
                     </FormControl>
                   </Paper>
 
@@ -346,7 +365,7 @@ const Publish: NextPage = () => {
                       <Typography fontWeight={600} component="h3" variant="body1">
                         Dados de Contato
                       </Typography>
-                      <FormControl error={Boolean(errors.name)} fullWidth variant="standard">
+                      <FormControl error={Boolean(errors.name && touched.name)} fullWidth variant="standard">
                         <Input
                           size="small"
                           placeholder="Nome"
@@ -355,11 +374,14 @@ const Publish: NextPage = () => {
                           id="name"
                           name="name"
                         />
-                        <FormHelperText>{errors.name}</FormHelperText>
+                        {
+                          errors.name && touched.name &&
+                          <FormHelperText>{errors.name}</FormHelperText>
+                        }
                       </FormControl>
                     </CustomDiv>
                     <CustomDiv>
-                      <FormControl error={Boolean(errors.email)} fullWidth variant="standard">
+                      <FormControl error={Boolean(errors.email && touched.email)} fullWidth variant="standard">
                         <Input
                           size="small"
                           placeholder="E-mail"
@@ -368,11 +390,14 @@ const Publish: NextPage = () => {
                           id="email"
                           name="email"
                         />
-                        <FormHelperText>{errors.email}</FormHelperText>
+                        {
+                          errors.email && touched.email &&
+                          <FormHelperText>{errors.email}</FormHelperText>
+                        }
                       </FormControl>
                     </CustomDiv>
                     <CustomDiv>
-                      <FormControl error={Boolean(errors.tel)} fullWidth variant="standard">
+                      <FormControl error={Boolean(errors.tel && touched.tel)} fullWidth variant="standard">
                         <Input
                           size="small"
                           placeholder="Telefone"
@@ -381,7 +406,10 @@ const Publish: NextPage = () => {
                           id="tel"
                           name="tel"
                         />
-                        <FormHelperText>{errors.tel}</FormHelperText>
+                        {
+                          errors.tel && touched.tel &&
+                          <FormHelperText>{errors.tel}</FormHelperText>
+                        }
                       </FormControl>
                     </CustomDiv>
                   </Paper>
