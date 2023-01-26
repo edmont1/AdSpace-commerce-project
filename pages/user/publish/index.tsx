@@ -5,9 +5,7 @@ import {
   Input,
   Paper,
   TextField,
-  Theme,
   useTheme,
-  styled,
   Typography,
   InputAdornment,
   FormHelperText,
@@ -16,72 +14,18 @@ import {
   MenuItem
 } from "@mui/material"
 import { NextPage } from "next/types"
-import DefaultTemplate from "../../src/templates/Default"
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import { useState } from "react"
 
-import { useDropzone } from 'react-dropzone'
+import DefaultTemplate from "../../../src/templates/Default"
+import { validationSchema, initialValues } from "./formValues"
+import { CustomDiv } from "./style"
+
 import { Formik } from "formik"
-import * as yup from "yup"
+import UploadFiles from "../../../src/components/UploadFiles"
 
-const CustomDiv = styled("div")(({ theme }) => `
-  padding-bottom: ${theme.spacing(3)};
-  &:last-child{
-    padding-bottom: 0
-  }
-`)
-
-const validationSchema = yup.object().shape({
-  title: yup.string()
-    .required("Campo obrigatório"),
-  category: yup.string()
-    .required("Campo obrigatório"),
-  description: yup.string()
-    .required("Campo obrigatório"),
-  price: yup.number()
-    .typeError("Digite apenas números")
-    .positive("Digite apenas números positivos")
-    .required("Campo obrigatório"),
-  name: yup.string()
-    .required("Campo obrigatório"),
-  email: yup.string()
-    .email("Digite um e-mail válido")
-    .required("Campo obrigatório"),
-  tel: yup.number()
-    .typeError("Digite apenas números")
-    .required("Campo obrigatório"),
-  files: yup.array()
-    .min(1, "Selecione pelo menos uma foto")
-    .required("Campo obrigatório")
-})
 
 
 const Publish: NextPage = () => {
-  const theme = useTheme() as Theme
-
-  const [files, setFiles] = useState<any[]>([])
-
-
-  interface FormValues {
-    title: string,
-    category: string,
-    files: any[],
-    description: string,
-    price: string,
-    name: string,
-    email: string,
-    tel: string
-  }
-  const initialValues: FormValues = {
-    title: "",
-    category: "",
-    files: [],
-    description: "",
-    price: "",
-    name: "",
-    email: "",
-    tel: ""
-  }
+  const theme = useTheme()
 
   return (
     <DefaultTemplate>
@@ -112,28 +56,6 @@ const Publish: NextPage = () => {
             handleSubmit,
             setFieldValue
           }) => {
-
-            const { getRootProps, getInputProps } = useDropzone({
-              accept: {
-                "image/*": [".png", ".jpeg"]
-
-              },
-              onDrop: (acceptedFiles) => {
-                const newFiles = acceptedFiles.map((file) => (
-                  Object.assign(file, {
-                    url: URL.createObjectURL(file)
-                  })
-                ))
-                setFieldValue("files", [...values.files, ...newFiles])
-              }
-            })
-
-            function handleDeleteButton(photo: { url: string }) {
-              const filterFiles = values.files.filter((file) => file.url !== photo.url)
-              setFieldValue("files", filterFiles)
-            }
-
-
             return (
               <form onSubmit={handleSubmit}>
                 <Container maxWidth="md">
@@ -210,91 +132,9 @@ const Publish: NextPage = () => {
                       <Typography sx={{ mb: "10px" }} component="p" variant="body2">
                         A primeira imagem é a foto principal do anúncio.
                       </Typography>
-                      {
-                        errors.files && touched.files &&
-                        <FormHelperText sx={{ mb: "5px" }} error={Boolean(errors.files && touched.files)}>
-                          {errors.files as string}
-                        </FormHelperText>
-                      }
-                      <Box sx={{
-                        display: "grid",
-                        gridTemplateColumns: {
-                          xs: "repeat(2, minmax(100px, 1fr))",
-                          sm: "repeat(3, minmax(100px, 1fr))",
-                          md: "repeat(4, minmax(100px, 1fr))"
-                        },
-                        gap: "10px",
-                      }}>
-                        <Box {...getRootProps()} sx={{
-                          cursor: "pointer",
-                          border: "2px dashed",
-                          display: "flex",
-                          alignItems: "center",
-                          textAlign: "center",
-                          padding: "10px",
-                          height: "250px",
-                        }} color={errors.files && touched.files ? "#d32f2f" : "grey"} >
-                          <input id="files" name="files" {...getInputProps()} type="text" />
-                          <Typography variant="body1" color={errors.files && touched.files ? "error" : "grey"}>
-                            Clique para adicionar ou arraste a imagem até aqui.
-                          </Typography>
-                        </Box>
 
+                      <UploadFiles files={values.files} errors={errors.files} touched={touched.files} setFieldValue={setFieldValue} />
 
-                        {values.files.map((photo, index) => {
-                          return (
-                            <Box key={index} sx={{
-                              height: "250px",
-                              position: "relative",
-                              "&:hover": {
-                                "#delete-icon": {
-                                  display: "block"
-                                },
-                                ".overlay": {
-                                  bgcolor: "#0000009d"
-                                }
-                              },
-                              backgroundImage: `url(${photo.url})`,
-                              backgroundSize: "cover",
-                            }}
-                            >
-                              <Box sx={{
-                                height: "100%",
-                                width: "100%",
-                              }} className="overlay">
-                              </Box>
-                              {index === 0 &&
-                                <Box sx={{
-                                  position: "absolute",
-                                  bottom: "0",
-                                  left: "0",
-                                  padding: "5px",
-                                  bgcolor: theme.palette.primary.main,
-                                  borderRadius: "3px"
-                                }}
-                                >
-                                  <Typography className="principal" variant="body2">
-                                    Principal
-                                  </Typography>
-                                </Box>}
-                              <a onClick={() => handleDeleteButton(photo)}>
-                                <DeleteForeverIcon id="delete-icon" color="primary" sx={{
-                                  cursor: "pointer",
-                                  display: "none",
-                                  fontSize: "40px",
-                                  position: "absolute",
-                                  top: "50%",
-                                  left: "50%",
-                                  marginRight: "-50%",
-                                  transform: "translate(-50%, -50%)",
-                                }} />
-                              </a>
-                            </Box>
-
-                          )
-                        })}
-
-                      </Box>
                     </CustomDiv>
                   </Paper>
 
