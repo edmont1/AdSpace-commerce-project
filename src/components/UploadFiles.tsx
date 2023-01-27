@@ -13,7 +13,7 @@ interface Props {
   files: any[]
   errors: string | string[] | FormikErrors<any>[] | undefined
   touched: boolean | FormikTouched<any>[] | undefined
-  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
 }
 
 

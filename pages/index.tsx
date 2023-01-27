@@ -16,7 +16,7 @@ const Home: NextPage = () => {
     <DefaultTemplate>
       <Container maxWidth="sm" >
         <Typography component="h1" variant="h3" align="center" sx={{
-          pb: "50px"
+          pb: theme.spacing(6)
         }}>
           Busque um produto
         </Typography>

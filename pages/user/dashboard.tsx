@@ -7,23 +7,23 @@ import DefaultTemplate from "../../src/templates/Default"
 const Home: NextPage = () => {
   const theme = useTheme()
 
-
-
   const cardButtons = [
     <Button key={0} size="small">Editar</Button>,
-    <Button key={1} size="small">Remover</Button>]
+    <Button key={1} size="small">Remover</Button>
+  ]
 
   return (
     <DefaultTemplate>
       <Container maxWidth="sm" sx={{
-        pb: theme.spacing(6),
+        pb: theme.spacing(7),
       }}>
-        <Typography align="center" component="h1" variant="h2" >
-          Meus Anuncios
+        <Typography align="center" component="h1" variant="h3" >
+          Meus Anúncios
         </Typography>
         <Button sx={{
           margin: "30px auto",
-          display: "block"
+          display: "block",
+          fontWeight: "700"
         }}
           variant="contained"
         >

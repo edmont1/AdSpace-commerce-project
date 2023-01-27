@@ -21,6 +21,7 @@ import { CustomDiv } from "./style"
 
 import { Formik } from "formik"
 import UploadFiles from "../../../src/components/UploadFiles"
+import Titles from "../../../src/templates/Titles"
 
 
 
@@ -29,16 +30,7 @@ const Publish: NextPage = () => {
 
   return (
     <DefaultTemplate>
-      <Container maxWidth="sm" sx={{
-        pb: theme.spacing(4),
-      }}>
-        <Typography align="center" component="h1" variant="h3" >
-          Publicar Anúncio
-        </Typography>
-        <Typography align="center" component="h2" variant="h5" >
-          Publicar Anúncio
-        </Typography>
-      </Container>
+      <Titles title="Publicar Anúncio" subtitle="Publicar Anúncio" />
 
       <Formik
         initialValues={initialValues}
@@ -62,7 +54,6 @@ const Publish: NextPage = () => {
                   <Paper sx={{
                     padding: theme.spacing(3),
                     bgcolor: theme.palette.background.white,
-                    margin: theme.spacing(3, 0)
                   }}>
 
                     <CustomDiv>
