@@ -14,13 +14,23 @@ import { NextPage } from "next"
 import Link from "next/link"
 import DefaultTemplate from "../../../src/templates/Default"
 import Titles from "../../../src/templates/Titles"
-import { initialValues, validationSchema } from "./formValues"
+import { initialValuesSignUp, initialValuesSignUpType, validationSchema } from "./formValues"
 
 
 const CustomFormControl = styled(FormControl)(({ theme }) => `
   padding: ${theme.spacing(1, 0)};
 
 `)
+
+interface submitFormType{
+  values: initialValuesSignUpType
+  setSubmitting : (isSubmitting: boolean) => void
+}
+function submitForm(params : submitFormType){
+  setTimeout(() => {
+    params.setSubmitting(false)
+  }, 3000)
+}
 
 const SignUp: NextPage = () => {
   const theme = useTheme()
@@ -29,9 +39,11 @@ const SignUp: NextPage = () => {
       <Titles title="Crie sua conta" subtitle="E anuncie para todo o Brasil"/>
       <Container maxWidth="md">
         <Formik
-          initialValues={initialValues}
+          initialValues={initialValuesSignUp}
           validationSchema={validationSchema}
-          onSubmit={(values) => console.log("enviado", values)}
+          onSubmit={(values, {setSubmitting}) => {
+            submitForm({values, setSubmitting})
+          }}
         >
           {
             ({values,
@@ -39,6 +51,7 @@ const SignUp: NextPage = () => {
               touched,
               handleChange,
               handleSubmit,
+              isSubmitting
             }) => {
               return (
                 <form onSubmit={handleSubmit}>
@@ -73,7 +86,7 @@ const SignUp: NextPage = () => {
                         <FormHelperText>{errors.pwdconfirm}</FormHelperText>
                       }
                     </CustomFormControl>
-                    <Button type="submit" fullWidth
+                    <Button disabled={isSubmitting} type="submit" fullWidth
                       sx={{
                         mt: theme.spacing(3),
                         fontWeight: "600"

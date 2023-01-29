@@ -1,6 +1,13 @@
 import * as yup from "yup"
 
-const initialValues = {
+export interface initialValuesSignUpType{
+  name: string
+  email: string
+  pwd: string
+  pwdconfirm: string
+}
+
+const initialValuesSignUp : initialValuesSignUpType = {
   name: "",
   email: "",
   pwd: "",
@@ -22,6 +29,6 @@ const validationSchema = yup.object().shape({
 })
 
 export {
-  initialValues,
+  initialValuesSignUp,
   validationSchema
 }

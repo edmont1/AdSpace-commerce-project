@@ -10,6 +10,7 @@ interface FormValues {
   email: string,
   tel: string
 }
+
 const initialValues: FormValues = {
   title: "",
   category: "",
