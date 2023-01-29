@@ -50,7 +50,6 @@ const Header = () => {
 
   const cookies = parseCookies()
 
-  const [isLogged, setIsLogged] = useState(cookies.isLogged)
   const router = useRouter()
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
@@ -79,8 +78,8 @@ const Header = () => {
   }
 
   function handleCreateAd() {
-    if (!isLogged) {
-      router.push("/signin")
+    if (!cookies.isLogged) {
+      router.push("/auth/signin")
     }
     else {
       router.push("/user/publish")
@@ -213,7 +212,7 @@ const Header = () => {
             </Button>
           </Box>
 
-          {isLogged ?
+          {cookies.isLogged ?
             <Box sx={{ flexGrow: 0, ml: theme.spacing(3) }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, borderRadius: "100px" }}>
@@ -254,7 +253,7 @@ const Header = () => {
               </Menu>
             </Box>
             :
-            <Link href="/signin"
+            <Link href="/auth/signin"
               legacyBehavior
               passHref
             >

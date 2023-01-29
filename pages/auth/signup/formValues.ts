@@ -1,17 +1,17 @@
 import * as yup from "yup"
 
-export interface initialValuesSignUpType{
+export interface ValuesSignUpType{
   name: string
   email: string
-  pwd: string
-  pwdconfirm: string
+  password: string
+  passwordconfirm: string
 }
 
-const initialValuesSignUp : initialValuesSignUpType = {
+const initialValuesSignUp : ValuesSignUpType = {
   name: "",
   email: "",
-  pwd: "",
-  pwdconfirm: ""
+  password: "",
+  passwordconfirm: ""
 }
 
 const validationSchema = yup.object().shape({
@@ -20,12 +20,12 @@ const validationSchema = yup.object().shape({
   email: yup.string()
     .email("Digite um email válido")
     .required("Campo obrigatório"),
-  pwd: yup.string()
+  password: yup.string()
     .required("Campo obrigatório")
     .min(8, "Mínimo de 8 caracteres"),
-  pwdconfirm: yup.string()
+  passwordconfirm: yup.string()
     .required("Campo obrigatório")
-    .oneOf([yup.ref("pwd")], "As senhas devem ser iguais")
+    .oneOf([yup.ref("password")], "As senhas devem ser iguais")
 })
 
 export {
