@@ -3,6 +3,7 @@ import { NextPage } from "next"
 import ProductCard from "../../src/components/ProductCard"
 import DefaultTemplate from "../../src/templates/Default"
 import { useSession } from 'next-auth/react'
+import { useEffect } from "react"
 
 
 const Home: NextPage = () => {
@@ -10,6 +11,11 @@ const Home: NextPage = () => {
 
   const session = useSession()
   console.log(session)
+
+  useEffect(() => {
+    const nextDiv: any = document.querySelector("#__next")
+    nextDiv.parentElement.style.paddingBottom = "14rem"
+  }, [])
 
   const cardButtons = [
     <Button key={0} size="small">Editar</Button>,
