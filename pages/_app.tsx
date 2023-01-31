@@ -7,6 +7,7 @@ import theme from '../src/theme';
 import createEmotionCache from '../src/createEmotionCache';
 import "../styles/globals.css"
 import { ThemeProvider } from '@mui/material';
+import { SessionProvider } from "next-auth/react"
 
 
 
@@ -25,11 +26,13 @@ export default function MyApp(props: MyAppProps) {
         <title>AdSpace</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <SessionProvider session={pageProps.session}>
+        <ThemeProvider theme={theme}>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </SessionProvider>
     </CacheProvider>
   );
 }

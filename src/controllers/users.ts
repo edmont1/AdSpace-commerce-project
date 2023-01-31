@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import dbConnect from "../utils/dbConnect";
+import dbConnect from "../lib/mongoose";
 import { encrypt } from "../utils/password";
 import UsersModel from "../models/users.model"
 

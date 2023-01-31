@@ -6,11 +6,13 @@ const encrypt = async (pwd:string) => {
   return password
 }
 
-const decrypt = async(pwd:string) => {
 
+const compare = (pwd: string, hash: string) => {
+  const result = bcrypt.compare(pwd, hash)
+  return result
 }
 
 export {
   encrypt,
-  decrypt,
+  compare,
 }

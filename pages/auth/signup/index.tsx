@@ -27,6 +27,10 @@ const CustomFormControl = styled(FormControl)(({ theme }) => `
 
 `)
 
+interface submitFormType {
+  values: ValuesSignUpType
+  setSubmitting: (isSubmitting: boolean) => void
+}
 
 const SignUp: NextPage = () => {
 
@@ -38,11 +42,8 @@ const SignUp: NextPage = () => {
   }
   const [response, setResponse] = useState<Response>({})
 
-  interface submitFormType {
-    values: ValuesSignUpType
-    setSubmitting: (isSubmitting: boolean) => void
-  }
-  function submitForm(params : submitFormType) {
+
+  function submitForm(params: submitFormType) {
     fetch("http://localhost:3000/api/users", {
       method: "POST",
       headers: {
@@ -74,8 +75,8 @@ const SignUp: NextPage = () => {
         <Formik
           initialValues={initialValuesSignUp}
           validationSchema={validationSchema}
-          onSubmit={(values, {setSubmitting}) => {
-            submitForm({values, setSubmitting})
+          onSubmit={(values, { setSubmitting }) => {
+            submitForm({ values, setSubmitting })
           }}
         >
           {
@@ -133,10 +134,11 @@ const SignUp: NextPage = () => {
 
                     {
                       isSubmitting ? (
-                        <Box sx={{
-                          textAlign: "center",
-                          p: `${theme.spacing(3)}`
-                        }}>
+                        <Box
+                          sx={{
+                            textAlign: "center",
+                            p: `${theme.spacing(3)}`
+                          }}>
                           <CircularProgress />
                         </Box>
                       ) : (

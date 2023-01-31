@@ -1,7 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
 
-const schema: Schema = new Schema({
+const schema = new mongoose.Schema({
   name:{
     type: String,
     required: [true, "O campo 'nome' é obrigatório."],

@@ -2,10 +2,14 @@ import { Button, Container, Theme, Typography, useTheme } from "@mui/material"
 import { NextPage } from "next"
 import ProductCard from "../../src/components/ProductCard"
 import DefaultTemplate from "../../src/templates/Default"
+import { useSession } from 'next-auth/react'
 
 
 const Home: NextPage = () => {
   const theme = useTheme()
+
+  const session = useSession()
+  console.log(session)
 
   const cardButtons = [
     <Button key={0} size="small">Editar</Button>,
