@@ -16,7 +16,6 @@ import { styled, useTheme } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { destroyCookie, parseCookies } from 'nookies'
 import { useSession } from 'next-auth/react'
 
 const pages = ['Products', 'Pricing', 'Blog']
@@ -50,8 +49,6 @@ const StyledButton = styled(Button)(({ theme }) => `
 const Header = () => {
   const session = useSession()
 
-  const cookies = parseCookies()
-
   const router = useRouter()
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
@@ -74,17 +71,6 @@ const Header = () => {
       router.push("/user/dashboard")
     }
     if (setting === "Sair") {
-      destroyCookie(null, 'isLogged')
-      window.location.href = "/"
-    }
-  }
-
-  function handleCreateAd() {
-    if (!cookies.isLogged) {
-      router.push("/auth/signin")
-    }
-    else {
-      router.push("/user/publish")
     }
   }
 
@@ -199,7 +185,7 @@ const Header = () => {
                 mr: theme.spacing(1),
                 padding: theme.spacing(0.5, 2)
               }}
-              onClick={handleCreateAd}
+              onClick={() => {}}
             >
               <Typography sx={{
                 fontWeight: theme.typography.fontWeightBold,
@@ -217,7 +203,7 @@ const Header = () => {
             <Box sx={{ flexGrow: 0, ml: theme.spacing(3) }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, borderRadius: "100px" }}>
-                  <Avatar alt={`${session.data.user.name}`} src="#" />
+                  <Avatar alt={`${session.data.user?.name}`} src="#" />
                   <Typography
                     variant="subtitle2"
                     color={theme.palette.primary.contrastText}

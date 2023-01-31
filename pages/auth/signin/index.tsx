@@ -68,7 +68,9 @@ const SigninPage: NextPage = () => {
       setAuthError(sign)
       params.setSubmitting(false)
       if (sign?.ok) {
-        router.push("/user/dashboard")
+        setTimeout(() => {
+          router.push("/user/dashboard")
+        }, 1000)
       }
     }, 1500)
 
