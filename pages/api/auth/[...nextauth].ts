@@ -3,24 +3,35 @@ import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 
 
-export const authOptions : NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: `${process.env.GOOGLE_CLIENT_ID}`,
+      clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
+    }),
     CredentialsProvider({
       type: "credentials",
       credentials: {},
       async authorize(credentials, req) {
         const res = await fetch("http://localhost:3000/api/auth/signin", {
           method: "POST",
-          headers: {"Content-Type" : "application/json"},
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(credentials)
         })
 
         const user = await res.json()
-  
+
         if (user && user.email) {
           return user
         } else {
-          throw new Error(`${user.message}`)
+          throw user.message
         }
       }
     })
@@ -28,5 +39,17 @@ export const authOptions : NextAuthOptions = {
   session: {
     strategy: "jwt"
   },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = user
+      }
+      return token
+    },
+    async session({ session, token }){
+      session.user = token.user as any
+      return session
+    },
+  }
 }
 export default NextAuth(authOptions)

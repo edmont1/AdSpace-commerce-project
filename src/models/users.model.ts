@@ -14,7 +14,7 @@ const schema = new mongoose.Schema({
   password:{
     type: String,
     required: [true, "O campo 'senha' é obrigatório."]
-  }
+  },
 })
 
 

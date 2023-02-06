@@ -33,15 +33,16 @@ interface submitFormType {
 }
 
 const SignUp: NextPage = () => {
-
+  const theme = useTheme()
+  
   const router = useRouter()
+
+  const [response, setResponse] = useState<Response>({})
 
   interface Response {
     success?: boolean
     message?: string
   }
-  const [response, setResponse] = useState<Response>({})
-
 
   function submitForm(params: submitFormType) {
     fetch("http://localhost:3000/api/users", {
@@ -67,7 +68,7 @@ const SignUp: NextPage = () => {
 
   }
 
-  const theme = useTheme()
+
   return (
     <DefaultTemplate>
       <Titles title="Crie sua conta" subtitle="E anuncie para todo o Brasil" />

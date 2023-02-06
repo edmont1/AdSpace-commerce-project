@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import dbConnect from "../../lib/mongoose";
+import dbConnect from "../../lib/dbConnect";
 import { compare } from "../../utils/password";
 import UsersModel from "../../models/users.model"
 
@@ -18,11 +18,12 @@ async function post(req : NextApiRequest, res : NextApiResponse){
     }
 
     const passIsCorrect = await compare(password, user.password)
+
     if(passIsCorrect){
       return res.status(200).json({
         _id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
       })
     }
     return res.status(401).json({success: false, message: "invalid"})

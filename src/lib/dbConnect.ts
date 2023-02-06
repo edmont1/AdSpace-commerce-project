@@ -7,7 +7,7 @@ declare global {
   };
 }
 
-const {MONGODB_DB, MONGODB_URI} = process.env
+const { MONGODB_URI } = process.env
 
 if (!MONGODB_URI) {
   throw new Error(

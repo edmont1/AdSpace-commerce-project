@@ -1,16 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import dbConnect from "../lib/mongoose";
+import dbConnect from "../lib/dbConnect";
 import { encrypt } from "../utils/password";
 import UsersModel from "../models/users.model"
 
-type Data = {
+interface Data{
   message?: string
   success?: boolean
 }
 
-async function get(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function get(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
-  res.status(200).json({ success: true })
+  res.status(403).send(null)
 }
 
 async function post(req: NextApiRequest, res: NextApiResponse<Data>) {
@@ -27,7 +27,7 @@ async function post(req: NextApiRequest, res: NextApiResponse<Data>) {
       const user = new UsersModel({
         name,
         email,
-        password: cryptoPassword
+        password: cryptoPassword,
       })
       user.save()
       res.status(201).json({ success: true, message: "Cadastro bem sucedido." })
