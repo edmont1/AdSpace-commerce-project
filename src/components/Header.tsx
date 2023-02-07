@@ -16,7 +16,7 @@ import { styled, useTheme } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 
 const pages = ['Products', 'Pricing', 'Blog']
 const settings = ['Profile', 'Account', 'Dashboard', 'Sair']
@@ -47,8 +47,8 @@ const StyledButton = styled(Button)(({ theme }) => `
 `)
 
 const Header = () => {
+  const theme = useTheme()
   const session = useSession()
-
   const router = useRouter()
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
@@ -70,11 +70,16 @@ const Header = () => {
     if (setting === "Dashboard") {
       router.push("/user/dashboard")
     }
-    if (setting === "Sair") {
+    else if (setting === "Sair") {
+      signOut({
+        callbackUrl: "/"
+      })
+    }
+    else if(setting === "Profile"){
+      router.push("/user/profile")
     }
   }
 
-  const theme = useTheme()
 
   return (
     <AppBar position="static">
@@ -179,37 +184,38 @@ const Header = () => {
 
 
           <Box>
-            <Button color='inherit'
-              variant='outlined'
-              sx={{
-                mr: theme.spacing(1),
-                padding: theme.spacing(0.5, 2)
-              }}
-              onClick={() => {}}
-            >
-              <Typography sx={{
-                fontWeight: theme.typography.fontWeightBold,
-                fontSize: {
-                  md: "15px",
-                  xs: "10px"
-                },
-              }}>
-                Criar Anúncio
-              </Typography>
-            </Button>
+            <Link href="/user/publish" passHref legacyBehavior>
+              <Button color='inherit'
+                variant='outlined'
+                sx={{
+                  mr: theme.spacing(1),
+                  padding: theme.spacing(0.5, 2)
+                }}
+              >
+                <Typography sx={{
+                  fontWeight: theme.typography.fontWeightBold,
+                  fontSize: {
+                    md: "15px",
+                    xs: "10px"
+                  },
+                }}>
+                  Criar Anúncio
+                </Typography>
+              </Button>
+            </Link>
           </Box>
 
           {session.data ?
-            <Box sx={{ flexGrow: 0, ml: theme.spacing(3) }}>
+            <Box sx={{ flexGrow: 0, ml: theme.spacing(2)}}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, borderRadius: "100px" }}>
-                  <Avatar alt={`${session.data.user?.name}`} src="#" />
+                    <Avatar alt={`${session.data.user?.name}`} src={`${session.data.user?.image && session.data.user?.image}`} />
                   <Typography
                     variant="subtitle2"
                     color={theme.palette.primary.contrastText}
                     fontWeight={700}
                     sx={{
-                      padding: theme.spacing(0, 1)
+                      padding: theme.spacing(0, 1),
                     }}>
                     {session.data.user?.name}
                   </Typography>
@@ -253,6 +259,7 @@ const Header = () => {
                     xs: "12px"
                   },
                   position: "relative",
+                  ml: theme.spacing(1),
                   "&::after": {
                     content: `""`,
                     width: "100%",
@@ -266,7 +273,6 @@ const Header = () => {
 
                   },
                   "&:hover": {
-                    filter: "brightness(0)",
                     "&::after": {
                       visibility: "visible",
                       transform: "scaleX(1)"

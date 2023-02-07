@@ -22,11 +22,24 @@ import { CustomDiv } from "./style"
 import { Formik } from "formik"
 import UploadFiles from "../../../src/components/UploadFiles"
 import Titles from "../../../src/templates/Titles"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/dist/client/router"
 
 
 
 const Publish: NextPage = () => {
   const theme = useTheme()
+  const router = useRouter()
+  const {status} = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.replace("/auth/signin")
+    },
+  })
+
+  if(status === "loading"){
+    return <p>Loading...</p>
+  }
 
   return (
     <DefaultTemplate>

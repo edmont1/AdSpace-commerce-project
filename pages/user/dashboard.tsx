@@ -4,23 +4,33 @@ import ProductCard from "../../src/components/ProductCard"
 import DefaultTemplate from "../../src/templates/Default"
 import { useSession } from 'next-auth/react'
 import { useEffect } from "react"
+import { useRouter } from "next/router"
 
 
 const Home: NextPage = () => {
   const theme = useTheme()
+  const router = useRouter()
+  const {status} = useSession({
+    required : true,
+    onUnauthenticated() {
+      router.replace("/auth/signin")
+    },
+  })
 
-  const session = useSession()
-  console.log(session)
 
   useEffect(() => {
     const nextDiv: any = document.querySelector("#__next")
     nextDiv.parentElement.style.paddingBottom = "14rem"
-  }, [])
+  }, [status])
 
   const cardButtons = [
     <Button key={0} size="small">Editar</Button>,
     <Button key={1} size="small">Remover</Button>
   ]
+
+  if(status === "loading"){
+    return <p>Loading...</p>
+  }
 
   return (
     <DefaultTemplate>
@@ -50,24 +60,26 @@ const Home: NextPage = () => {
         <ProductCard
           title="Lizard"
           description="Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica."
+                  species, ranging across all continents except Antarctica."
           buttons={cardButtons}
           image="http://cbissn.ibict.br/images/phocagallery/galeria2/thumbs/phoca_thumb_l_image03_grd.png"
         />
         <ProductCard
           title="Lizard"
           description="Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica."
+                  species, ranging across all continents except Antarctica."
           buttons={cardButtons}
         />
         <ProductCard title="Lizard" description="Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica." />
+                  species, ranging across all continents except Antarctica." />
         <ProductCard title="Lizard" description="Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica." />
+                  species, ranging across all continents except Antarctica." />
       </Container>
 
     </DefaultTemplate>
   )
 }
+
+
 
 export default Home

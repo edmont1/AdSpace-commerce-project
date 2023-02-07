@@ -138,14 +138,14 @@ const SignUp: NextPage = () => {
                         <Box
                           sx={{
                             textAlign: "center",
-                            p: `${theme.spacing(3)}`
+                            p: `${theme.spacing(0.35,0)}`
                           }}>
                           <CircularProgress />
                         </Box>
                       ) : (
                         <Button disabled={isSubmitting} type="submit" fullWidth
                           sx={{
-                            mt: theme.spacing(3),
+                            mt: theme.spacing(2),
                             fontWeight: "600"
                           }}
                           variant="contained">

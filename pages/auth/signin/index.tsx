@@ -46,7 +46,7 @@ interface submitFormType {
 const SigninPage: NextPage = () => {
   const router = useRouter()
   const theme = useTheme()
-  const session = useSession()
+  const { status } = useSession()
   const [sign, setSign] = useState<SignInResponse | undefined>()
   const [isEmailLogin, setIsEmailLogin] = useState(false)
 
@@ -55,7 +55,6 @@ const SigninPage: NextPage = () => {
     nextDiv.parentElement.style.paddingBottom = "0"
   }, [])
 
-  console.log(session)
 
   function submitForm(params: submitFormType) {
     setTimeout(async () => {
@@ -66,11 +65,6 @@ const SigninPage: NextPage = () => {
       })
       setSign(signResponse)
       params.setSubmitting(false)
-      if (signResponse?.ok) {
-        setTimeout(() => {
-          router.push("/user/dashboard")
-        }, 800)
-      }
     }, 1500)
 
   }
@@ -85,6 +79,13 @@ const SigninPage: NextPage = () => {
     setIsEmailLogin(true)
   }
 
+  if (status === "loading") {
+    return <p>Loading...</p>
+  }
+
+  if(status === "authenticated"){
+    router.push("/user/dashboard")
+  }
 
   return (
     <Formik
@@ -128,7 +129,7 @@ const SigninPage: NextPage = () => {
                   square>
                   <Box
                     sx={{
-                      my: isEmailLogin? theme.spacing(19) : theme.spacing(32),
+                      mt: isEmailLogin ? theme.spacing(16) : theme.spacing(32),
                       mx: 4,
                       display: 'flex',
                       flexDirection: 'column',
@@ -184,11 +185,12 @@ const SigninPage: NextPage = () => {
                           Entrar com E-mail
                         </Button>
                       </Box>
+
                     </Box>
 
 
                     {isEmailLogin &&
-                      <Box sx={{ mt: 1 }}>
+                      <Box sx={{ mt: 1, width: "100%", p: theme.spacing(0, 3)}}>
                         <TextField
                           margin="normal"
                           fullWidth
@@ -237,42 +239,47 @@ const SigninPage: NextPage = () => {
                           </Box>
                         )}
 
-
                         {
                           isSubmitting ? (
                             <Box
                               sx={{
                                 textAlign: "center",
-                                p: `${theme.spacing(2)}`
+                                p: `${theme.spacing(0.82,0)}`,
                               }}>
                               <CircularProgress />
                             </Box>
                           ) : (
+
                             <Button
                               type="submit"
                               fullWidth
                               variant="contained"
-                              sx={{ mt: 3, mb: 2, fontWeight: "600" }}
+                              sx={{ mt: 0.9, mb: 2, fontWeight: "600" }}
                             >
                               Sign In
                             </Button>
+
                           )
                         }
-                        <Grid container>
-                          <Grid item xs>
-                            <Link href="#" variant="body2">
-                              Forgot password?
-                            </Link>
-                          </Grid>
-                          <Grid item>
-                            <Link href="/auth/signup" variant="body2">
-                              {"Don't have an account? Sign Up"}
-                            </Link>
-                          </Grid>
-                        </Grid>
-                        <Copyright sx={{ mt: 5 }} />
+
                       </Box>
                     }
+
+                    <Box sx={{ px: 3 }} width="100%">
+                      <Grid container sx={{ textAlign: !isEmailLogin ? "center" : "start", mt: theme.spacing(1) }}>
+                        <Grid item xs={!isEmailLogin ? 12 : true}>
+                          <Link href="#" variant="body2">
+                            Forgot password?
+                          </Link>
+                        </Grid>
+                        <Grid item xs={!isEmailLogin ? 12 : false} sx={{ mt: !isEmailLogin ? theme.spacing(2) : 0 }}>
+                          <Link href="/auth/signup" variant="body2">
+                            {"Don't have an account? Sign Up"}
+                          </Link>
+                        </Grid>
+                      </Grid>
+                      <Copyright sx={{ mt: !isEmailLogin ? 30.1 : 17.4 }} />
+                    </Box>
                   </Box>
                 </Grid>
               </Grid>
