@@ -17,6 +17,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { signOut, useSession } from 'next-auth/react'
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { ColorModeContext } from '../../pages/_app';
 
 const pages = ['Products', 'Pricing', 'Blog']
 const settings = ['Profile', 'Account', 'Dashboard', 'Sair']
@@ -37,7 +40,7 @@ const StyledButton = styled(Button)(({ theme }) => `
     transition: .3s ease-in-out .0s;
   }
   &:hover{
-    filter: brightness(0);
+    background-color: rgba(8, 92, 43, 0.205);
     ::after {
     visibility: visible;
     transform: scaleX(1);
@@ -47,6 +50,7 @@ const StyledButton = styled(Button)(({ theme }) => `
 `)
 
 const Header = () => {
+  const colorMode = React.useContext(ColorModeContext);
   const theme = useTheme()
   const session = useSession()
   const router = useRouter()
@@ -75,16 +79,24 @@ const Header = () => {
         callbackUrl: "/"
       })
     }
-    else if(setting === "Profile"){
+    else if (setting === "Profile") {
       router.push("/user/profile")
     }
   }
 
 
   return (
-    <AppBar position="static">
+    <AppBar position="static"
+      sx={{
+        bgcolor: theme.palette.primary.main,
+        backgroundImage: "none",
+        color: "#000"
+      }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
+            {theme.palette.background.default === "#3e3e42" ? <Brightness7Icon sx={{ color: "#fff" }} /> : <Brightness4Icon />}
+          </IconButton>
           <AdbIcon sx={{
             display: { xs: 'none', md: 'flex' },
             mr: 1,
@@ -189,7 +201,10 @@ const Header = () => {
                 variant='outlined'
                 sx={{
                   mr: theme.spacing(1),
-                  padding: theme.spacing(0.5, 2)
+                  padding: theme.spacing(0.5, 2),
+                  "&:hover": {
+                    bgcolor: "rgba(8, 92, 43, 0.205)"
+                  }
                 }}
               >
                 <Typography sx={{
@@ -206,10 +221,17 @@ const Header = () => {
           </Box>
 
           {session.data ?
-            <Box sx={{ flexGrow: 0, ml: theme.spacing(2)}}>
+            <Box sx={{ flexGrow: 0, ml: theme.spacing(2) }}>
               <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, borderRadius: "100px" }}>
-                    <Avatar alt={`${session.data.user?.name}`} src={`${session.data.user?.image && session.data.user?.image}`} />
+                <IconButton onClick={handleOpenUserMenu}
+                  sx={{
+                    p: 0,
+                    borderRadius: "100px",
+                    "&:hover": {
+                      bgcolor: "rgba(8, 92, 43, 0.205)"
+                    }
+                  }}>
+                  <Avatar alt={`${session.data.user?.name}`} src={`${session.data.user?.image && session.data.user?.image}`} />
                   <Typography
                     variant="subtitle2"
                     color={theme.palette.primary.contrastText}

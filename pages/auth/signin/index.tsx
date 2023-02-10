@@ -16,11 +16,14 @@ import { useEffect } from 'react';
 import { Formik } from 'formik';
 import { initialValues, validationSchema, valuesSigninType } from './formValues';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Alert, useTheme } from '@mui/material';
+import { Alert, IconButton, useTheme } from '@mui/material';
 import { signIn, SignInResponse } from 'next-auth/react';
 import { useSession } from 'next-auth/react'
 import { useState } from "react"
 import Image from 'next/dist/client/image';
+import { ColorModeContext, dark } from '../../_app';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 
 
@@ -44,6 +47,7 @@ interface submitFormType {
 }
 
 const SigninPage: NextPage = () => {
+  const colorMode = React.useContext(ColorModeContext);
   const router = useRouter()
   const theme = useTheme()
   const { status } = useSession()
@@ -53,6 +57,7 @@ const SigninPage: NextPage = () => {
   useEffect(() => {
     const nextDiv: any = document.querySelector("#__next")
     nextDiv.parentElement.style.paddingBottom = "0"
+    router.replace("/auth/signin", undefined, { shallow: true })
   }, [])
 
 
@@ -79,12 +84,9 @@ const SigninPage: NextPage = () => {
     setIsEmailLogin(true)
   }
 
-  if (status === "loading") {
-    return <p>Loading...</p>
-  }
 
-  if(status === "authenticated"){
-    router.push("/user/dashboard")
+  if (status === "authenticated") {
+    router.replace("/user/dashboard")
   }
 
   return (
@@ -125,8 +127,11 @@ const SigninPage: NextPage = () => {
                   md={5}
                   component={Paper}
                   elevation={6}
-
+                  sx={{ bgcolor: theme.palette.background.default }}
                   square>
+                  <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
+                    {theme.palette.background.default === dark ? <Brightness7Icon sx={{color: "#fff"}} /> : <Brightness4Icon/>}
+                  </IconButton>
                   <Box
                     sx={{
                       mt: isEmailLogin ? theme.spacing(16) : theme.spacing(32),
@@ -139,7 +144,7 @@ const SigninPage: NextPage = () => {
                     <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
                       <LockOutlinedIcon sx={{ color: theme.palette.primary.contrastText }} />
                     </Avatar>
-                    <Typography component="h1" variant="h5">
+                    <Typography sx={{ color: theme.palette.primary.contrastText }} component="h1" variant="h5">
                       Entrar
                     </Typography>
 
@@ -190,12 +195,12 @@ const SigninPage: NextPage = () => {
 
 
                     {isEmailLogin &&
-                      <Box sx={{ mt: 1, width: "100%", p: theme.spacing(0, 3)}}>
+                      <Box sx={{ mt: 1, width: "100%", p: theme.spacing(0, 3), color: theme.palette.primary.contrastText }}>
                         <TextField
                           margin="normal"
                           fullWidth
                           id="email"
-                          label="Email Address"
+                          label="Endereço de e-mail"
                           name="email"
                           autoComplete="email"
                           autoFocus
@@ -203,12 +208,25 @@ const SigninPage: NextPage = () => {
                           error={Boolean(errors.email && touched.email)}
                           onChange={handleChange}
                           value={values.email}
+                          sx={{
+                            input: {
+                              color: theme.palette.primary.contrastText,
+                            },
+                            label: {
+                              color: theme.palette.primary.contrastText
+                            },
+                            '& .MuiOutlinedInput-root': {
+                              '& fieldset': {
+                                borderColor: `${theme.palette.primary.contrastText}`,
+                              }
+                            }
+                          }}
                         />
                         <TextField
                           margin="normal"
                           fullWidth
                           name="password"
-                          label="Password"
+                          label="Senha"
                           type="password"
                           id="password"
                           autoComplete="current-password"
@@ -216,16 +234,31 @@ const SigninPage: NextPage = () => {
                           error={Boolean(errors.password && touched.password)}
                           onChange={handleChange}
                           value={values.password}
+                          sx={
+                            {
+                              input: {
+                                color: theme.palette.primary.contrastText,
+                                borderColor: "red"
+                              },
+                              label: {
+                                color: theme.palette.primary.contrastText
+                              },
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: `${theme.palette.primary.contrastText}`,
+                                }
+                              }
+                            }}
                         />
                         <FormControlLabel
-                          control={<Checkbox value="remember" color="primary" />}
+                          control={<Checkbox sx={{ color: theme.palette.primary.contrastText }} value="remember" color="primary" />}
                           label="Remember me"
                         />
 
                         {sign && (
                           <Box>
                             <Alert sx={{
-                              bgcolor: "white",
+                              bgcolor: theme.palette.background.default,
                               color: `${sign.error ? "#d32f2f" : "green"}`,
                               p: 0
                             }} variant="filled" severity={`${sign.error ? "error" : "success"}`}>
@@ -244,7 +277,7 @@ const SigninPage: NextPage = () => {
                             <Box
                               sx={{
                                 textAlign: "center",
-                                p: `${theme.spacing(0.82,0)}`,
+                                p: `${theme.spacing(0.82, 0)}`,
                               }}>
                               <CircularProgress />
                             </Box>
@@ -278,7 +311,7 @@ const SigninPage: NextPage = () => {
                           </Link>
                         </Grid>
                       </Grid>
-                      <Copyright sx={{ mt: !isEmailLogin ? 30.1 : 17.4 }} />
+                      <Copyright sx={{ mt: !isEmailLogin ? 30.1 : 17.4, color: theme.palette.primary.contrastText }} />
                     </Box>
                   </Box>
                 </Grid>

@@ -1,7 +1,6 @@
 import {
   Box,
   Container,
-  Paper,
   Typography,
   useTheme
 } from "@mui/material"

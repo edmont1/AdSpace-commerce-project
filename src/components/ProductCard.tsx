@@ -4,8 +4,10 @@ import {
   CardContent,
   CardMedia,
   Button,
-  Typography } from '@mui/material'
+  Typography, 
+  useTheme} from '@mui/material'
 import { ReactNode } from 'react';
+
 
 interface Props{
   title: string,
@@ -14,8 +16,9 @@ interface Props{
   image?: string
 }
 const ProductCard = ({title, description, buttons, image}:Props) => {
+  const theme = useTheme()
   return (
-    <Card>
+    <Card sx={{bgcolor: theme.palette.background.paper}}>
       <CardMedia
         sx={{ 
           height: 200,
@@ -23,11 +26,11 @@ const ProductCard = ({title, description, buttons, image}:Props) => {
         image={image}
         title="green iguana"
       />
-      <CardContent>
+      <CardContent sx={{color: theme.palette.text.primary}}>
         <Typography gutterBottom variant="h5" component="div">
           {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography sx={{color: theme.palette.text.primary}} variant="body2" color="text.secondary">
           {description}
         </Typography>
       </CardContent>

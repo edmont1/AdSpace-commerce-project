@@ -1,22 +1,14 @@
-import { Button, Container, Theme, Typography, useTheme } from "@mui/material"
+import { Button, Container, Typography, useTheme } from "@mui/material"
 import { NextPage } from "next"
 import ProductCard from "../../src/components/ProductCard"
 import DefaultTemplate from "../../src/templates/Default"
 import { useSession } from 'next-auth/react'
 import { useEffect } from "react"
-import { useRouter } from "next/router"
 
 
 const Home: NextPage = () => {
   const theme = useTheme()
-  const router = useRouter()
-  const {status} = useSession({
-    required : true,
-    onUnauthenticated() {
-      router.replace("/auth/signin")
-    },
-  })
-
+  const {status} = useSession()
 
   useEffect(() => {
     const nextDiv: any = document.querySelector("#__next")
@@ -27,10 +19,6 @@ const Home: NextPage = () => {
     <Button key={0} size="small">Editar</Button>,
     <Button key={1} size="small">Remover</Button>
   ]
-
-  if(status === "loading"){
-    return <p>Loading...</p>
-  }
 
   return (
     <DefaultTemplate>
@@ -78,6 +66,8 @@ const Home: NextPage = () => {
 
     </DefaultTemplate>
   )
+
+
 }
 
 

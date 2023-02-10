@@ -27,25 +27,28 @@ const CustomFormControl = styled(FormControl)(({ theme }) => `
 
 `)
 
+
+interface Props{
+  APP_URL : typeof process.env.APP_URL
+}
+interface Response {
+  success?: boolean
+  message?: string
+}
 interface submitFormType {
   values: ValuesSignUpType
   setSubmitting: (isSubmitting: boolean) => void
 }
 
-const SignUp: NextPage = () => {
-  const theme = useTheme()
-  
-  const router = useRouter()
 
+const SignUp : NextPage<Props> = ({APP_URL}) => {
+  const theme = useTheme()
+  const router = useRouter()
   const [response, setResponse] = useState<Response>({})
 
-  interface Response {
-    success?: boolean
-    message?: string
-  }
-
+  
   function submitForm(params: submitFormType) {
-    fetch("http://localhost:3000/api/users", {
+    fetch(`${APP_URL}/api/users`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
@@ -138,14 +141,14 @@ const SignUp: NextPage = () => {
                         <Box
                           sx={{
                             textAlign: "center",
-                            p: `${theme.spacing(0.35,0)}`
+                            p: `${theme.spacing(1.1,0)}`
                           }}>
                           <CircularProgress />
                         </Box>
                       ) : (
                         <Button disabled={isSubmitting} type="submit" fullWidth
                           sx={{
-                            mt: theme.spacing(2),
+                            mt: theme.spacing(3.5),
                             fontWeight: "600"
                           }}
                           variant="contained">
@@ -182,6 +185,14 @@ const SignUp: NextPage = () => {
       </Container>
     </DefaultTemplate>
   )
+}
+
+export function getServerSideProps(){
+  return{
+    props:{
+      APP_URL: process.env.APP_URL
+    }
+  }
 }
 
 export default SignUp

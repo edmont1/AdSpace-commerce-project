@@ -23,19 +23,12 @@ import { Formik } from "formik"
 import UploadFiles from "../../../src/components/UploadFiles"
 import Titles from "../../../src/templates/Titles"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/dist/client/router"
 
 
 
 const Publish: NextPage = () => {
   const theme = useTheme()
-  const router = useRouter()
-  const {status} = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.replace("/auth/signin")
-    },
-  })
+  const {status} = useSession()
 
   if(status === "loading"){
     return <p>Loading...</p>
@@ -66,7 +59,6 @@ const Publish: NextPage = () => {
                 <Container maxWidth="md">
                   <Paper sx={{
                     padding: theme.spacing(3),
-                    bgcolor: theme.palette.background.white,
                   }}>
 
                     <CustomDiv>
@@ -126,7 +118,6 @@ const Publish: NextPage = () => {
 
                   <Paper sx={{
                     padding: theme.spacing(3),
-                    bgcolor: theme.palette.background.white,
                     margin: theme.spacing(3, 0)
                   }}>
                     <CustomDiv>
@@ -144,7 +135,6 @@ const Publish: NextPage = () => {
 
                   <Paper sx={{
                     padding: theme.spacing(3),
-                    bgcolor: theme.palette.background.white,
                     margin: theme.spacing(3, 0)
                   }}>
                     <Box>
@@ -177,7 +167,6 @@ const Publish: NextPage = () => {
                   <Paper sx={{
                     padding: theme.spacing(3),
                     margin: theme.spacing(3, 0),
-                    bgcolor: theme.palette.background.white,
                   }}>
                     <FormControl error={Boolean(errors.price && touched.price)} variant="standard" fullWidth>
                       <Typography fontWeight={600} component="h3" variant="body1">
@@ -201,7 +190,6 @@ const Publish: NextPage = () => {
 
                   <Paper sx={{
                     padding: theme.spacing(3),
-                    bgcolor: theme.palette.background.white,
                     margin: theme.spacing(3, 0),
                   }}>
 
