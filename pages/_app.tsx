@@ -5,7 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from '../src/createEmotionCache';
 import "../styles/globals.css"
-import { createTheme, PaletteMode, ThemeProvider, useMediaQuery } from '@mui/material';
+import { createTheme, PaletteMode, ThemeProvider } from '@mui/material';
 import { SessionProvider } from "next-auth/react"
 import { useEffect } from 'react';
 
@@ -28,7 +28,7 @@ declare module "@mui/material/styles" {
 export const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
 function MyApp(props: MyAppProps) {
-  const [mode, setMode] = React.useState<PaletteMode>();
+  const [mode, setMode] = React.useState<PaletteMode>("light");
   useEffect(() => {
     const colorSchema = localStorage.getItem("color-schema") as PaletteMode
     if(colorSchema){
@@ -36,7 +36,7 @@ function MyApp(props: MyAppProps) {
     }
   },[])
 
-  const getDesignTokens = (mode: PaletteMode | undefined) => ({
+  const getDesignTokens = (mode: PaletteMode) => ({
     palette: {
       mode,
       ...mode === "light" ?
@@ -99,7 +99,6 @@ function MyApp(props: MyAppProps) {
       <SessionProvider session={pageProps.session}>
         <ColorModeContext.Provider value={colorMode}>
           <ThemeProvider theme={theme}>
-            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
             <Component {...pageProps} />
           </ThemeProvider>

@@ -16,22 +16,43 @@ import {
 import { NextPage } from "next/types"
 
 import DefaultTemplate from "../../../src/templates/Default"
-import { validationSchema, initialValues } from "./formValues"
+import { validationSchema, initialValues, FormValues } from "./formValues"
 import { CustomDiv } from "./style"
 
 import { Formik } from "formik"
 import UploadFiles from "../../../src/components/UploadFiles"
 import Titles from "../../../src/templates/Titles"
-import { useSession } from "next-auth/react"
 
 
 
 const Publish: NextPage = () => {
   const theme = useTheme()
-  const {status} = useSession()
 
-  if(status === "loading"){
-    return <p>Loading...</p>
+  function handleFormSubmit(values: FormValues) {
+    const formData = new FormData()
+    for(let field in values){
+      if(field === "files"){
+        values.files.forEach(file => {
+          formData.append("files", file)
+        })
+      }
+      else{
+        formData.append(field, values[field])
+      }
+    }
+
+    fetch("/api/products", {
+      method: "POST",
+      body: formData
+    })
+    .then((res) => {
+      res.json().then((data) =>{
+        console.log(data)
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
   }
 
   return (
@@ -41,9 +62,7 @@ const Publish: NextPage = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log("enviado", values)
-        }}
+        onSubmit={handleFormSubmit}
       >
         {
           ({
@@ -71,7 +90,15 @@ const Publish: NextPage = () => {
                           name="title"
                           value={values.title}
                           onChange={handleChange}
-                          sx={{ mt: "10px" }}
+                          sx={{
+                            mt: "10px",
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
+                            }
+                          }}
                           size="small"
                           placeholder="ex.:Computador" />
                         {
@@ -180,6 +207,14 @@ const Publish: NextPage = () => {
                         value={values.price}
                         id="price"
                         name="price"
+                        sx={{
+                          input: {
+                            "&:-webkit-autofill": {
+                              "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                              "WebkitTextFillColor": `${theme.palette.text.primary}`
+                            }
+                          }
+                        }}
                       />
                       {
                         errors.price && touched.price &&
@@ -205,6 +240,14 @@ const Publish: NextPage = () => {
                           onChange={handleChange}
                           id="name"
                           name="name"
+                          sx={{
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
+                            }
+                          }}
                         />
                         {
                           errors.name && touched.name &&
@@ -221,6 +264,14 @@ const Publish: NextPage = () => {
                           onChange={handleChange}
                           id="email"
                           name="email"
+                          sx={{
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
+                            }
+                          }}
                         />
                         {
                           errors.email && touched.email &&
@@ -237,6 +288,14 @@ const Publish: NextPage = () => {
                           onChange={handleChange}
                           id="tel"
                           name="tel"
+                          sx={{
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
+                            }
+                          }}
                         />
                         {
                           errors.tel && touched.tel &&

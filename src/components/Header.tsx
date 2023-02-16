@@ -17,9 +17,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { signOut, useSession } from 'next-auth/react'
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { ColorModeContext } from '../../pages/_app';
 
 const pages = ['Products', 'Pricing', 'Blog']
 const settings = ['Profile', 'Account', 'Dashboard', 'Sair']
@@ -50,7 +47,6 @@ const StyledButton = styled(Button)(({ theme }) => `
 `)
 
 const Header = () => {
-  const colorMode = React.useContext(ColorModeContext);
   const theme = useTheme()
   const session = useSession()
   const router = useRouter()
@@ -94,9 +90,6 @@ const Header = () => {
       }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-            {theme.palette.background.default === "#3e3e42" ? <Brightness7Icon sx={{ color: "#fff" }} /> : <Brightness4Icon />}
-          </IconButton>
           <AdbIcon sx={{
             display: { xs: 'none', md: 'flex' },
             mr: 1,
@@ -289,14 +282,13 @@ const Header = () => {
                     bgcolor: `${theme.palette.primary.contrastText}`,
                     position: "absolute",
                     bottom: "0",
-                    visibility: "visible",
                     transform: "scaleX(0)",
                     transition: ".3s ease-in-out .0s"
 
                   },
                   "&:hover": {
+                    bgcolor: "rgba(8, 92, 43, 0.205)",
                     "&::after": {
-                      visibility: "visible",
                       transform: "scaleX(1)"
                     }
                   }

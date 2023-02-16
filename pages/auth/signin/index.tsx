@@ -21,7 +21,7 @@ import { signIn, SignInResponse } from 'next-auth/react';
 import { useSession } from 'next-auth/react'
 import { useState } from "react"
 import Image from 'next/dist/client/image';
-import { ColorModeContext, dark } from '../../_app';
+import { ColorModeContext } from '../../_app';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 
@@ -84,10 +84,10 @@ const SigninPage: NextPage = () => {
     setIsEmailLogin(true)
   }
 
-
-  if (status === "authenticated") {
-    router.replace("/user/dashboard")
+  if(status === "authenticated"){
+    router.push("/user/dashboard")
   }
+
 
   return (
     <Formik
@@ -130,7 +130,7 @@ const SigninPage: NextPage = () => {
                   sx={{ bgcolor: theme.palette.background.default }}
                   square>
                   <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-                    {theme.palette.background.default === dark ? <Brightness7Icon sx={{color: "#fff"}} /> : <Brightness4Icon/>}
+                    {theme.palette.mode === "dark"? <Brightness7Icon sx={{color: "#fff"}} /> : <Brightness4Icon/>}
                   </IconButton>
                   <Box
                     sx={{
@@ -200,7 +200,7 @@ const SigninPage: NextPage = () => {
                           margin="normal"
                           fullWidth
                           id="email"
-                          label="Endereço de e-mail"
+                          label="E-mail"
                           name="email"
                           autoComplete="email"
                           autoFocus
@@ -210,10 +210,14 @@ const SigninPage: NextPage = () => {
                           value={values.email}
                           sx={{
                             input: {
-                              color: theme.palette.primary.contrastText,
+                              color: theme.palette.text.primary,
+                              "&:-webkit-autofill":{
+                                "-webkit-box-shadow":`0 0 0 100px ${theme.palette.background.default} inset`,
+                              }
                             },
+                            
                             label: {
-                              color: theme.palette.primary.contrastText
+                              color: theme.palette.text.primary,
                             },
                             '& .MuiOutlinedInput-root': {
                               '& fieldset': {
@@ -237,11 +241,13 @@ const SigninPage: NextPage = () => {
                           sx={
                             {
                               input: {
-                                color: theme.palette.primary.contrastText,
-                                borderColor: "red"
+                                color: theme.palette.text.primary,
+                                "&:-webkit-autofill":{
+                                  "-webkit-box-shadow":`0 0 0 100px ${theme.palette.background.default} inset`,
+                                }
                               },
                               label: {
-                                color: theme.palette.primary.contrastText
+                                color: theme.palette.text.primary
                               },
                               '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
@@ -251,16 +257,18 @@ const SigninPage: NextPage = () => {
                             }}
                         />
                         <FormControlLabel
-                          control={<Checkbox sx={{ color: theme.palette.primary.contrastText }} value="remember" color="primary" />}
+                          control={<Checkbox sx={{ color: theme.palette.text.primary }} value="remember" color="primary" />}
                           label="Remember me"
+                          sx={{color: theme.palette.text.primary}}
                         />
 
                         {sign && (
                           <Box>
                             <Alert sx={{
-                              bgcolor: theme.palette.background.default,
-                              color: `${sign.error ? "#d32f2f" : "green"}`,
-                              p: 0
+                              bgcolor: "transparent",
+                              color: `${sign.error ? "#d32f2f" : "#12BB59"}`,
+                              p: 0,
+                              fontWeight: "700",
                             }} variant="filled" severity={`${sign.error ? "error" : "success"}`}>
                               {
                                 sign.error ?

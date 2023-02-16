@@ -1,6 +1,7 @@
 import * as yup from "yup"
 
-interface FormValues {
+export interface FormValues {
+  [index: string]: any
   title: string,
   category: string,
   files: any[],
