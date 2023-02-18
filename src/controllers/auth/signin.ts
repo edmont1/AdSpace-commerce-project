@@ -21,7 +21,7 @@ async function post(req : NextApiRequest, res : NextApiResponse){
 
     if(passIsCorrect){
       return res.status(200).json({
-        _id: user._id,
+        id: user._id,
         name: user.name,
         email: user.email,
       })

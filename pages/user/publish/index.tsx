@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem
 } from "@mui/material"
-import { NextPage } from "next/types"
+import { GetServerSideProps, NextPage } from "next/types"
 
 import DefaultTemplate from "../../../src/templates/Default"
 import { validationSchema, initialValues, FormValues } from "./formValues"
@@ -22,11 +22,36 @@ import { CustomDiv } from "./style"
 import { Formik } from "formik"
 import UploadFiles from "../../../src/components/UploadFiles"
 import Titles from "../../../src/templates/Titles"
+import Toasty from "../../../src/components/Toasty"
+import { useState } from "react"
+import { useRouter } from "next/router"
+import { getServerSession } from "next-auth"
+import { authOptions } from "../../api/auth/[...nextauth]"
 
 
+interface userProps{
+  userId: string
+}
 
-const Publish: NextPage = () => {
+const Publish: NextPage<userProps> = ({userId}) => {
   const theme = useTheme()
+  const router = useRouter()
+  const [open, setOpen] = useState(false);
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpen(false)
+    router.push("/user/dashboard")
+  };
+
+
+  const formValues = {
+    ...initialValues,
+    id: userId
+  }
+
+  console.log(formValues)
 
   function handleFormSubmit(values: FormValues) {
     const formData = new FormData()
@@ -48,11 +73,13 @@ const Publish: NextPage = () => {
     .then((res) => {
       res.json().then((data) =>{
         console.log(data)
+        setOpen(!open)
       })
     })
     .catch((err) => {
       console.log(err)
     })
+
   }
 
   return (
@@ -60,7 +87,7 @@ const Publish: NextPage = () => {
       <Titles title="Publicar Anúncio" subtitle="Publicar Anúncio" />
 
       <Formik
-        initialValues={initialValues}
+        initialValues={formValues}
         validationSchema={validationSchema}
         onSubmit={handleFormSubmit}
       >
@@ -71,7 +98,8 @@ const Publish: NextPage = () => {
             touched,
             handleChange,
             handleSubmit,
-            setFieldValue
+            setFieldValue,
+            isSubmitting
           }) => {
             return (
               <form onSubmit={handleSubmit}>
@@ -84,6 +112,8 @@ const Publish: NextPage = () => {
                       <Typography fontWeight={600} component="h3" variant="body1">
                         Título do anúncio
                       </Typography>
+                      <Input type="hidden" id="id" name="id" value={values.id}/>
+                      {/* <Input type="hidden"  value={values.image}/> */}
                       <FormControl error={Boolean(errors.title && touched.title)} variant="standard" fullWidth>
                         <Input
                           id="title"
@@ -313,10 +343,12 @@ const Publish: NextPage = () => {
                         color: theme.palette.primary.contrastText
                       }}
                       variant="contained"
+                      disabled={isSubmitting}
                     >
                       Publicar Anúncio
                     </Button>
                   </Box>
+                  <Toasty origin={{vertical:"bottom", horizontal:"left"}} message="Anúncio publicado com sucesso!" open={open} onClose={handleClose} />
                 </Container>
               </form>
             )
@@ -325,6 +357,17 @@ const Publish: NextPage = () => {
       </Formik>
     </DefaultTemplate>
   )
+}
+
+
+export const getServerSideProps : GetServerSideProps = async (ctx) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions)
+  const {id} = session?.user as {id: string}
+  return({
+    props:{
+      userId: id
+    }
+  })
 }
 
 export default Publish

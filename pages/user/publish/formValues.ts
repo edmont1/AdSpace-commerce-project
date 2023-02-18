@@ -10,6 +10,7 @@ export interface FormValues {
   name: string,
   email: string,
   tel: string
+  id: string
 }
 
 const initialValues: FormValues = {
@@ -20,7 +21,8 @@ const initialValues: FormValues = {
   price: "",
   name: "",
   email: "",
-  tel: ""
+  tel: "",
+  id: "",
 }
 
 const validationSchema = yup.object().shape({

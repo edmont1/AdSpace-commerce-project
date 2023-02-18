@@ -30,8 +30,8 @@ const schema = new mongoose.Schema({
     id:String,
     name:String,
     email:String,
-    phone:String,
-    image:String
+    tel:String,
+    //image:String
   }
 })
 

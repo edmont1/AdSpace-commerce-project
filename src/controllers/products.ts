@@ -1,12 +1,13 @@
 import path from "path"
 import fs from "fs"
 import ProductsModel from "../models/products.model";
-const formidable =  require("formidable-serverless")
+const formidable = require("formidable-serverless")
 import dbConnect from "../lib/dbConnect";
 import { NextApiRequest, NextApiResponse } from "next/types";
 import { FormValues } from "../../pages/user/publish/formValues";
 
-async function post(req:NextApiRequest, res:NextApiResponse){
+
+async function post(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
   const form = new formidable.IncomingForm({
     multiples: true,
@@ -14,14 +15,16 @@ async function post(req:NextApiRequest, res:NextApiResponse){
     keepExtensions: true
   })
 
-  form.parse(req, (error:Error, fields:FormValues, files:{files: any[] | {}}) => {
-    if(error){
+  form.parse(req, async (error: Error, fields: FormValues, files: { files: any[] | {} }) => {
+    if (error) {
       res.status(500)
     }
 
-    const {files:images} = files
+    const { files: images } = files
 
     const filesToRename = images instanceof Array ? images : [images]
+
+    const filesToSave: { name: string, path: string }[] = []
 
     filesToRename.forEach(file => {
       const timestamp = Date.now()
@@ -33,20 +36,61 @@ async function post(req:NextApiRequest, res:NextApiResponse){
       const oldPath = file.path
       const newPath = path.join(file.path, "../" + fileName)
 
+      filesToSave.push({
+        name: fileName,
+        path: newPath
+      })
+
       fs.rename(oldPath, newPath, (err) => {
-        if(err){
+        if (err) {
           console.log(err)
-          res.status(500).json({ok: false})
+          res.status(500).json({ ok: false })
         }
       })
 
     })
-    
-    res.status(200).json({ok: true})
+
+    const {
+      title,
+      category,
+      description,
+      price,
+      name,
+      email,
+      tel,
+      id,
+      //image
+    } = fields
+
+    const products = new ProductsModel({
+      title,
+      category,
+      description,
+      price,
+      user: {
+        id,
+        name,
+        email,
+        tel,
+        //image,
+      },
+      files: filesToSave
+    })
+
+    const isSaved = await products.save()
+
+    console.log(id)
+
+    if (isSaved) {
+      res.status(201).json({ success: true })
+    }
+    else {
+      res.status(500).json({ success: false })
+    }
   })
 
 }
 
-export{
-  post
+export {
+  post,
 }

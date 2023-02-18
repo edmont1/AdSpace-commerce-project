@@ -1,12 +1,32 @@
 import { Button, Container, Typography, useTheme } from "@mui/material"
-import { NextPage } from "next"
+import { GetServerSideProps, NextPage } from "next"
 import ProductCard from "../../src/components/ProductCard"
 import DefaultTemplate from "../../src/templates/Default"
 import { useSession } from 'next-auth/react'
 import { useEffect } from "react"
+import { getServerSession } from "next-auth"
+import { authOptions } from "../api/auth/[...nextauth]"
+import ProductsModel from "../../src/models/products.model"
+import dbConnect from "../../src/lib/dbConnect"
 
 
-const Home: NextPage = () => {
+export interface ProductsDB{
+  products:{
+    title: string,
+    category: string,
+    files: any[],
+    description: string,
+    price: string,
+    user:{
+      name: string,
+      email: string,
+      tel: string
+      id: string
+    }
+  }[]
+}
+
+const Home: NextPage<ProductsDB> = ({products}) => {
   const theme = useTheme()
   const {status} = useSession()
 
@@ -15,9 +35,13 @@ const Home: NextPage = () => {
     nextDiv.parentElement.style.paddingBottom = "14rem"
   }, [status])
 
+  function handleRemove(){
+
+  }
+
   const cardButtons = [
     <Button key={0} size="small">Editar</Button>,
-    <Button key={1} size="small">Remover</Button>
+    <Button key={1} size="small" onClick={handleRemove}>Remover</Button>
   ]
 
   return (
@@ -45,23 +69,16 @@ const Home: NextPage = () => {
         gap: theme.spacing(4)
       }}
       >
-        <ProductCard
-          title="Lizard"
-          description="Lizards are a widespread group of squamate reptiles, with over 6,000
-                  species, ranging across all continents except Antarctica."
-          buttons={cardButtons}
-          image="http://cbissn.ibict.br/images/phocagallery/galeria2/thumbs/phoca_thumb_l_image03_grd.png"
-        />
-        <ProductCard
-          title="Lizard"
-          description="Lizards are a widespread group of squamate reptiles, with over 6,000
-                  species, ranging across all continents except Antarctica."
-          buttons={cardButtons}
-        />
-        <ProductCard title="Lizard" description="Lizards are a widespread group of squamate reptiles, with over 6,000
-                  species, ranging across all continents except Antarctica." />
-        <ProductCard title="Lizard" description="Lizards are a widespread group of squamate reptiles, with over 6,000
-                  species, ranging across all continents except Antarctica." />
+        {
+          products.map((product, index) => (
+            <ProductCard key={index}
+            title={product.title}
+            description={product.description}
+            buttons={cardButtons}
+            image={`/uploads/${product.files[0].name}`}
+          />
+          ))
+        }
       </Container>
 
     </DefaultTemplate>
@@ -70,6 +87,16 @@ const Home: NextPage = () => {
 
 }
 
-
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions)
+  const {id:userId} = session?.user as {id: string}
+  await dbConnect()
+  const products = await ProductsModel.find({"user.id": userId})
+  return({
+    props:{
+      products: JSON.parse(JSON.stringify(products))
+    }
+  })
+}
 
 export default Home
