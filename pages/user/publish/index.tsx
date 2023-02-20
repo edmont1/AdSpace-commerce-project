@@ -45,13 +45,10 @@ const Publish: NextPage<userProps> = ({userId}) => {
     router.push("/user/dashboard")
   };
 
-
   const formValues = {
     ...initialValues,
     id: userId
   }
-
-  console.log(formValues)
 
   function handleFormSubmit(values: FormValues) {
     const formData = new FormData()

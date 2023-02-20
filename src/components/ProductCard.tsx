@@ -36,7 +36,10 @@ const ProductCard = ({title, description, buttons, image}:Props) => {
       </CardContent>
       {
         buttons? 
-        <CardActions>
+        <CardActions sx={{
+          display: "flex", 
+          justifyContent: "center",
+        }}>
         {buttons}
         </CardActions>
         :

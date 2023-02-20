@@ -31,10 +31,10 @@ function MyApp(props: MyAppProps) {
   const [mode, setMode] = React.useState<PaletteMode>("light");
   useEffect(() => {
     const colorSchema = localStorage.getItem("color-schema") as PaletteMode
-    if(colorSchema){
+    if (colorSchema) {
       setMode(colorSchema)
     }
-  },[])
+  }, [])
 
   const getDesignTokens = (mode: PaletteMode) => ({
     palette: {
@@ -68,17 +68,17 @@ function MyApp(props: MyAppProps) {
           },
         },
     },
-  });
+  })
 
   const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => {
-          if(prevMode === "light"){
+          if (prevMode === "light") {
             localStorage.setItem("color-schema", "dark")
           }
-          else{
+          else {
             localStorage.setItem("color-schema", "light")
           }
           return prevMode === 'light' ? 'dark' : 'light'

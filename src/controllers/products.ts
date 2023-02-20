@@ -79,8 +79,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
     const isSaved = await products.save()
 
-    console.log(id)
-
     if (isSaved) {
       res.status(201).json({ success: true })
     }
