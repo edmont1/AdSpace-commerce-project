@@ -27,6 +27,7 @@ import { useState } from "react"
 import { useRouter } from "next/router"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../../api/auth/[...nextauth]"
+import useToasty from "../../../src/contexts/Toasty"
 
 
 interface userProps{
@@ -36,13 +37,8 @@ interface userProps{
 const Publish: NextPage<userProps> = ({userId}) => {
   const theme = useTheme()
   const router = useRouter()
-  const [open, setOpen] = useState(false);
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
-    }
-    setOpen(false)
-  };
+
+  const { setToasty } = useToasty()
 
   const formValues = {
     ...initialValues,
@@ -69,7 +65,11 @@ const Publish: NextPage<userProps> = ({userId}) => {
     .then((res) => {
       res.json().then((data) =>{
         console.log(data)
-        setOpen(!open)
+        setToasty({
+          open: true,
+          severity: "success",
+          message: "Anúncio publicado com sucesso"
+        })
         setTimeout(() => {
           router.push("/user/dashboard")
         }, 2000)
@@ -347,7 +347,6 @@ const Publish: NextPage<userProps> = ({userId}) => {
                       Publicar Anúncio
                     </Button>
                   </Box>
-                  <Toasty origin={{vertical:"bottom", horizontal:"left"}} message="Anúncio publicado com sucesso!" open={open} onClose={handleClose} />
                 </Container>
               </form>
             )

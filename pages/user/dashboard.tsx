@@ -15,6 +15,7 @@ import dbConnect from "../../src/lib/dbConnect"
 import Link from "next/link"
 import DialogComponent from "../../src/components/DialogComponent"
 import Toasty from "../../src/components/Toasty"
+import useToasty from "../../src/contexts/Toasty"
 
 
 
@@ -43,6 +44,7 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [productId, setProductId] = useState<string>("")
   const [removedProducts, setRemovedProducts] = useState<string[]>([])
+  const {setToasty} = useToasty()
 
   function handleCloseDialog(){
     setOpenDialog(false)
@@ -66,7 +68,11 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
     .then((res) => {
       res.json().then((data) => {
         setRemovedProducts([...removedProducts,productId])
-        
+        setToasty({
+          open: true,
+          severity: "success",
+          message: "Anúncio deletado com sucesso"
+        })
       })
     })
     .catch((err) => {
