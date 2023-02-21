@@ -42,7 +42,6 @@ const Publish: NextPage<userProps> = ({userId}) => {
       return
     }
     setOpen(false)
-    router.push("/user/dashboard")
   };
 
   const formValues = {
@@ -71,6 +70,9 @@ const Publish: NextPage<userProps> = ({userId}) => {
       res.json().then((data) =>{
         console.log(data)
         setOpen(!open)
+        setTimeout(() => {
+          router.push("/user/dashboard")
+        }, 2000)
       })
     })
     .catch((err) => {

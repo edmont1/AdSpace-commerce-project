@@ -6,7 +6,7 @@ import Header from "../components/Header"
 import Loading from "../components/Loading"
 import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
-import { ColorModeContext } from '../../pages/_app'
+import useColorSchema from "../contexts/ColorSchema"
 
 
 const CustomBox = styled(Box)(({ theme }) => `
@@ -15,8 +15,7 @@ const CustomBox = styled(Box)(({ theme }) => `
 
 const DefaultTemplate = ({ children }: PropsWithChildren) => {
   const theme = useTheme()
-  const colorMode = React.useContext(ColorModeContext)
-
+  const { toggleColorMode } = useColorSchema()
   const { status } = useSession()
 
   return (
@@ -27,7 +26,7 @@ const DefaultTemplate = ({ children }: PropsWithChildren) => {
           :
           <>
             <Header />
-            <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
+            <IconButton sx={{ ml: 1 }} onClick={ toggleColorMode } color="inherit">
               {theme.palette.mode === "dark" ?
                 <Brightness7Icon sx={{ color: "#fff" }} />
                 :

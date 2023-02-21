@@ -89,6 +89,22 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
 }
 
+async function remove(req: NextApiRequest, res: NextApiResponse) {
+  const { productId } = req.query
+  await dbConnect()
+
+  const deleted = await ProductsModel.findOneAndDelete({ _id: productId })
+
+  if (deleted) {
+    res.status(200).json({ success: true })
+  }
+  else {
+    res.status(500).json({ success: false })
+  }
+
+}
+
 export {
   post,
+  remove
 }

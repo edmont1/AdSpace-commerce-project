@@ -24,7 +24,7 @@ const ProductCard = ({title, description, buttons, image}:Props) => {
           height: 200,
           backgroundSize: "cover"}}
         image={image}
-        title="green iguana"
+        title="Produto anunciado"
       />
       <CardContent sx={{color: theme.palette.text.primary}}>
         <Typography gutterBottom variant="h5" component="div">

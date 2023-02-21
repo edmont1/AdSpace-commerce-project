@@ -224,7 +224,12 @@ const Header = () => {
                       bgcolor: "rgba(8, 92, 43, 0.205)"
                     }
                   }}>
-                  <Avatar alt={`${session.data.user?.name}`} src={`${session.data.user?.image && session.data.user?.image}`} />
+                  <Avatar alt={`${session.data.user?.name}`} src={`${session.data.user?.image}`}>
+                    {
+                      session.data.user?.image &&
+                      <img src={`${session.data.user}`}/>
+                    }
+                  </Avatar>
                   <Typography
                     variant="subtitle2"
                     color={theme.palette.primary.contrastText}

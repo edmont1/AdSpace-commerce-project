@@ -1,31 +1,32 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import { NextPage } from 'next/types';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { Formik } from 'formik';
-import { initialValues, validationSchema, valuesSigninType } from './formValues';
-import CircularProgress from '@mui/material/CircularProgress';
-import { Alert, IconButton, useTheme } from '@mui/material';
-import { signIn, SignInResponse } from 'next-auth/react';
+import * as React from 'react'
+import { 
+  Avatar,
+  Button,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Paper,
+  Box,
+  Grid,
+  Typography,
+} from '@mui/material'
+
+import Link from '@mui/material/Link'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import { NextPage } from 'next/types'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { Formik } from 'formik'
+import { initialValues, validationSchema, valuesSigninType } from './formValues'
+import CircularProgress from '@mui/material/CircularProgress'
+import { Alert, IconButton, useTheme } from '@mui/material'
+import { signIn, SignInResponse } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
-import { useState } from "react"
-import Image from 'next/dist/client/image';
-import { ColorModeContext } from '../../_app';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import Image from 'next/dist/client/image'
+import Brightness4Icon from '@mui/icons-material/Brightness4'
+import Brightness7Icon from '@mui/icons-material/Brightness7'
 
-
+import useColorSchema from '../../../src/contexts/ColorSchema'
 
 
 function Copyright(props: any) {
@@ -38,7 +39,7 @@ function Copyright(props: any) {
       {new Date().getFullYear()}
       {'.'}
     </Typography>
-  );
+  )
 }
 
 interface submitFormType {
@@ -47,12 +48,12 @@ interface submitFormType {
 }
 
 const SigninPage: NextPage = () => {
-  const colorMode = React.useContext(ColorModeContext);
   const router = useRouter()
   const theme = useTheme()
   const { status } = useSession()
   const [sign, setSign] = useState<SignInResponse | undefined>()
   const [isEmailLogin, setIsEmailLogin] = useState(false)
+  const { toggleColorMode } = useColorSchema()
 
   useEffect(() => {
     const nextDiv: any = document.querySelector("#__next")
@@ -84,7 +85,7 @@ const SigninPage: NextPage = () => {
     setIsEmailLogin(true)
   }
 
-  if(status === "authenticated"){
+  if (status === "authenticated") {
     router.push("/user/dashboard")
   }
 
@@ -129,8 +130,8 @@ const SigninPage: NextPage = () => {
                   elevation={6}
                   sx={{ bgcolor: theme.palette.background.default }}
                   square>
-                  <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-                    {theme.palette.mode === "dark"? <Brightness7Icon sx={{color: "#fff"}} /> : <Brightness4Icon/>}
+                  <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
+                    {theme.palette.mode === "dark" ? <Brightness7Icon sx={{ color: "#fff" }} /> : <Brightness4Icon />}
                   </IconButton>
                   <Box
                     sx={{
@@ -211,11 +212,11 @@ const SigninPage: NextPage = () => {
                           sx={{
                             input: {
                               color: theme.palette.text.primary,
-                              "&:-webkit-autofill":{
-                                "-webkit-box-shadow":`0 0 0 100px ${theme.palette.background.default} inset`,
+                              "&:-webkit-AutoFill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
                               }
                             },
-                            
+
                             label: {
                               color: theme.palette.text.primary,
                             },
@@ -242,8 +243,8 @@ const SigninPage: NextPage = () => {
                             {
                               input: {
                                 color: theme.palette.text.primary,
-                                "&:-webkit-autofill":{
-                                  "-webkit-box-shadow":`0 0 0 100px ${theme.palette.background.default} inset`,
+                                "&:-webkit-AutoFill": {
+                                  "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
                                 }
                               },
                               label: {
@@ -259,7 +260,7 @@ const SigninPage: NextPage = () => {
                         <FormControlLabel
                           control={<Checkbox sx={{ color: theme.palette.text.primary }} value="remember" color="primary" />}
                           label="Remember me"
-                          sx={{color: theme.palette.text.primary}}
+                          sx={{ color: theme.palette.text.primary }}
                         />
 
                         {sign && (
@@ -330,7 +331,7 @@ const SigninPage: NextPage = () => {
       }
     </Formik>
 
-  );
+  )
 }
 
 

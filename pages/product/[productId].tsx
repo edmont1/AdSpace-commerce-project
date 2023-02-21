@@ -39,15 +39,15 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
               p: theme.spacing(3),
               mb: theme.spacing(3)
             }}>
-            <Carousel autoPlay={false} animation="slide">
+            <Carousel swipe={false} autoPlay={false} animation="slide">
               {
                 product?.files.map((file, index) => (
-                  <Box key={index} height="500px">
-                    <img style={{ width: "100%", height: "100%", objectFit: "cover" }} src={`/uploads/${file.name}`} alt="" />
-                  </Box>
-                  // <Box key={index} sx={{ height: "500px", position: "relative" }}>
-                  //   <Image sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw" fill style={{ objectFit: "cover" }} src={`/uploads/${file.name}`} alt="" />
+                  // <Box key={index} height="500px">
+                  //   <img style={{ width: "100%", height: "100%", objectFit: "contain" }} src={`/uploads/${file.name}`} alt="" />
                   // </Box>
+                  <Box key={index} sx={{ height: "500px", position: "relative" }}>
+                    <Image loading="eager" priority={true} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 30vw" fill style={{ objectFit: "contain" }} src={`/uploads/${file.name}`} alt="" />
+                  </Box>
                 ))
               }
             </Carousel>
