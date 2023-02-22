@@ -59,7 +59,7 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
               mb: theme.spacing(3)
             }}>
             <Typography component="span" variant="caption" fontSize={12}>
-              Publicado em 17/01/2023
+              {`Publicado em ${product?.date.day} às ${product?.date.time.slice(0, 5)}`}
             </Typography>
             <Typography component="h1" variant="h4"
               sx={{
@@ -113,16 +113,43 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
             <Typography component="h3" fontWeight={700}>
               Localização
             </Typography>
+            <Typography component="h3">
+              {
+                product.localization.cep &&
+                `Cep: ${product.localization.cep}`
+              }
+            </Typography>
+            <Typography component="h3" >
+              {
+                product.localization.rua &&
+                `Rua: ${product.localization.rua}`
+              }
+            </Typography>
+            <Typography component="h3" >
+              {
+                product.localization.bairro &&
+                `Bairro: ${product.localization.bairro}`
+              }
+            </Typography>
+            <Typography component="h3" >
+              {`Cidade: ${product.localization.cidade}`}
+            </Typography>
+            <Typography component="h3" >
+              {`Estado: ${product.localization.estado}`}
+            </Typography>
           </Paper>
           <Paper
             sx={{
-              alignSelf: "start",
               p: theme.spacing(4),
-              mb: theme.spacing(3)
+              mb: theme.spacing(3),
+              display: "flex"
             }}
           >
             <Typography component="h3" fontWeight={700}>
-              {`Telefone: ${product?.user.tel}`}
+              {`Telefone:`}
+            </Typography>
+            <Typography component="h3" sx={{pl: theme.spacing(0.5)}}>
+              {`${product?.user.tel}`}
             </Typography>
           </Paper>
         </Box>
@@ -138,7 +165,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     productId = ctx.query.productId
   }
   await dbConnect()
-  const product : ProductDB | null = await ProductsModel.findOne({ _id: productId })
+  const product: ProductDB | null = await ProductsModel.findOne({ _id: productId })
   return ({
     props: {
       product: JSON.parse(JSON.stringify(product))

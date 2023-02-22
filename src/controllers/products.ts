@@ -59,6 +59,13 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       email,
       tel,
       id,
+      time,
+      day,
+      cep,
+      rua,
+      bairro,
+      cidade,
+      estado
       //image
     } = fields
 
@@ -73,6 +80,17 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         email,
         tel,
         //image,
+      },
+      date:{
+        time,
+        day
+      },
+      localization:{
+        cep,
+        rua,
+        bairro,
+        cidade,
+        estado
       },
       files: filesToSave
     })

@@ -37,7 +37,6 @@ const UploadFiles = ({ files, errors, touched, setFieldValue }: Props) => {
   function handleDeleteButton(photo: { url: string }) {
     const filterFiles = files.filter((file) => file.url !== photo.url)
     setFieldValue("files", filterFiles)
-    console.log(filterFiles)
   }
 
 
@@ -90,11 +89,7 @@ const UploadFiles = ({ files, errors, touched, setFieldValue }: Props) => {
               backgroundSize: "cover",
             }}
             >
-              <Box sx={{
-                height: "100%",
-                width: "100%",
-              }} className="overlay">
-              </Box>
+              <Box sx={{ height: "100%", width: "100%" }} className="overlay"></Box>
               {index === 0 &&
                 <Box sx={{
                   position: "absolute",

@@ -26,12 +26,23 @@ const schema = new mongoose.Schema({
     type: String,
     required: [true, "O campo 'preço' é obrigatório."]
   },
+  date:{
+    time: String,
+    day: String
+  },
   user:{
     id:String,
     name:String,
     email:String,
     tel:String,
     //image:String
+  },
+  localization:{
+    cep: String,
+    rua: String,
+    bairro: String,
+    cidade: String,
+    estado: String
   }
 })
 

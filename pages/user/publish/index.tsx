@@ -22,39 +22,54 @@ import { CustomDiv } from "./style"
 import { Formik } from "formik"
 import UploadFiles from "../../../src/components/UploadFiles"
 import Titles from "../../../src/templates/Titles"
-import Toasty from "../../../src/components/Toasty"
-import { useState } from "react"
 import { useRouter } from "next/router"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../../api/auth/[...nextauth]"
 import useToasty from "../../../src/contexts/Toasty"
+import { ChangeEvent, useState } from "react"
 
 
-interface userProps{
+interface userProps {
   userId: string
 }
 
-const Publish: NextPage<userProps> = ({userId}) => {
+interface ValuesWithDate extends FormValues {
+  time: string,
+  day: string
+}
+
+const Publish: NextPage<userProps> = ({ userId }) => {
   const theme = useTheme()
   const router = useRouter()
-
   const { setToasty } = useToasty()
+
+  const [cepHelperText, setCepHelperText] = useState("")
 
   const formValues = {
     ...initialValues,
-    id: userId
+    id: userId,
   }
 
   function handleFormSubmit(values: FormValues) {
+    const date = new Date()
+    const time = date.toLocaleTimeString("pt-br")
+    const day = date.toLocaleDateString("pt-br")
+
+    const valuesWithDate: ValuesWithDate = {
+      ...values,
+      time,
+      day,
+    }
+
     const formData = new FormData()
-    for(let field in values){
-      if(field === "files"){
-        values.files.forEach(file => {
+    for (let field in valuesWithDate) {
+      if (field === "files") {
+        valuesWithDate.files.forEach(file => {
           formData.append("files", file)
         })
       }
-      else{
-        formData.append(field, values[field])
+      else {
+        formData.append(field, valuesWithDate[field])
       }
     }
 
@@ -62,24 +77,25 @@ const Publish: NextPage<userProps> = ({userId}) => {
       method: "POST",
       body: formData
     })
-    .then((res) => {
-      res.json().then((data) =>{
-        console.log(data)
-        setToasty({
-          open: true,
-          severity: "success",
-          message: "Anúncio publicado com sucesso"
+      .then((res) => {
+        res.json().then((data) => {
+          console.log(data)
+          setToasty({
+            open: true,
+            severity: "success",
+            message: "Anúncio publicado com sucesso",
+            autoHide: 2000
+          })
+          setTimeout(() => {
+            router.push("/user/dashboard")
+          }, 2000)
         })
-        setTimeout(() => {
-          router.push("/user/dashboard")
-        }, 2000)
       })
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-
+      .catch((err) => {
+        console.log(err)
+      })
   }
+
 
   return (
     <DefaultTemplate>
@@ -100,6 +116,31 @@ const Publish: NextPage<userProps> = ({userId}) => {
             setFieldValue,
             isSubmitting
           }) => {
+
+          
+            async function getCep(cepValue : string){
+              setCepHelperText("")
+              const cep = cepValue.replace(/\D/g, '')
+              const validacep = /^[0-9]{8}$/
+              if(validacep.test(cep)){
+                const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                const data = await res.json()
+                if(!data.erro){
+                  setFieldValue("rua", data.logradouro)
+                  setFieldValue("bairro", data.bairro)
+                  setFieldValue("cidade", data.localidade)
+                  setFieldValue("estado", data.uf)
+                }
+                else{
+                  setCepHelperText("Cep não encontrado")
+                  setFieldValue("rua", "")
+                  setFieldValue("bairro", "")
+                  setFieldValue("cidade", "")
+                  setFieldValue("estado", "")
+                }
+              }
+            }
+
             return (
               <form onSubmit={handleSubmit}>
                 <Container maxWidth="md">
@@ -111,7 +152,9 @@ const Publish: NextPage<userProps> = ({userId}) => {
                       <Typography fontWeight={600} component="h3" variant="body1">
                         Título do anúncio
                       </Typography>
-                      <Input type="hidden" id="id" name="id" value={values.id}/>
+
+                      <Input type="hidden" id="id" name="id" value={values.id} />
+
                       {/* <Input type="hidden"  value={values.image}/> */}
                       <FormControl error={Boolean(errors.title && touched.title)} variant="standard" fullWidth>
                         <Input
@@ -256,6 +299,147 @@ const Publish: NextPage<userProps> = ({userId}) => {
                     padding: theme.spacing(3),
                     margin: theme.spacing(3, 0),
                   }}>
+                    <CustomDiv>
+                      <Typography fontWeight={600} component="h3" variant="body1">
+                        Localização
+                      </Typography>
+                      <FormControl error={Boolean(errors.cep && touched.cep || cepHelperText)} fullWidth variant="standard">
+                        <Input
+                          size="small"
+                          placeholder="Cep (apenas números)"
+                          value={values.cep}
+                          onBlur={() => getCep(values.cep)}
+                          onChange={handleChange}
+                          id="cep"
+                          name="cep"
+                          sx={{
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
+                            }
+                          }}
+                        />
+                        {
+                          errors.cep  && touched.cep &&
+                          <FormHelperText>{errors.cep}</FormHelperText>
+                        }
+                        {
+                          <FormHelperText error={Boolean(cepHelperText)}>{cepHelperText}</FormHelperText>
+                        }
+                      </FormControl>
+                    </CustomDiv>
+                    <CustomDiv>
+                      <FormControl error={Boolean(errors.rua && touched.rua)} fullWidth variant="standard">
+                        <Input
+                          autoComplete="none"
+                          size="small"
+                          placeholder="Rua"
+                          value={values.rua}
+                          onChange={handleChange}
+                          onBlur={handleChange}
+                          id="rua"
+                          name="rua"
+                          sx={{
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
+                            }
+                          }}
+                        />
+                        {
+                          errors.rua && touched.rua &&
+                          <FormHelperText>{errors.rua}</FormHelperText>
+                        }
+                      </FormControl>
+                    </CustomDiv>
+                    <CustomDiv>
+                      <FormControl error={Boolean(errors.bairro && touched.bairro)} fullWidth variant="standard">
+                        <Input
+                          autoComplete="none"
+                          size="small"
+                          placeholder="Bairro"
+                          value={values.bairro}
+                          onChange={handleChange}
+                          onBlur={handleChange}
+                          id="bairro"
+                          name="bairro"
+                          sx={{
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
+                            }
+                          }}
+                        />
+                        {
+                          errors.bairro && touched.bairro &&
+                          <FormHelperText>{errors.bairro}</FormHelperText>
+                        }
+                      </FormControl>
+                    </CustomDiv>
+                    <CustomDiv>
+                      <FormControl error={Boolean(errors.cidade && touched.cidade)} fullWidth variant="standard">
+                        <Input
+                          autoComplete="none"
+                          size="small"
+                          placeholder="Cidade"
+                          value={values.cidade}
+                          onChange={handleChange}
+                          onBlur={handleChange}
+                          id="cidade"
+                          name="cidade"
+                          sx={{
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
+                            }
+                          }}
+                        />
+                        {
+                          errors.cidade && touched.cidade &&
+                          <FormHelperText>{errors.cidade}</FormHelperText>
+                        }
+                      </FormControl>
+                    </CustomDiv>
+                    <CustomDiv>
+                      <FormControl error={Boolean(errors.estado && touched.estado)} fullWidth variant="standard">
+                        <Input
+                          autoComplete="none"
+                          size="small"
+                          placeholder="Estado"
+                          value={values.estado}
+                          onChange={handleChange}
+                          onBlur={handleChange}
+                          id="estado"
+                          name="estado"
+                          sx={{
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
+                            }
+                          }}
+                        />
+                        {
+                          errors.estado && touched.estado &&
+                          <FormHelperText>{errors.estado}</FormHelperText>
+                        }
+                      </FormControl>
+                    </CustomDiv>
+                  </Paper>
+
+                  <Paper sx={{
+                    padding: theme.spacing(3),
+                    margin: theme.spacing(3, 0),
+                  }}>
 
                     <CustomDiv>
                       <Typography fontWeight={600} component="h3" variant="body1">
@@ -358,11 +542,11 @@ const Publish: NextPage<userProps> = ({userId}) => {
 }
 
 
-export const getServerSideProps : GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions)
-  const {id} = session?.user as {id: string}
-  return({
-    props:{
+  const { id } = session?.user as { id: string }
+  return ({
+    props: {
       userId: id
     }
   })

@@ -10,7 +10,7 @@ import useColorSchema from "../contexts/ColorSchema"
 
 
 const CustomBox = styled(Box)(({ theme }) => `
-  padding: ${theme.spacing(10, 1)};
+  padding: ${theme.spacing(5, 1)};
 `)
 
 const DefaultTemplate = ({ children }: PropsWithChildren) => {

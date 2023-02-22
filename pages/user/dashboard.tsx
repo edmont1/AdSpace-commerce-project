@@ -14,7 +14,6 @@ import ProductsModel from "../../src/models/products.model"
 import dbConnect from "../../src/lib/dbConnect"
 import Link from "next/link"
 import DialogComponent from "../../src/components/DialogComponent"
-import Toasty from "../../src/components/Toasty"
 import useToasty from "../../src/contexts/Toasty"
 
 
@@ -30,11 +29,22 @@ export interface ProductDB {
   files: any[],
   description: string,
   price: string,
+  date:{
+    time: string,
+    day: string
+  }
   user: {
     name: string,
     email: string,
     tel: string
     id: string
+  },
+  localization:{
+    cep: string
+    rua: string
+    bairro: string
+    cidade: string
+    estado: string
   }
 }
 
@@ -49,11 +59,6 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
   function handleCloseDialog(){
     setOpenDialog(false)
   }
-
-  useEffect(() => {
-    const nextDiv: any = document.querySelector("#__next")
-    nextDiv.parentElement.style.paddingBottom = "14rem"
-  }, [])
 
   function handleClickRemove(productId: string) {
     setOpenDialog(true)
@@ -71,7 +76,8 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
         setToasty({
           open: true,
           severity: "success",
-          message: "Anúncio deletado com sucesso"
+          message: "Anúncio deletado com sucesso",
+          autoHide: 1000
         })
       })
     })

@@ -6,15 +6,16 @@ interface Params{
   open: boolean
   severity: string
   message: string
+  autoHide: number
 }
-const ToastyContext = createContext({setToasty: ({open, severity, message}:Params) => {}})
+const ToastyContext = createContext({setToasty: ({open, severity, message, autoHide}:Params) => {}})
 
 export const ToastyProvider = ({children}: PropsWithChildren) => {
-  const theme = useTheme()
   const [toasty, setToasty] = useState({
     open : false,
     severity : "",
     message : "",
+    autoHide: 2000
   })
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -30,7 +31,7 @@ export const ToastyProvider = ({children}: PropsWithChildren) => {
   return (
     <>
       <Stack spacing={2} sx={{ width: '100%' }}>
-        <Snackbar open={toasty.open} autoHideDuration={2000} onClose={handleClose}>
+        <Snackbar open={toasty.open} autoHideDuration={toasty.autoHide} onClose={handleClose}>
           <Alert variant="filled" onClose={handleClose} severity="success" sx={{ width: '100%', fontWeight: "700"}}>
             {toasty.message}
           </Alert>
