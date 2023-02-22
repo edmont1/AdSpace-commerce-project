@@ -29,7 +29,7 @@ export interface ProductDB {
   files: any[],
   description: string,
   price: string,
-  date:{
+  date: {
     time: string,
     day: string
   }
@@ -38,14 +38,15 @@ export interface ProductDB {
     email: string,
     tel: string
     id: string
+    image: string
   },
-  localization:{
+  localization: {
     cep: string
     rua: string
     bairro: string
     cidade: string
     estado: string
-  }
+  },
 }
 
 const Home: NextPage<ProductsDB> = ({ products }) => {
@@ -54,9 +55,9 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [productId, setProductId] = useState<string>("")
   const [removedProducts, setRemovedProducts] = useState<string[]>([])
-  const {setToasty} = useToasty()
+  const { setToasty } = useToasty()
 
-  function handleCloseDialog(){
+  function handleCloseDialog() {
     setOpenDialog(false)
   }
 
@@ -64,26 +65,26 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
     setOpenDialog(true)
     setProductId(productId)
   }
-  
-  function handleConfirmDialog(){
+
+  function handleConfirmDialog() {
     setOpenDialog(false)
     fetch(`/api/products/${productId}`, {
       method: "DELETE",
     })
-    .then((res) => {
-      res.json().then((data) => {
-        setRemovedProducts([...removedProducts,productId])
-        setToasty({
-          open: true,
-          severity: "success",
-          message: "Anúncio deletado com sucesso",
-          autoHide: 1000
+      .then((res) => {
+        res.json().then((data) => {
+          setRemovedProducts([...removedProducts, productId])
+          setToasty({
+            open: true,
+            severity: "success",
+            message: "Anúncio deletado com sucesso",
+            autoHide: 1000
+          })
         })
       })
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
 
@@ -123,7 +124,7 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
       >
         {
           products.map((product, index) => {
-            if(removedProducts.includes(product._id)) return null
+            if (removedProducts.includes(product._id)) return null
             return (
               <ProductCard key={index}
                 title={product.title}
@@ -131,7 +132,11 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
                 buttons={[
                   <Button key={0} size="small">Editar</Button>,
                   <Button key={1} sx={{ m: "0 !important" }} size="small" onClick={() => handleClickRemove(product._id)}>Remover</Button>,
-                  <Link key={2} href={`/product/${product._id}`} passHref legacyBehavior>
+                  <Link key={2}
+                    href={`/${product.category.toLowerCase()}/${product.title.toLocaleLowerCase()}/${product._id}`}
+                    passHref
+                    legacyBehavior
+                  >
                     <Button size="small">Ver mais</Button>
                   </Link>
                 ]}

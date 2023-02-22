@@ -26,11 +26,14 @@ import { useRouter } from "next/router"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../../api/auth/[...nextauth]"
 import useToasty from "../../../src/contexts/Toasty"
-import { ChangeEvent, useState } from "react"
+import { useState } from "react"
 
 
 interface userProps {
   userId: string
+  userImage: string
+  userName: string
+  userEmail: string
 }
 
 interface ValuesWithDate extends FormValues {
@@ -38,7 +41,7 @@ interface ValuesWithDate extends FormValues {
   day: string
 }
 
-const Publish: NextPage<userProps> = ({ userId }) => {
+const Publish: NextPage<userProps> = ({ userId, userImage, userName, userEmail}) => {
   const theme = useTheme()
   const router = useRouter()
   const { setToasty } = useToasty()
@@ -48,6 +51,9 @@ const Publish: NextPage<userProps> = ({ userId }) => {
   const formValues = {
     ...initialValues,
     id: userId,
+    image: userImage,
+    email: userEmail,
+    name: userName
   }
 
   function handleFormSubmit(values: FormValues) {
@@ -153,7 +159,6 @@ const Publish: NextPage<userProps> = ({ userId }) => {
                         Título do anúncio
                       </Typography>
 
-                      <Input type="hidden" id="id" name="id" value={values.id} />
 
                       {/* <Input type="hidden"  value={values.image}/> */}
                       <FormControl error={Boolean(errors.title && touched.title)} variant="standard" fullWidth>
@@ -445,52 +450,6 @@ const Publish: NextPage<userProps> = ({ userId }) => {
                       <Typography fontWeight={600} component="h3" variant="body1">
                         Dados de Contato
                       </Typography>
-                      <FormControl error={Boolean(errors.name && touched.name)} fullWidth variant="standard">
-                        <Input
-                          size="small"
-                          placeholder="Nome"
-                          value={values.name}
-                          onChange={handleChange}
-                          id="name"
-                          name="name"
-                          sx={{
-                            input: {
-                              "&:-webkit-autofill": {
-                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
-                                "WebkitTextFillColor": `${theme.palette.text.primary}`
-                              }
-                            }
-                          }}
-                        />
-                        {
-                          errors.name && touched.name &&
-                          <FormHelperText>{errors.name}</FormHelperText>
-                        }
-                      </FormControl>
-                    </CustomDiv>
-                    <CustomDiv>
-                      <FormControl error={Boolean(errors.email && touched.email)} fullWidth variant="standard">
-                        <Input
-                          size="small"
-                          placeholder="E-mail"
-                          value={values.email}
-                          onChange={handleChange}
-                          id="email"
-                          name="email"
-                          sx={{
-                            input: {
-                              "&:-webkit-autofill": {
-                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
-                                "WebkitTextFillColor": `${theme.palette.text.primary}`
-                              }
-                            }
-                          }}
-                        />
-                        {
-                          errors.email && touched.email &&
-                          <FormHelperText>{errors.email}</FormHelperText>
-                        }
-                      </FormControl>
                     </CustomDiv>
                     <CustomDiv>
                       <FormControl error={Boolean(errors.tel && touched.tel)} fullWidth variant="standard">
@@ -544,10 +503,13 @@ const Publish: NextPage<userProps> = ({ userId }) => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions)
-  const { id } = session?.user as { id: string }
+  const { id, image, name, email } = session?.user as { id: string, image: string, name: string, email: string }
   return ({
     props: {
-      userId: id
+      userId: id,
+      userImage: image,
+      userName: name,
+      userEmail: email
     }
   })
 }

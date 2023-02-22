@@ -2,20 +2,21 @@ import * as yup from "yup"
 
 export interface FormValues {
   [index: string]: any
-  title: string,
-  category: string,
-  files: any[],
-  description: string,
-  price: string,
-  name: string,
-  email: string,
+  title: string
+  category: string
+  files: any[]
+  description: string
+  price: string
+  name: string
+  email: string
   tel: string
   id: string
   cep: string
   rua: string
-  bairro: string,
-  cidade: string,
+  bairro: string
+  cidade: string
   estado: string
+  image: string
 }
 
 const initialValues: FormValues = {
@@ -32,7 +33,8 @@ const initialValues: FormValues = {
   rua: "",
   bairro:"",
   cidade: "",
-  estado: ""
+  estado: "",
+  image: ""
 }
 
 const validationSchema = yup.object().shape({
@@ -45,11 +47,6 @@ const validationSchema = yup.object().shape({
   price: yup.number()
     .typeError("Digite apenas números")
     .positive("Digite apenas números positivos")
-    .required("Campo obrigatório"),
-  name: yup.string()
-    .required("Campo obrigatório"),
-  email: yup.string()
-    .email("Digite um e-mail válido")
     .required("Campo obrigatório"),
   tel: yup.number()
     .typeError("Digite apenas números")

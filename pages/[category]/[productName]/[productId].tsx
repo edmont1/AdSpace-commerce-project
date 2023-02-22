@@ -9,12 +9,12 @@ import {
 } from "@mui/material"
 import { GetServerSideProps, NextPage } from "next"
 import Carousel from "react-material-ui-carousel"
-import dbConnect from "../../src/lib/dbConnect"
-import ProductsModel from "../../src/models/products.model"
-import DefaultTemplate from "../../src/templates/Default"
-import { ProductDB } from "../user/dashboard"
+import dbConnect from "../../../src/lib/dbConnect"
+import ProductsModel from "../../../src/models/products.model"
+import DefaultTemplate from "../../../src/templates/Default"
+import { ProductDB } from "../../user/dashboard"
 import Image from "next/image"
-import { formatCurrency } from "../../src/utils/currency"
+import { formatCurrency } from "../../../src/utils/currency"
 
 
 
@@ -96,7 +96,7 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
               alignItems: "center",
               mb: theme.spacing(3)
             }}>
-            <Avatar alt={product?.user.name} src="#" />
+            <Avatar alt={product?.user.name} src={product?.user.image || product?.user.name[0]} />
             <Box sx={{ ml: theme.spacing(2) }}>
               <Typography component="p">{product?.user.name}</Typography>
               <Typography color="grey" component="p" variant="subtitle2">{product?.user.email}</Typography>

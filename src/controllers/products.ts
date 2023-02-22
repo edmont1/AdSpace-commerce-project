@@ -65,8 +65,8 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       rua,
       bairro,
       cidade,
-      estado
-      //image
+      estado,
+      image
     } = fields
 
     const products = new ProductsModel({
@@ -79,7 +79,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         name,
         email,
         tel,
-        //image,
+        image,
       },
       date:{
         time,

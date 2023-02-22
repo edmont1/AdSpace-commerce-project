@@ -35,7 +35,7 @@ const schema = new mongoose.Schema({
     name:String,
     email:String,
     tel:String,
-    //image:String
+    image:String
   },
   localization:{
     cep: String,
