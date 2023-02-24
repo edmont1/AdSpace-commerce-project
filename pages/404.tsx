@@ -4,7 +4,7 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     redirect: {
       destination: '/',
-      permanent: true,
+      permanent: false,
     },
   };
 };

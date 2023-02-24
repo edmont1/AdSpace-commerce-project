@@ -34,9 +34,15 @@ const UploadFiles = ({ files, errors, touched, setFieldValue }: Props) => {
     }
   })
 
-  function handleDeleteButton(photo: { url: string }) {
-    const filterFiles = files.filter((file) => file.url !== photo.url)
-    setFieldValue("files", filterFiles)
+  function handleDeleteButton(photo: { url: string , name: string}) {
+    if(photo.url){
+      const filterFiles = files.filter((file) => file.url !== photo.url)
+      setFieldValue("files", filterFiles)
+    }
+    if(photo.name){
+      const filterFiles = files.filter((file) => file.name !== photo.name)
+      setFieldValue("files", filterFiles)
+    }
   }
 
 
@@ -85,7 +91,7 @@ const UploadFiles = ({ files, errors, touched, setFieldValue }: Props) => {
                   bgcolor: "#0000009d"
                 }
               },
-              backgroundImage: `url(${photo.url})`,
+              backgroundImage: `url(${photo.url ? photo.url : `/uploads/${photo.name}`})`,
               backgroundSize: "cover",
             }}
             >

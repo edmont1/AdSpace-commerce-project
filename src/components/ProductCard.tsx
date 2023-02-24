@@ -15,7 +15,7 @@ interface Props{
   buttons?: ReactNode [],
   image?: string
 }
-const ProductCard = ({title, description, buttons, image}:Props) => {
+const ProductCard = ({ title, description, buttons, image }:Props) => {
   const theme = useTheme()
   return (
     <Card sx={{bgcolor: theme.palette.background.paper}}>
@@ -24,7 +24,7 @@ const ProductCard = ({title, description, buttons, image}:Props) => {
           height: 200,
           backgroundSize: "cover"}}
         image={image}
-        title="Produto anunciado"
+        title={title}
       />
       <CardContent sx={{color: theme.palette.text.primary}}>
         <Typography gutterBottom variant="h5" component="div">

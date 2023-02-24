@@ -15,25 +15,25 @@ import {
 } from "@mui/material"
 import { GetServerSideProps, NextPage } from "next/types"
 
-import DefaultTemplate from "../../../src/templates/Default"
-import { validationSchema, initialValues, FormValues } from "./formValues"
-import { CustomDiv } from "./style"
+import DefaultTemplate from "../../../../src/templates/Default"
+import { FormValues, validationSchema } from "../../publish/formValues"
+import { CustomDiv } from "../../publish/style"
 
 import { Formik } from "formik"
-import UploadFiles from "../../../src/components/UploadFiles"
-import Titles from "../../../src/templates/Titles"
+import UploadFiles from "../../../../src/components/UploadFiles"
+import Titles from "../../../../src/templates/Titles"
 import { useRouter } from "next/router"
 import { getServerSession } from "next-auth"
-import { authOptions } from "../../api/auth/[...nextauth]"
-import useToasty from "../../../src/contexts/Toasty"
+import { authOptions } from "../../../api/auth/[...nextauth]"
+import useToasty from "../../../../src/contexts/Toasty"
 import { useState } from "react"
+import dbConnect from "../../../../src/lib/dbConnect"
+import ProductsModel from "../../../../src/models/products.model"
+import { ProductDB } from "../../dashboard"
 
 
-interface userProps {
-  id: string
-  image: string
-  name: string
-  email: string
+interface ProductProps {
+  product: ProductDB
 }
 
 interface ValuesWithDate extends FormValues {
@@ -41,19 +41,43 @@ interface ValuesWithDate extends FormValues {
   day: string
 }
 
-const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
+const EditProduct: NextPage<ProductProps> = ({ product }) => {
   const theme = useTheme()
   const router = useRouter()
   const { setToasty } = useToasty()
 
   const [cepHelperText, setCepHelperText] = useState("")
 
-  const formValues = {
-    ...initialValues,
-    id,
-    image,
-    email,
-    name
+  function getFormData(product : ProductDB){
+    //passing the content of product to form format (formvalues.x)
+    const formValues = {} as FormValues
+    for(let field in product){
+      if(field === "user"){
+        for(let field2 in product.user){
+          formValues[field2] = product.user[field2]
+        }
+      }
+      if(field === "localization"){
+        for(let field2 in product.localization){
+          formValues[field2] = product.localization[field2]
+        }
+      }
+      if(field === "date"){
+        for(let field2 in product.date){
+          formValues[field2] = product.date[field2]
+        }
+      }
+      else{
+        formValues[field] = product[field]
+      }
+    }
+    for(let field in formValues){
+      if(field === "user" || field === "localization" || field === "date"){
+        delete formValues[field]
+      }
+    }
+
+    return formValues
   }
 
   function handleFormSubmit(values: FormValues) {
@@ -67,6 +91,10 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
       day,
     }
 
+    const formFilesToSend = [
+      ...values.files
+    ]
+
     const formData = new FormData()
     for (let field in valuesWithDate) {
       if (field === "files") {
@@ -76,11 +104,12 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
       }
       else {
         formData.append(field, valuesWithDate[field])
+        formData.append("filesremaining", JSON.stringify(formFilesToSend))
       }
     }
 
-    fetch("/api/products", {
-      method: "POST",
+    fetch(`/api/products`, {
+      method: "PUT",
       body: formData
     })
       .then((res) => {
@@ -88,8 +117,8 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
           setToasty({
             open: true,
             severity: "success",
-            message: "Anúncio publicado com sucesso",
-            autoHide: 2000
+            autoHide: 2000,
+            message: "Anúncio editado com sucesso"
           })
           setTimeout(() => {
             router.push("/user/dashboard")
@@ -101,13 +130,12 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
       })
   }
 
-
   return (
     <DefaultTemplate>
-      <Titles title="Publicar Anúncio" subtitle="Publicar Anúncio" />
+      <Titles title="Editar Anúncio" subtitle="Editar Anúncio" />
 
       <Formik
-        initialValues={formValues}
+        initialValues={getFormData(product)}
         validationSchema={validationSchema}
         onSubmit={handleFormSubmit}
       >
@@ -122,21 +150,20 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
             isSubmitting
           }) => {
 
-          
-            async function getCep(cepValue : string){
+            async function getCep(cepValue: string) {
               setCepHelperText("")
               const cep = cepValue.replace(/\D/g, '')
               const validacep = /^[0-9]{8}$/
-              if(validacep.test(cep)){
+              if (validacep.test(cep)) {
                 const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
                 const data = await res.json()
-                if(!data.erro){
+                if (!data.erro) {
                   setFieldValue("rua", data.logradouro)
                   setFieldValue("bairro", data.bairro)
                   setFieldValue("cidade", data.localidade)
                   setFieldValue("estado", data.uf)
                 }
-                else{
+                else {
                   setCepHelperText("Cep não encontrado")
                   setFieldValue("rua", "")
                   setFieldValue("bairro", "")
@@ -158,8 +185,6 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
                         Título do anúncio
                       </Typography>
 
-
-                      {/* <Input type="hidden"  value={values.image}/> */}
                       <FormControl error={Boolean(errors.title && touched.title)} variant="standard" fullWidth>
                         <Input
                           id="title"
@@ -326,7 +351,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
                           }}
                         />
                         {
-                          errors.cep  && touched.cep &&
+                          errors.cep && touched.cep &&
                           <FormHelperText>{errors.cep}</FormHelperText>
                         }
                         {
@@ -486,7 +511,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
                       variant="contained"
                       disabled={isSubmitting}
                     >
-                      Publicar Anúncio
+                      Editar Anúncio
                     </Button>
                   </Box>
                 </Container>
@@ -501,16 +526,29 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
 
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  let idMatch = false
+  const productId = ctx.query.productid
   const session = await getServerSession(ctx.req, ctx.res, authOptions)
-  const { id, image, name, email } = session?.user as userProps
-  return ({
-    props: {
-      id,
-      image: image || null,
-      name,
-      email
+  await dbConnect()
+  const product = await ProductsModel.findOne({ _id: productId })
+  const { id } = session?.user as {id: string}
+  if (product.user.id === id) {
+    idMatch = true
+  }
+  return (idMatch ?
+    {
+      props: {
+        product: JSON.parse(JSON.stringify(product))
+      }
     }
-  })
+    :
+    {
+      redirect: {
+        permanent: false,
+        destination: "/user/dashboard"
+      }
+    }
+  )
 }
 
-export default Publish
+export default EditProduct

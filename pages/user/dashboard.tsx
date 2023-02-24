@@ -15,6 +15,8 @@ import dbConnect from "../../src/lib/dbConnect"
 import Link from "next/link"
 import DialogComponent from "../../src/components/DialogComponent"
 import useToasty from "../../src/contexts/Toasty"
+import slugify from "slugify"
+
 
 
 
@@ -23,6 +25,7 @@ export interface ProductsDB {
 }
 
 export interface ProductDB {
+  [index: string] : any
   _id: string
   title: string,
   category: string,
@@ -30,10 +33,12 @@ export interface ProductDB {
   description: string,
   price: string,
   date: {
+    [index:string] : string
     time: string,
     day: string
   }
   user: {
+    [index:string] : string
     name: string,
     email: string,
     tel: string
@@ -41,6 +46,7 @@ export interface ProductDB {
     image: string
   },
   localization: {
+    [index:string] : string
     cep: string
     rua: string
     bairro: string
@@ -125,19 +131,25 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
         {
           products.map((product, index) => {
             if (removedProducts.includes(product._id)) return null
+
+            const category = slugify(product.category)
+            const productTitle = slugify(product.title)
+
             return (
               <ProductCard key={index}
                 title={product.title}
                 description={product.description}
                 buttons={[
-                  <Button key={0} size="small">Editar</Button>,
+                  <Link key={0} href={`/user/edit/product/${product._id}`} passHref legacyBehavior>
+                    <Button size="small">Editar</Button>
+                  </Link>,
                   <Button key={1} sx={{ m: "0 !important" }} size="small" onClick={() => handleClickRemove(product._id)}>Remover</Button>,
                   <Link key={2}
-                    href={`/${product.category.toLowerCase()}/${product.title.toLocaleLowerCase()}/${product._id}`}
+                    href={`/${category.toLowerCase()}/${productTitle.toLocaleLowerCase()}/${product._id}`}
                     passHref
                     legacyBehavior
                   >
-                    <Button size="small">Ver mais</Button>
+                    <Button size="small">Ver anúncio</Button>
                   </Link>
                 ]}
                 image={`/uploads/${product.files[0].name}`}

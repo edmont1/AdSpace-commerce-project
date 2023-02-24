@@ -96,7 +96,7 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
               alignItems: "center",
               mb: theme.spacing(3)
             }}>
-            <Avatar alt={product?.user.name} src={product?.user.image || product?.user.name[0]} />
+            <Avatar alt={`${product?.user.name}`} src={`${product?.user.image}`} />
             <Box sx={{ ml: theme.spacing(2) }}>
               <Typography component="p">{product?.user.name}</Typography>
               <Typography color="grey" component="p" variant="subtitle2">{product?.user.email}</Typography>
@@ -115,27 +115,27 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
             </Typography>
             <Typography component="h3">
               {
-                product.localization.cep &&
-                `Cep: ${product.localization.cep}`
+                product?.localization.cep &&
+                `Cep: ${product?.localization.cep}`
               }
             </Typography>
             <Typography component="h3" >
               {
-                product.localization.rua &&
-                `Rua: ${product.localization.rua}`
+                product?.localization.rua &&
+                `Rua: ${product?.localization.rua}`
               }
             </Typography>
             <Typography component="h3" >
               {
-                product.localization.bairro &&
-                `Bairro: ${product.localization.bairro}`
+                product?.localization.bairro &&
+                `Bairro: ${product?.localization.bairro}`
               }
             </Typography>
             <Typography component="h3" >
-              {`Cidade: ${product.localization.cidade}`}
+              {`Cidade: ${product?.localization.cidade}`}
             </Typography>
             <Typography component="h3" >
-              {`Estado: ${product.localization.estado}`}
+              {`Estado: ${product?.localization.estado}`}
             </Typography>
           </Paper>
           <Paper
@@ -160,10 +160,7 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  let productId
-  if (ctx.query.productId !== "undefined") {
-    productId = ctx.query.productId
-  }
+  const productId = ctx.query.productId
   await dbConnect()
   const product: ProductDB | null = await ProductsModel.findOne({ _id: productId })
   return ({

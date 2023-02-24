@@ -1,6 +1,6 @@
 import { Box, IconButton, styled, useTheme } from "@mui/material"
 import { useSession } from "next-auth/react"
-import React, { PropsWithChildren } from "react"
+import React, { PropsWithChildren, useEffect } from "react"
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 import Loading from "../components/Loading"
@@ -17,6 +17,11 @@ const DefaultTemplate = ({ children }: PropsWithChildren) => {
   const theme = useTheme()
   const { toggleColorMode } = useColorSchema()
   const { status } = useSession()
+
+  useEffect(() => {
+    const nextDiv : any = document.querySelector("#__next")
+    nextDiv.parentElement.style.paddingBottom = "14rem"
+  },[])
 
   return (
     <>
