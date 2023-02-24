@@ -5,6 +5,7 @@ const formidable = require("formidable-serverless")
 import dbConnect from "../lib/dbConnect";
 import { NextApiRequest, NextApiResponse } from "next/types";
 import { FormValues } from "../../pages/user/publish/formValues";
+import mongoose from "mongoose"
 
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
@@ -50,6 +51,8 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
     })
 
+    const _id = new mongoose.Types.ObjectId()
+    
     const {
       title,
       category,
@@ -70,6 +73,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
     } = fields
 
     const products = new ProductsModel({
+      _id,
       title,
       category,
       description,
@@ -135,8 +139,6 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
       res.status(500)
     }
 
-    let flag = false
-
     const {
       _id,
       title,
@@ -183,13 +185,16 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
       },
     }
 
-    //if sended a new file with dropzone
+
+    const filesToSave: { name: string, path: string }[] = []
+
+    //if sended a new file with dropzone (object have a key)
     if (Object.keys(files).length !== 0) {
+
       const { files: images } = files
 
+      //guarantee that the object files be an array if they are not already, to use the foreach
       const filesToRename = images instanceof Array ? images : [images]
-
-      const filesToSave: { name: string, path: string }[] = []
 
       filesToRename.forEach(file => {
         const timestamp = Date.now()
@@ -214,26 +219,28 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
         })
       })
 
-      const filesUpdate = {
-        files: filesToSave
-      }
+    }
 
-      const success = await ProductsModel.findByIdAndUpdate({ _id: _id }, { $addToSet: filesUpdate })
-      success && (flag = true)
+    const filesToUpdate = {
+      files: filesToSave
     }
-    //if not, just use the object(product.files) sended to edit page to update database when user remove any file
-    else{
-      const success = await ProductsModel.findByIdAndUpdate({ _id: _id }, {files: JSON.parse(fields.filesremaining)})
-      success && (flag = true)
+
+    //if dont have new files or have deleted files, was used a array of objects filtered from product page edit 
+    //sended together with the body of put to update database with de same values that already contains in database
+    //or with the not deleted values
+    const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, { files: JSON.parse(fields.filesremaining) })
+    !updated && res.status(500)
+    //if has new files to add, they will be renamed and this condition will be triggered to add the files to database
+    if(filesToUpdate.files.length !== 0){
+      const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, { $addToSet: filesToUpdate })
+      !updated && res.status(500)
     }
-    //in any case, update the product
-    const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, productUpdate)
-    if(flag && updated){
-      res.status(200).json({success : true})
-    }
-    else{
-      res.status(500).json({success : false})
-    }
+    
+    //update the rest of the form anyway(without files field)
+    const allUpdated = await ProductsModel.findByIdAndUpdate({ _id: _id }, productUpdate)
+    !allUpdated && res.status(500)
+
+    res.status(200).json({success: true})
 
   })
 }

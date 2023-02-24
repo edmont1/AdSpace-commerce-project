@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../lib/dbConnect";
 import { encrypt } from "../utils/password";
 import UsersModel from "../models/users.model"
+import mongoose from "mongoose";
 
 interface Data{
   message?: string
@@ -21,10 +22,12 @@ async function post(req: NextApiRequest, res: NextApiResponse<Data>) {
       email,
       password
     } = req.body
+    const _id = new mongoose.Types.ObjectId()
     const cryptoPassword = await encrypt(password)
     const sameEmailArray = await UsersModel.find({ email })
     if (sameEmailArray.length === 0) {
       const user = new UsersModel({
+        _id,
         name,
         email,
         password: cryptoPassword,

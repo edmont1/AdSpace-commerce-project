@@ -454,7 +454,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
                       <FormControl error={Boolean(errors.tel && touched.tel)} fullWidth variant="standard">
                         <Input
                           size="small"
-                          placeholder="Telefone"
+                          placeholder="Telefone (incluir DDD)"
                           value={values.tel}
                           onChange={handleChange}
                           id="tel"

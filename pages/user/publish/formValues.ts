@@ -48,9 +48,11 @@ const validationSchema = yup.object().shape({
     .typeError("Digite apenas números")
     .positive("Digite apenas números positivos")
     .required("Campo obrigatório"),
-  tel: yup.number()
-    .typeError("Digite apenas números")
-    .required("Campo obrigatório"),
+  tel: yup.string()
+    .required("Campo obrigatório")
+    .matches(/^[0-9]+$/, "Digite apenas números")
+    .min(11, 'Insira um telefone válido')
+    .max(11, 'Insira um telefone válido'),
   files: yup.array()
     .min(1, "Selecione pelo menos uma foto")
     .required("Campo obrigatório"),

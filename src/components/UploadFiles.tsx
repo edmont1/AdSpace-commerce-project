@@ -63,6 +63,7 @@ const UploadFiles = ({ files, errors, touched, setFieldValue }: Props) => {
         },
         gap: "10px",
       }}>
+
         <Box {...getRootProps()} sx={{
           cursor: "pointer",
           border: "2px dashed",
@@ -72,7 +73,7 @@ const UploadFiles = ({ files, errors, touched, setFieldValue }: Props) => {
           padding: "10px",
           height: "250px",
         }} color={errors && touched ? "#d32f2f" : "grey"} >
-          <input id="files" name="files" {...getInputProps()} type="text" />
+          <input id="files" name="files" {...getInputProps()} />
           <Typography variant="body1" color={errors && touched ? "error" : "grey"}>
             Clique para adicionar ou arraste a imagem até aqui.
           </Typography>

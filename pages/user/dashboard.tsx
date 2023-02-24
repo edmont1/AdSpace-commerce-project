@@ -145,7 +145,7 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
                   </Link>,
                   <Button key={1} sx={{ m: "0 !important" }} size="small" onClick={() => handleClickRemove(product._id)}>Remover</Button>,
                   <Link key={2}
-                    href={`/${category.toLowerCase()}/${productTitle.toLocaleLowerCase()}/${product._id}`}
+                    href={`/${category.toLowerCase()}/${productTitle.toLowerCase()}/${product._id}`}
                     passHref
                     legacyBehavior
                   >

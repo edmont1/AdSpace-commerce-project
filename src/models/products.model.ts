@@ -6,6 +6,7 @@ const filesSchema = new mongoose.Schema({
 })
 
 const schema = new mongoose.Schema({
+  _id: String,
   title:{
     type: String,
     required: [true, "O campo 'título' é obrigatório."],

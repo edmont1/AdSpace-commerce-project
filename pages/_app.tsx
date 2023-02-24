@@ -10,6 +10,7 @@ import { ColorSchemaProvider } from '../src/contexts/ColorSchema';
 import { ToastyProvider } from '../src/contexts/Toasty';
 
 
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -29,8 +30,8 @@ function MyApp(props: MyAppProps) {
       <SessionProvider session={pageProps.session}>
         <ColorSchemaProvider>
           <ToastyProvider>
-            <CssBaseline />
-            <Component {...pageProps} />
+              <CssBaseline />
+              <Component {...pageProps} />
           </ToastyProvider>
         </ColorSchemaProvider>
       </SessionProvider>

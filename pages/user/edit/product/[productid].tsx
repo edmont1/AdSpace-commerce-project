@@ -48,31 +48,17 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
 
   const [cepHelperText, setCepHelperText] = useState("")
 
-  function getFormData(product : ProductDB){
+  function getFormData(product: ProductDB) {
     //passing the content of product to form format (formvalues.x)
-    const formValues = {} as FormValues
-    for(let field in product){
-      if(field === "user"){
-        for(let field2 in product.user){
-          formValues[field2] = product.user[field2]
-        }
-      }
-      if(field === "localization"){
-        for(let field2 in product.localization){
-          formValues[field2] = product.localization[field2]
-        }
-      }
-      if(field === "date"){
-        for(let field2 in product.date){
-          formValues[field2] = product.date[field2]
-        }
-      }
-      else{
-        formValues[field] = product[field]
-      }
-    }
-    for(let field in formValues){
-      if(field === "user" || field === "localization" || field === "date"){
+    const formValues = {
+      ...product.user,
+      ...product.localization,
+      ...product.date,
+      ...product
+    } as FormValues
+
+    for (let field in formValues) {
+      if (field === "user" || field === "localization" || field === "date") {
         delete formValues[field]
       }
     }
@@ -91,9 +77,13 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
       day,
     }
 
-    const formFilesToSend = [
+    const filesValuesArray = [
       ...values.files
     ]
+
+    //file is sended to put with body only if they have a name
+    //this prevents that new add files is sended without a name and update the database
+    const filesValuesArrayToSend = filesValuesArray.filter(file => file.hasOwnProperty("name"))
 
     const formData = new FormData()
     for (let field in valuesWithDate) {
@@ -104,7 +94,7 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
       }
       else {
         formData.append(field, valuesWithDate[field])
-        formData.append("filesremaining", JSON.stringify(formFilesToSend))
+        formData.append("filesremaining", JSON.stringify(filesValuesArrayToSend))
       }
     }
 
@@ -479,7 +469,7 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
                       <FormControl error={Boolean(errors.tel && touched.tel)} fullWidth variant="standard">
                         <Input
                           size="small"
-                          placeholder="Telefone"
+                          placeholder="Telefone (incluir DDD)"
                           value={values.tel}
                           onChange={handleChange}
                           id="tel"
@@ -530,9 +520,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const productId = ctx.query.productid
   const session = await getServerSession(ctx.req, ctx.res, authOptions)
   await dbConnect()
-  const product = await ProductsModel.findOne({ _id: productId })
-  const { id } = session?.user as {id: string}
-  if (product.user.id === id) {
+  const product = await ProductsModel.findOne({ _id: productId }) as ProductDB
+  const { id } = session?.user as { id: string }
+  if (product?.user.id === id) {
     idMatch = true
   }
   return (idMatch ?

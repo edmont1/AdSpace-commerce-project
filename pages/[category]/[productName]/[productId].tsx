@@ -162,12 +162,22 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const productId = ctx.query.productId
   await dbConnect()
-  const product: ProductDB | null = await ProductsModel.findOne({ _id: productId })
-  return ({
-    props: {
-      product: JSON.parse(JSON.stringify(product))
+  const product: ProductDB | null = await ProductsModel.findOne({ _id: productId }, )
+  return (
+    product ?
+    {
+      props: {
+        product: JSON.parse(JSON.stringify(product))
+      }
     }
-  })
+    :
+    {
+      redirect: {
+        permanent: false,
+        destination: "/"
+      }
+    }
+  )
 }
 
 export default Product
