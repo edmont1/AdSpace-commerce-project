@@ -37,7 +37,9 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
       <Container maxWidth="md">
         <Box sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gridTemplateColumns: {
+            sm: "repeat(3, minmax(250px, 1fr))"
+          },
           gap: theme.spacing(4)
         }}>
           {
@@ -46,11 +48,16 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
               const productTitle = slugify(product.title)
 
               return (
-                <Link href={`/${category.toLocaleLowerCase()}/${productTitle.toLocaleLowerCase()}/${product._id}`} key={index} passHref style={{ textDecoration: "none" }}>
+                <Link
+                  href={`/${category.toLowerCase()}/${productTitle.toLowerCase()}/${product._id}`}
+                  key={index}
+                  passHref
+                  style={{ textDecoration: "none" }}>
                   <ProductCard
                     image={`/uploads/${product.files[0].name}`}
                     title={product.title}
                     description={product.description}
+                    price={product.price}
                   />
                 </Link>
               )

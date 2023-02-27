@@ -124,7 +124,9 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
 
       <Container maxWidth="md" sx={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        gridTemplateColumns:{
+          sm: "repeat(3, minmax(250px, 1fr))"
+        },
         gap: theme.spacing(4)
       }}
       >
@@ -139,6 +141,7 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
               <ProductCard key={index}
                 title={product.title}
                 description={product.description}
+                price={product.price}
                 buttons={[
                   <Link key={0} href={`/user/edit/product/${product._id}`} passHref legacyBehavior>
                     <Button size="small">Editar</Button>
@@ -149,7 +152,7 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
                     passHref
                     legacyBehavior
                   >
-                    <Button size="small">Ver anúncio</Button>
+                    <Button size="small">Ver Mais</Button>
                   </Link>
                 ]}
                 image={`/uploads/${product.files[0].name}`}

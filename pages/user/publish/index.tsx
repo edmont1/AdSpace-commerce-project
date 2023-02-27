@@ -60,6 +60,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
     const date = new Date()
     const time = date.toLocaleTimeString("pt-br")
     const day = date.toLocaleDateString("pt-br")
+    values.title = values.title.charAt(0).toUpperCase() + values.title.slice(1)
 
     const valuesWithDate: ValuesWithDate = {
       ...values,
@@ -196,20 +197,18 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
                           value={values.category}
                         >
                           <MenuItem disabled value={""} >Selecione</MenuItem>
-                          <MenuItem value="Option 1">Option 1</MenuItem>
-                          <MenuItem value="Option 2">Option 2</MenuItem>
-                          <MenuItem value="Option 3">Option 3</MenuItem>
-                          <MenuItem value="Option 4">Option 4</MenuItem>
-                          <MenuItem value="Option 5">Option 5</MenuItem>
-                          <MenuItem value="Option 6">Option 6</MenuItem>
-                          <MenuItem value="Option 7">Option 7</MenuItem>
-                          <MenuItem value="Option 8">Option 8</MenuItem>
-                          <MenuItem value="Option 9">Option 9</MenuItem>
-                          <MenuItem value="Option 10">Option 10</MenuItem>
-                          <MenuItem value="Option 11">Option 11</MenuItem>
-                          <MenuItem value="Option 12">Option 12</MenuItem>
-                          <MenuItem value="Option 13">Option 13</MenuItem>
-                          <MenuItem value="Option 14">Option 14</MenuItem>
+                          <MenuItem value="Imóveis">Imóveis</MenuItem>
+                          <MenuItem value="Veículos e peças">Veículos e peças</MenuItem>
+                          <MenuItem value="Eletrônicos e celulares">Eletrônicos e celulares</MenuItem>
+                          <MenuItem value="Casa">Casa</MenuItem>
+                          <MenuItem value="Serviços">Serviços</MenuItem>
+                          <MenuItem value="Músicas e hobbies">Músicas e hobbies</MenuItem>
+                          <MenuItem value="Esportes e lazer">Esportes e lazer</MenuItem>
+                          <MenuItem value="Moda e beleza">Moda e beleza</MenuItem>
+                          <MenuItem value="Nutrição e Saúde">Nutrição e Saúde</MenuItem>
+                          <MenuItem value="Brinquedos">Brinquedos</MenuItem>
+                          <MenuItem value="Construção">Construção</MenuItem>
+                          <MenuItem value="Bebês">Bebês</MenuItem>
                         </Select>
                         {
                           errors.category && touched.category &&

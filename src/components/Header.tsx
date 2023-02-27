@@ -225,10 +225,6 @@ const Header = () => {
                     }
                   }}>
                   <Avatar alt={`${session.data.user?.name}`} src={`${session.data.user?.image}`}>
-                    {
-                      session.data.user?.image &&
-                      <img style={{width: "100%"}} src={`${session.data.user.image}`}/>
-                    }
                   </Avatar>
                   <Typography
                     variant="subtitle2"
