@@ -23,9 +23,6 @@ import Titles from "../../../src/templates/Titles"
 import { initialValuesSignUp, ValuesSignUpType, validationSchema } from "../../../src/utils/signuppage/formValues"
 
 
-interface Props {
-  APP_URL: typeof process.env.APP_URL
-}
 interface Response {
   success?: boolean
   message?: string
@@ -36,14 +33,14 @@ interface submitFormType {
 }
 
 
-const SignUp: NextPage<Props> = ({ APP_URL }) => {
+const SignUp: NextPage = () => {
   const theme = useTheme()
   const router = useRouter()
   const [response, setResponse] = useState<Response>({})
 
 
   function submitForm(params: submitFormType) {
-    fetch(`${APP_URL}/api/users`, {
+    fetch(`/api/users`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
@@ -272,14 +269,6 @@ const SignUp: NextPage<Props> = ({ APP_URL }) => {
       </Container>
     </DefaultTemplate>
   )
-}
-
-export function getServerSideProps() {
-  return {
-    props: {
-      APP_URL: process.env.APP_URL
-    }
-  }
 }
 
 export default SignUp
