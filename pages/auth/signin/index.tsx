@@ -259,7 +259,7 @@ const SigninPage: NextPage = () => {
                         />
                         <FormControlLabel
                           control={<Checkbox sx={{ color: theme.palette.text.primary }} value="remember" color="primary" />}
-                          label="Remember me"
+                          label="Lembre-me"
                           sx={{ color: theme.palette.text.primary }}
                         />
 
@@ -311,12 +311,12 @@ const SigninPage: NextPage = () => {
                       <Grid container sx={{ textAlign: !isEmailLogin ? "center" : "start", mt: theme.spacing(1) }}>
                         <Grid item xs={!isEmailLogin ? 12 : true}>
                           <Link href="#" variant="body2">
-                            Forgot password?
+                            Esqueceu a senha?
                           </Link>
                         </Grid>
                         <Grid item xs={!isEmailLogin ? 12 : false} sx={{ mt: !isEmailLogin ? theme.spacing(2) : 0 }}>
                           <Link href="/auth/signup" variant="body2">
-                            {"Don't have an account? Sign Up"}
+                            {"Não tem uma conta? Cadastre-se"}
                           </Link>
                         </Grid>
                       </Grid>

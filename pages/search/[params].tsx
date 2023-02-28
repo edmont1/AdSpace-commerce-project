@@ -6,12 +6,16 @@ import SearchField from "../../src/components/SearchField"
 import DefaultTemplate from "../../src/templates/Default"
 import ProductsModel from "../../src/models/products.model"
 import { ProductsDB } from "../user/dashboard"
-import diacriticSensitiveRegex from "../../src/utils/caseregex"
+import diacriticSensitiveRegex from "../../src/utils/diacriticsensitive"
 import slugify from "slugify";
 import Link from "next/link"
+import { getServerSession } from "next-auth"
+import { authOptions } from "../api/auth/[...nextauth]"
 
-
-const SearchPage: NextPage<ProductsDB> = ({ products }) => {
+interface Props extends ProductsDB {
+  userId: string
+}
+const SearchPage: NextPage<Props> = ({ products, userId }) => {
   const theme = useTheme()
 
   return (
@@ -27,7 +31,7 @@ const SearchPage: NextPage<ProductsDB> = ({ products }) => {
       >
         <Box textAlign="center">
           <Typography fontWeight={700} component="h1" variant="h5">
-            Anúncios
+            Resultado
           </Typography>
           <Typography component="h2" variant="subtitle2">
             {`Encontrado ${products.length} anúncio(s)`}
@@ -37,16 +41,34 @@ const SearchPage: NextPage<ProductsDB> = ({ products }) => {
           sx={{
             mt: "20px",
             display: "grid",
-            gridTemplateColumns: {
-              sm: "repeat(3, minmax(250px, 1fr))",
-            },
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
             gap: theme.spacing(4)
           }}
         >
           {
             products.map((product, index) => {
-              const category = slugify(product.category)
-              const productTitle = slugify(product.title)
+              const category = slugify(product.category).toLowerCase()
+              const productTitle = slugify(product.title).toLowerCase()
+
+              if (product.user.id === userId) {
+                return (
+                  <Link
+                    href={`/${category.toLowerCase()}/${productTitle.toLowerCase()}/${product._id}`}
+                    key={index}
+                    passHref
+                    style={{ textDecoration: "none" }}>
+                    <Box sx={{ position: "relative" }}>
+                      <ProductCard
+                        image={`/uploads/${product.files[0].name}`}
+                        title={product.title}
+                        description={product.description}
+                        price={product.price}
+                        userAd={true}
+                      />
+                    </Box>
+                  </Link>
+                )
+              }
               return (
                 <Link
                   href={`/${category}/${productTitle}/${product._id}`}
@@ -71,7 +93,7 @@ const SearchPage: NextPage<ProductsDB> = ({ products }) => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { params } = ctx.query
-
+  let userId
   const products = await ProductsModel.find({
     $or: [
       {
@@ -85,12 +107,23 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           $regex: diacriticSensitiveRegex(`${params}`),
           $options: "i"
         }
-      }]
+      },
+    ]
   })
+
+  const session = await getServerSession(ctx.req, ctx.res, authOptions)
+  if (session) {
+    const { id } = session.user as { id: string }
+    userId = id
+  }
 
   return ({
     props: {
-      products: JSON.parse(JSON.stringify(products))
+      products: JSON.parse(JSON.stringify(products)),
+      ...userId &&
+      {
+        userId
+      }
     }
   })
 }

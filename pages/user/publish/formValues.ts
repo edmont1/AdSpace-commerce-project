@@ -39,7 +39,8 @@ const initialValues: FormValues = {
 
 const validationSchema = yup.object().shape({
   title: yup.string()
-    .required("Campo obrigatório"),
+    .required("Campo obrigatório")
+    .max(250, "O Titulo deve conter até 250 caracteres"),
   category: yup.string()
     .required("Campo obrigatório"),
   description: yup.string()

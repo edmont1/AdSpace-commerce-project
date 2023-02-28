@@ -45,7 +45,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       fs.rename(oldPath, newPath, (err) => {
         if (err) {
           console.log(err)
-          res.status(500).json({ ok: false })
+          res.status(500).json({ success: false })
         }
       })
 

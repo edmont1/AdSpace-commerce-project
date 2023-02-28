@@ -10,7 +10,8 @@ import {
   FormHelperText,
   Box,
   Alert,
-  CircularProgress
+  CircularProgress,
+  TextField
 } from "@mui/material"
 import { Formik } from "formik"
 import { NextPage } from "next"
@@ -22,14 +23,8 @@ import Titles from "../../../src/templates/Titles"
 import { initialValuesSignUp, ValuesSignUpType, validationSchema } from "./formValues"
 
 
-const CustomFormControl = styled(FormControl)(({ theme }) => `
-  padding: ${theme.spacing(1, 0)};
-
-`)
-
-
-interface Props{
-  APP_URL : typeof process.env.APP_URL
+interface Props {
+  APP_URL: typeof process.env.APP_URL
 }
 interface Response {
   success?: boolean
@@ -41,12 +36,12 @@ interface submitFormType {
 }
 
 
-const SignUp : NextPage<Props> = ({APP_URL}) => {
+const SignUp: NextPage<Props> = ({ APP_URL }) => {
   const theme = useTheme()
   const router = useRouter()
   const [response, setResponse] = useState<Response>({})
 
-  
+
   function submitForm(params: submitFormType) {
     fetch(`${APP_URL}/api/users`, {
       method: "POST",
@@ -60,7 +55,7 @@ const SignUp : NextPage<Props> = ({APP_URL}) => {
           setTimeout(() => {
             params.setSubmitting(false)
             setResponse(data)
-            if (data.success === true) {
+            if (data.success) {
               setTimeout(() => {
                 router.push("/auth/signin")
               }, 1000)
@@ -68,14 +63,13 @@ const SignUp : NextPage<Props> = ({APP_URL}) => {
           }, 1500)
         })
       })
-
   }
 
 
   return (
     <DefaultTemplate>
       <Titles title="Crie sua conta" subtitle="E anuncie para todo o Brasil" />
-      <Container maxWidth="md">
+      <Container maxWidth="sm">
         <Formik
           initialValues={initialValuesSignUp}
           validationSchema={validationSchema}
@@ -96,41 +90,134 @@ const SignUp : NextPage<Props> = ({APP_URL}) => {
                   <Paper sx={{
                     p: theme.spacing(3)
                   }}>
-                    <CustomFormControl error={Boolean(errors.name && touched.name)} fullWidth variant="standard">
-                      <Input autoComplete="username" value={values.name} onChange={handleChange} name="name" id="name" placeholder="Name" />
-                      {
-                        errors.name && touched.name &&
-                        <FormHelperText>{errors.name}</FormHelperText>
-                      }
-                    </CustomFormControl>
-                    <CustomFormControl error={Boolean(errors.email && touched.email)} fullWidth variant="standard">
-                      <Input autoComplete="username" type="email" value={values.email} onChange={handleChange} name="email" id="email" placeholder="E-mail" />
-                      {
-                        errors.email && touched.email &&
-                        <FormHelperText>{errors.email}</FormHelperText>
-                      }
-                    </CustomFormControl>
-                    <CustomFormControl error={Boolean(errors.password && touched.password)} fullWidth variant="standard">
-                      <Input autoComplete="new-password" type="password" value={values.password} onChange={handleChange} name="password" id="password" placeholder="Senha" />
-                      {
-                        errors.password && touched.password &&
-                        <FormHelperText>{errors.password}</FormHelperText>
-                      }
-                    </CustomFormControl>
-                    <CustomFormControl error={Boolean(errors.passwordconfirm && touched.passwordconfirm)} fullWidth variant="standard">
-                      <Input autoComplete="new-password" type="password" value={values.passwordconfirm} onChange={handleChange} name="passwordconfirm" id="passwordconfirm" placeholder="Confirmar senha" />
-                      {
-                        errors.passwordconfirm && touched.passwordconfirm &&
-                        <FormHelperText>{errors.passwordconfirm}</FormHelperText>
-                      }
-                    </CustomFormControl>
+                    <TextField
+                      margin="normal"
+                      fullWidth
+                      id="name"
+                      label="Nome"
+                      name="name"
+                      autoComplete="name"
+                      autoFocus
+                      helperText={errors.name && touched.name && errors.name}
+                      error={Boolean(errors.name && touched.name)}
+                      onChange={handleChange}
+                      value={values.name}
+                      sx={{
+                        input: {
+                          color: theme.palette.text.primary,
+                          "&:-webkit-AutoFill": {
+                            "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                          }
+                        },
+
+                        label: {
+                          color: theme.palette.text.primary,
+                        },
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': {
+                            borderColor: `${theme.palette.primary.contrastText}`,
+                          }
+                        }
+                      }}
+                    />
+                    <TextField
+                      margin="normal"
+                      fullWidth
+                      id="email"
+                      label="E-mail"
+                      name="email"
+                      autoComplete="email"
+                      helperText={errors.email && touched.email && errors.email}
+                      error={Boolean(errors.email && touched.email)}
+                      onChange={handleChange}
+                      value={values.email}
+                      sx={{
+                        input: {
+                          color: theme.palette.text.primary,
+                          "&:-webkit-AutoFill": {
+                            "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                          }
+                        },
+
+                        label: {
+                          color: theme.palette.text.primary,
+                        },
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': {
+                            borderColor: `${theme.palette.primary.contrastText}`,
+                          }
+                        }
+                      }}
+                    />
+                    <TextField
+                      margin="normal"
+                      fullWidth
+                      id="password"
+                      label="Senha"
+                      name="password"
+                      autoComplete="password"
+                      type="password"
+                      helperText={errors.password && touched.password && errors.password}
+                      error={Boolean(errors.password && touched.password)}
+                      onChange={handleChange}
+                      value={values.password}
+                      sx={{
+                        input: {
+                          color: theme.palette.text.primary,
+                          "&:-webkit-AutoFill": {
+                            "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                          }
+                        },
+
+                        label: {
+                          color: theme.palette.text.primary,
+                        },
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': {
+                            borderColor: `${theme.palette.primary.contrastText}`,
+                          }
+                        }
+                      }}
+                    />
+                    <TextField
+                      margin="normal"
+                      fullWidth
+                      id="passwordconfirm"
+                      label="Confirmar senha"
+                      name="passwordconfirm"
+                      autoComplete="passwordconfirm"
+                      type="password"
+                      helperText={errors.passwordconfirm && touched.passwordconfirm && errors.passwordconfirm}
+                      error={Boolean(errors.passwordconfirm && touched.passwordconfirm)}
+                      onChange={handleChange}
+                      value={values.passwordconfirm}
+                      sx={{
+                        input: {
+                          color: theme.palette.text.primary,
+                          "&:-webkit-AutoFill": {
+                            "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                          }
+                        },
+
+                        label: {
+                          color: theme.palette.text.primary,
+                        },
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': {
+                            borderColor: `${theme.palette.primary.contrastText}`,
+                          }
+                        }
+                      }}
+                    />
 
                     {
                       response.message &&
                       <Alert sx={{
                         bgcolor: "white",
-                        color: `${response.success ? "green" : "#d32f2f"}`,
-                        p: 0
+                        color: `${response.success ? "#12BB59" : "#d32f2f"}`,
+                        p: 0,
+                        backgroundColor: "transparent",
+                        fontWeight: "700"
                       }} variant="filled" severity={response.success ? "success" : "error"}>
                         {response.message}
                       </Alert>
@@ -141,7 +228,7 @@ const SignUp : NextPage<Props> = ({APP_URL}) => {
                         <Box
                           sx={{
                             textAlign: "center",
-                            p: `${theme.spacing(1.1,0)}`
+                            p: `${theme.spacing(1.1, 0)}`
                           }}>
                           <CircularProgress />
                         </Box>
@@ -187,9 +274,9 @@ const SignUp : NextPage<Props> = ({APP_URL}) => {
   )
 }
 
-export function getServerSideProps(){
-  return{
-    props:{
+export function getServerSideProps() {
+  return {
+    props: {
       APP_URL: process.env.APP_URL
     }
   }

@@ -7,7 +7,7 @@ import {
 import { GetServerSideProps, NextPage } from "next"
 import ProductCard from "../../src/components/ProductCard"
 import DefaultTemplate from "../../src/templates/Default"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../api/auth/[...nextauth]"
 import ProductsModel from "../../src/models/products.model"
@@ -124,9 +124,7 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
 
       <Container maxWidth="md" sx={{
         display: "grid",
-        gridTemplateColumns:{
-          sm: "repeat(3, minmax(250px, 1fr))"
-        },
+        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
         gap: theme.spacing(4)
       }}
       >

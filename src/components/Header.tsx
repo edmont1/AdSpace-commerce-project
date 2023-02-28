@@ -11,15 +11,16 @@ import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
-import AdbIcon from '@mui/icons-material/Adb'
 import { styled, useTheme } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { signOut, useSession } from 'next-auth/react'
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 
-const pages = ['Products', 'Pricing', 'Blog']
-const settings = ['Profile', 'Account', 'Dashboard', 'Sair']
+const pagesHidden = ["Home", "Publicar Anúncio", "Buscar"]
+const pages = ["Home"]
+const settings = ['Perfil', 'Conta', 'Dashboard', 'Sair']
 
 const StyledButton = styled(Button)(({ theme }) => `
   position: relative;
@@ -61,8 +62,15 @@ const Header = () => {
     setAnchorElUser(event.currentTarget)
   }
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (page: string) => {
+    if(page === "Home" || page === "Buscar"){
+      router.push("/")
+    }
+    else if(page === "Publicar Anúncio"){
+      router.push("/user/publish")
+    }
     setAnchorElNav(null)
+    
   }
 
   function handleCloseUserMenu(setting: string) {
@@ -86,14 +94,18 @@ const Header = () => {
       sx={{
         bgcolor: theme.palette.primary.main,
         backgroundImage: "none",
-        color: "#000"
+        color: "#000",
       }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{
-            display: { xs: 'none', md: 'flex' },
-            mr: 1,
-          }} />
+          <Link href={"/"}>
+            <RocketLaunchIcon sx={{
+              display: { xs: 'none', md: 'flex' },
+              mr: 1,
+              fontSize: "50px",
+              color: "#000"
+            }} />
+          </Link>
           <Typography
             color="inherit"
             variant="h6"
@@ -107,6 +119,7 @@ const Header = () => {
               fontWeight: theme.typography.fontWeightBold,
               letterSpacing: '.2rem',
               textDecoration: 'none',
+              fontSize: "35px"
             }}
           >
             AdSpace
@@ -141,17 +154,23 @@ const Header = () => {
                 display: { xs: 'block', md: 'block' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography
-                    textAlign="center"
-                  >{page}
-                  </Typography>
-                </MenuItem>
-              ))}
+              {pagesHidden.map((page,index) => {
+                return (
+                  <MenuItem key={index} onClick={() => handleCloseNavMenu(page)}>
+                    <Typography
+                      textAlign="center"
+                    >{page}
+                    </Typography>
+                  </MenuItem>
+                )
+              })}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <RocketLaunchIcon sx={{
+            display: { xs: 'flex', md: 'none' },
+            mr: 1,
+            fontSize: "50px"
+          }} />
           <Typography
             variant="h5"
             noWrap
@@ -166,29 +185,37 @@ const Header = () => {
               letterSpacing: '.2rem',
               color: 'inherit',
               textDecoration: 'none',
+              fontSize: "30px"
             }}
           >
             AdSpace
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <StyledButton
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{
-                  my: 2,
-                  color: 'inherit',
-                  display: 'block',
-                  fontWeight: theme.typography.fontWeightBold
-                }}
-              >
-                {page}
-              </StyledButton>
-            ))}
+            {pages.map((page, index) => {
+              return (
+                <StyledButton
+                  key={index}
+                  onClick={() => handleCloseNavMenu(page)}
+                  sx={{
+                    my: 2,
+                    color: 'inherit',
+                    display: 'block',
+                    fontWeight: theme.typography.fontWeightBold
+                  }}
+                >
+                  {page}
+                </StyledButton>
+              )
+            })}
           </Box>
 
 
-          <Box>
+          <Box sx={{
+            display: {
+              xs: "none",
+              sm: "block"
+            }
+          }}>
             <Link href="/user/publish" passHref legacyBehavior>
               <Button color='inherit'
                 variant='outlined'
@@ -202,10 +229,6 @@ const Header = () => {
               >
                 <Typography sx={{
                   fontWeight: theme.typography.fontWeightBold,
-                  fontSize: {
-                    md: "15px",
-                    xs: "10px"
-                  },
                 }}>
                   Criar Anúncio
                 </Typography>
@@ -270,10 +293,6 @@ const Header = () => {
                 color="inherit"
                 sx={{
                   fontWeight: theme.typography.fontWeightBold,
-                  fontSize: {
-                    md: "15px",
-                    xs: "12px"
-                  },
                   position: "relative",
                   ml: theme.spacing(1),
                   "&::after": {

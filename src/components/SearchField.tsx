@@ -16,7 +16,7 @@ const SearchField = () => {
 
   function handleKey(e: KeyboardEvent<HTMLInputElement>){
     const { key } = e
-    if(key === "Enter"){
+    if(key === "Enter" && search !== ""){
       router.push(`/search/${search}`)
     }
   }

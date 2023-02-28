@@ -86,15 +86,17 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
     })
       .then((res) => {
         res.json().then((data) => {
-          setToasty({
-            open: true,
-            severity: "success",
-            message: "Anúncio publicado com sucesso",
-            autoHide: 2000
-          })
-          setTimeout(() => {
-            router.push("/user/dashboard")
-          }, 2000)
+          if(data.success){
+            setToasty({
+              open: true,
+              severity: "success",
+              message: "Anúncio publicado com sucesso",
+              autoHide: 2000
+            })
+            setTimeout(() => {
+              router.push("/user/dashboard")
+            }, 2000)
+          }
         })
       })
       .catch((err) => {
@@ -177,7 +179,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
                             }
                           }}
                           size="small"
-                          placeholder="ex.:Computador" />
+                          placeholder="ex.:Computador (até 70" />
                         {
                           errors.title && touched.title &&
                           <FormHelperText>{errors.title}</FormHelperText>

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Container,
   Typography,
   useTheme
@@ -13,10 +14,14 @@ import { ProductsDB } from "./user/dashboard"
 import Link from "next/link"
 import slugify from "slugify"
 import dbConnect from "../src/lib/dbConnect"
+import { getServerSession } from "next-auth"
+import { authOptions } from "./api/auth/[...nextauth]"
 
 
-
-const Home: NextPage<ProductsDB> = ({ products }) => {
+interface Props extends ProductsDB{
+  userId: string
+}
+const Home: NextPage<Props> = ({ products, userId }) => {
   const theme = useTheme()
   return (
     <DefaultTemplate>
@@ -37,15 +42,33 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
       <Container maxWidth="md">
         <Box sx={{
           display: "grid",
-          gridTemplateColumns: {
-            sm: "repeat(3, minmax(250px, 1fr))"
-          },
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
           gap: theme.spacing(4)
         }}>
           {
             products.map((product, index) => {
               const category = slugify(product.category)
               const productTitle = slugify(product.title)
+
+              if (product.user.id === userId) {
+                return (
+                  <Link
+                    href={`/${category.toLowerCase()}/${productTitle.toLowerCase()}/${product._id}`}
+                    key={index}
+                    passHref
+                    style={{ textDecoration: "none" }}>
+                    <Box sx={{position: "relative"}}>
+                      <ProductCard
+                        image={`/uploads/${product.files[0].name}`}
+                        title={product.title}
+                        description={product.description}
+                        price={product.price}
+                        userAd={true}
+                      />
+                    </Box>
+                  </Link>
+                )
+              }
 
               return (
                 <Link
@@ -69,16 +92,27 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  let userId
   await dbConnect()
   const products = await ProductsModel.aggregate([{
     $sample: { size: 6 }
   }])
 
+  const session = await getServerSession(ctx.req, ctx.res, authOptions)
+  if(session){
+    const { id } = session.user as { id: string}
+    userId = id
+  }
 
   return ({
     props: {
-      products: JSON.parse(JSON.stringify(products))
+      products: JSON.parse(JSON.stringify(products)),
+      ...userId &&
+      {
+        userId
+      }
     }
   })
 }
