@@ -1,12 +1,13 @@
-import { GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
-export const getStaticProps: GetStaticProps = async () => {
-  return {
-    redirect: {
-      destination: '/',
-      permanent: false,
-    },
-  };
-};
+const ErrorPage = () => {
+  const router = useRouter()
+  useEffect(() => {
+    router.replace("/")
+  },[router])
 
-export default getStaticProps;
+  return 
+}
+
+export default ErrorPage

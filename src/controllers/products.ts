@@ -4,7 +4,7 @@ import ProductsModel from "../models/products.model";
 const formidable = require("formidable-serverless")
 import dbConnect from "../lib/dbConnect";
 import { NextApiRequest, NextApiResponse } from "next/types";
-import { FormValues } from "../../pages/user/publish/formValues";
+import { FormValues } from "../utils/publishpage/formValues";
 import mongoose from "mongoose"
 
 

@@ -16,8 +16,8 @@ import {
 import { GetServerSideProps, NextPage } from "next/types"
 
 import DefaultTemplate from "../../../../src/templates/Default"
-import { FormValues, validationSchema } from "../../publish/formValues"
-import { CustomDiv } from "../../publish/style"
+import { FormValues, validationSchema } from "../../../../src/utils/publishpage/formValues"
+import { CustomDiv } from "../../../../styles/publish.style"
 
 import { Formik } from "formik"
 import UploadFiles from "../../../../src/components/UploadFiles"

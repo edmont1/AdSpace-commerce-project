@@ -16,8 +16,8 @@ import {
 import { GetServerSideProps, NextPage } from "next/types"
 
 import DefaultTemplate from "../../../src/templates/Default"
-import { validationSchema, initialValues, FormValues } from "./formValues"
-import { CustomDiv } from "./style"
+import { validationSchema, initialValues, FormValues } from "../../../src/utils/publishpage/formValues"
+import { CustomDiv } from "../../../styles/publish.style"
 
 import { Formik } from "formik"
 import UploadFiles from "../../../src/components/UploadFiles"
@@ -179,7 +179,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
                             }
                           }}
                           size="small"
-                          placeholder="ex.:Computador (até 70" />
+                          placeholder="ex.:Computador" />
                         {
                           errors.title && touched.title &&
                           <FormHelperText>{errors.title}</FormHelperText>

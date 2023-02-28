@@ -20,7 +20,7 @@ import { useRouter } from "next/router"
 import { useState } from "react"
 import DefaultTemplate from "../../../src/templates/Default"
 import Titles from "../../../src/templates/Titles"
-import { initialValuesSignUp, ValuesSignUpType, validationSchema } from "./formValues"
+import { initialValuesSignUp, ValuesSignUpType, validationSchema } from "../../../src/utils/signuppage/formValues"
 
 
 interface Props {

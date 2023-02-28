@@ -36,7 +36,7 @@ function MyApp(props: MyAppProps) {
         </ColorSchemaProvider>
       </SessionProvider>
     </CacheProvider>
-  );
+  )
 }
 
 export default MyApp
