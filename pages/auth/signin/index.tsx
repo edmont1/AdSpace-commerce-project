@@ -25,7 +25,6 @@ import { useSession } from 'next-auth/react'
 import Image from 'next/dist/client/image'
 import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
-
 import useColorSchema from '../../../src/contexts/ColorSchema'
 
 
