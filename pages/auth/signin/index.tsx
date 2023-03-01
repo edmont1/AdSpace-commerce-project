@@ -21,7 +21,6 @@ import { initialValues, validationSchema, valuesSigninType } from '../../../src/
 import CircularProgress from '@mui/material/CircularProgress'
 import { Alert, IconButton, useTheme } from '@mui/material'
 import { signIn, SignInResponse } from 'next-auth/react'
-import { useSession } from 'next-auth/react'
 import Image from 'next/dist/client/image'
 import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
