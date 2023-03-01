@@ -16,6 +16,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
     keepExtensions: true
   })
 
+
   form.parse(req, async (error: Error, fields: FormValues, files: { files: any[] | {} }) => {
     if (error) {
       res.status(500)
@@ -34,8 +35,8 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
       const fileName = `${timestamp}_${random}${extension}`
 
-      const oldPath = file.path
-      const newPath = path.join(file.path, "../" + fileName)
+      const oldPath = path.join(__dirname, "../../../../" + file.path)
+      const newPath = path.join(__dirname, "../../../../public/uploads/" + fileName)
 
       filesToSave.push({
         name: fileName,
@@ -203,8 +204,8 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
 
         const fileName = `${timestamp}_${random}${extension}`
 
-        const oldPath = file.path
-        const newPath = path.join(file.path, "../" + fileName)
+        const oldPath = path.join(__dirname, "../../../../" + file.path)
+        const newPath = path.join(__dirname, "../../../../public/uploads/" + fileName)
 
         filesToSave.push({
           name: fileName,
