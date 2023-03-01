@@ -12,7 +12,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
   const form = new formidable.IncomingForm({
     multiples: true,
-    uploadDir: "/tmp",
+    uploadDir: "tmp",
     keepExtensions: true
   })
 
