@@ -71,7 +71,7 @@ const SigninPage: NextPage = () => {
       })
       setSign(signResponse)
       if(signResponse?.ok){
-        router.push("/user/dashboard")
+        window.location.href = "/user/dashboard"
       }
       params.setSubmitting(false)
     }, 1500)
