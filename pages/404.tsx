@@ -5,7 +5,7 @@ const ErrorPage = () => {
   const router = useRouter()
   useEffect(() => {
     router.replace("/")
-  },[router])
+  },[])
 
   return 
 }

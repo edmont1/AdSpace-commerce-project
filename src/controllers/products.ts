@@ -12,7 +12,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
   const form = new formidable.IncomingForm({
     multiples: true,
-    uploadDir: "tmp",
     keepExtensions: true
   })
 
@@ -35,7 +34,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       const fileName = `${timestamp}_${random}${extension}`
 
       const oldPath = file.path
-      const newPath = path.join(__dirname, "../../../../public/uploads/" + fileName)
+      const newPath = "/tmp/" + fileName
 
       filesToSave.push({
         name: fileName,
