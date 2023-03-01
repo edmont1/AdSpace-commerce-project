@@ -34,6 +34,7 @@ import { ProductDB } from "../../dashboard"
 
 interface ProductProps {
   product: ProductDB
+  APP_URL: string
 }
 
 interface ValuesWithDate extends FormValues {
@@ -41,7 +42,7 @@ interface ValuesWithDate extends FormValues {
   day: string
 }
 
-const EditProduct: NextPage<ProductProps> = ({ product }) => {
+const EditProduct: NextPage<ProductProps> = ({ product, APP_URL }) => {
   const theme = useTheme()
   const router = useRouter()
   const { setToasty } = useToasty()
@@ -99,7 +100,7 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
       }
     }
 
-    fetch(`/api/products`, {
+    fetch(`${APP_URL}/api/products`, {
       method: "PUT",
       body: formData
     })
@@ -527,7 +528,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return (idMatch ?
     {
       props: {
-        product: JSON.parse(JSON.stringify(product))
+        product: JSON.parse(JSON.stringify(product)),
+        APP_URL: process.env.APP_URL
       }
     }
     :

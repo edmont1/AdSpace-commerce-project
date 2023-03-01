@@ -34,6 +34,7 @@ interface userProps {
   image: string
   name: string
   email: string
+  APP_URL: string
 }
 
 interface ValuesWithDate extends FormValues {
@@ -41,7 +42,7 @@ interface ValuesWithDate extends FormValues {
   day: string
 }
 
-const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
+const Publish: NextPage<userProps> = ({ id, image, name, email, APP_URL}) => {
   const theme = useTheme()
   const router = useRouter()
   const { setToasty } = useToasty()
@@ -80,7 +81,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email}) => {
       }
     }
 
-    fetch("/api/products", {
+    fetch(`${APP_URL}/api/products`, {
       method: "POST",
       body: formData
     })
@@ -509,7 +510,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       id,
       image: image || null,
       name,
-      email
+      email,
+      APP_URL : process.env.APP_URL
     }
   })
 }

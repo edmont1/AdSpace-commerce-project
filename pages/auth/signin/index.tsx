@@ -13,7 +13,7 @@ import {
 
 import Link from '@mui/material/Link'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import { NextPage } from 'next/types'
+import { GetServerSideProps, NextPage } from 'next/types'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Formik } from 'formik'
@@ -26,6 +26,8 @@ import Image from 'next/dist/client/image'
 import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
 import useColorSchema from '../../../src/contexts/ColorSchema'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../../api/auth/[...nextauth]'
 
 
 function Copyright(props: any) {
@@ -49,7 +51,6 @@ interface submitFormType {
 const SigninPage: NextPage = () => {
   const router = useRouter()
   const theme = useTheme()
-  const { status } = useSession()
   const [sign, setSign] = useState<SignInResponse | undefined>()
   const [isEmailLogin, setIsEmailLogin] = useState(false)
   const { toggleColorMode } = useColorSchema()
@@ -69,6 +70,9 @@ const SigninPage: NextPage = () => {
         redirect: false
       })
       setSign(signResponse)
+      if(signResponse?.ok){
+        router.push("/user/dashboard")
+      }
       params.setSubmitting(false)
     }, 1500)
 
@@ -83,11 +87,6 @@ const SigninPage: NextPage = () => {
   function handleLoginEmailButton() {
     setIsEmailLogin(true)
   }
-
-  if (status === "authenticated") {
-    router.push("/user/dashboard")
-  }
-
 
   return (
     <Formik
@@ -331,6 +330,27 @@ const SigninPage: NextPage = () => {
     </Formik>
 
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions)
+  console.log(session)
+
+  return({
+    ...session ?
+    {
+      redirect:{
+        destination: "/user/dashboard",
+        permanent: false
+      }
+    }
+    :
+    {
+      props:{
+        session
+      }
+    } 
+  })
 }
 
 
