@@ -92,7 +92,7 @@ const UploadFiles = ({ files, errors, touched, setFieldValue }: Props) => {
                   bgcolor: "#0000009d"
                 }
               },
-              backgroundImage: `url(${photo.url ? photo.url : `/tmp/${photo.name}`})`,
+              backgroundImage: `url(${photo.url ? photo.url : `/uploads/${photo.name}`})`,
               backgroundSize: "cover",
             }}
             >

@@ -95,9 +95,9 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
       }
       else {
         formData.append(field, valuesWithDate[field])
-        formData.append("filesremaining", JSON.stringify(filesValuesArrayToSend))
       }
     }
+    formData.append("filesremaining", JSON.stringify(filesValuesArrayToSend))
 
     fetch(`/api/products`, {
       method: "PUT",

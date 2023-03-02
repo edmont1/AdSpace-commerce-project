@@ -12,7 +12,8 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
   const form = new formidable.IncomingForm({
     multiples: true,
-    keepExtensions: true
+    keepExtensions: true,
+    uploadDir: "public/uploads"
   })
 
   form.parse(req, async (error: Error, fields: FormValues, files: { files: any[] | {} }) => {
@@ -33,8 +34,8 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
       const fileName = `${timestamp}_${random}${extension}`
 
-      const oldPath = file.path
-      const newPath = "/tmp/" + fileName
+      const oldPath = path.join(__dirname, "../../../../" + file.path)
+      const newPath = path.join(__dirname, "../../../../public/uploads/" + fileName)
 
       filesToSave.push({
         name: fileName,
@@ -220,18 +221,15 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
 
     }
 
-    const filesToUpdate = {
-      files: filesToSave
-    }
-
+    
     //if dont have new files or have deleted files, was used a array of objects filtered from product page edit 
     //sended together with the body of put to update database with de same values that already contains in database
     //or with the not deleted values
     const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, { files: JSON.parse(fields.filesremaining) })
     !updated && res.status(500)
     //if has new files to add, they will be renamed and this condition will be triggered to add the files to database
-    if(filesToUpdate.files.length !== 0){
-      const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, { $addToSet: filesToUpdate })
+    if(filesToSave.length !== 0){
+      const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, { $addToSet: {files: filesToSave}})
       !updated && res.status(500)
     }
     
