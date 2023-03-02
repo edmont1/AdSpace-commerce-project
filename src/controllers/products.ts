@@ -1,5 +1,4 @@
 import path from "path"
-import fs from "fs"
 import ProductsModel from "../models/products.model";
 //const formidable = require("formidable-serverless")
 const formidable = require("formidable")
@@ -115,6 +114,16 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
   const deleted = await ProductsModel.findOneAndDelete({ _id: productId })
 
   if (deleted) {
+    deleted.files.forEach((photo: any) => {
+      const file = gcs.bucket.file(`uploads/${photo.name}`)
+      file.delete()
+        .then((data) => {
+
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    })
     res.status(200).json({ success: true })
   }
   else {
@@ -135,7 +144,7 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
       const timestamp = Date.now()
       const random = Math.floor(Math.random() * 99999999) + 1
       const extension = path.extname(file.originalFilename)
-      
+
       const fileName = `${timestamp}_${random}${extension}`
 
       file.newFilename = fileName
@@ -206,12 +215,30 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
       },
     }
 
+    const filesRemainingArray = JSON.parse(fields.filesremaining)
 
-    const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, { files: JSON.parse(fields.filesremaining) })
+    const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, { files: filesRemainingArray })
     !updated && res.status(500)
 
+    const previousStateArray = updated.files
+
+    const result = previousStateArray.filter((file: any) =>
+      !filesRemainingArray.some((file2: any) => file.name === file2.name))
+
+    result.forEach((photo: any) => {
+      const file = gcs.bucket.file(`uploads/${photo.name}`)
+      file.delete()
+        .then((data) => {
+
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    })
+
+
     if (filesToSave.length !== 0) {
-      const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, { $addToSet: {files : filesToSave} })
+      const updated = await ProductsModel.findByIdAndUpdate({ _id: _id }, { $addToSet: { files: filesToSave } })
       !updated && res.status(500)
     }
 

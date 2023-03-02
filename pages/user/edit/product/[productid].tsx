@@ -66,6 +66,7 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
     return formValues
   }
 
+
   function handleFormSubmit(values: FormValues) {
     const date = new Date()
     const time = date.toLocaleTimeString("pt-br")
