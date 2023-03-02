@@ -46,7 +46,13 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
                   //   <img style={{ width: "100%", height: "100%", objectFit: "contain" }} src={`/uploads/${file.name}`} alt="" />
                   // </Box>
                   <Box key={index} sx={{ height: "500px", position: "relative" }}>
-                    <Image loading="eager" priority={true} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 30vw" fill style={{ objectFit: "contain" }} src={`/uploads/${file.name}`} alt="" />
+                    <Image
+                      loading="eager"
+                      priority={true}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 30vw"
+                      fill style={{ objectFit: "contain" }}
+                      src={`https://storage.googleapis.com/ad-space/uploads/${file.name}`} alt=""
+                    />
                   </Box>
                 ))
               }
@@ -148,7 +154,7 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
             <Typography component="h3" fontWeight={700}>
               {`Telefone:`}
             </Typography>
-            <Typography component="h3" sx={{pl: theme.spacing(0.5)}}>
+            <Typography component="h3" sx={{ pl: theme.spacing(0.5) }}>
               {`${product?.user.tel}`}
             </Typography>
           </Paper>
@@ -162,21 +168,21 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const productId = ctx.query.productId
   await dbConnect()
-  const product: ProductDB | null = await ProductsModel.findOne({ _id: productId }, )
+  const product: ProductDB | null = await ProductsModel.findOne({ _id: productId },)
   return (
     product ?
-    {
-      props: {
-        product: JSON.parse(JSON.stringify(product))
+      {
+        props: {
+          product: JSON.parse(JSON.stringify(product))
+        }
       }
-    }
-    :
-    {
-      redirect: {
-        permanent: false,
-        destination: "/"
+      :
+      {
+        redirect: {
+          permanent: false,
+          destination: "/"
+        }
       }
-    }
   )
 }
 
