@@ -114,22 +114,9 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
 
   const deleted = await ProductsModel.findOneAndDelete({ _id: productId })
 
-  
-  const credential = JSON.parse(
-    Buffer.from(process.env.GOOGLE_SERVICE_KEY as string, "base64").toString().replace(/\n/g,"")
-  )
-  const storage = new Storage({
-    projectId: 'marine-aleph-379322',
-    credentials: {
-      client_email: credential.client_email,
-      private_key: credential.private_key,
-    },
-  })
-  const bucket = storage.bucket(process.env.GCS_BUCKET as string)
-
   if (deleted) {
     deleted.files.forEach((photo: any) => {
-      const file = bucket.file(`uploads/${photo.name}`)
+      const file = gcs.bucket.file(`uploads/${photo.name}`)
       file.delete()
       .then((data) => {
 
@@ -239,21 +226,8 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
     const result = previousStateArray.filter((file: any) =>
     !filesRemainingArray.some((file2: any) => file.name === file2.name))
 
-
-    const credential = JSON.parse(
-      Buffer.from(process.env.GOOGLE_SERVICE_KEY as string, "base64").toString().replace(/\n/g,"")
-    )
-    const storage = new Storage({
-      projectId: 'marine-aleph-379322',
-      credentials: {
-        client_email: credential.client_email,
-        private_key: credential.private_key,
-      },
-    })
-    const bucket = storage.bucket(process.env.GCS_BUCKET as string)
-
     result.forEach(async (photo: any) => {
-      const file = bucket.file(`uploads/${photo.name}`)
+      const file = gcs.bucket.file(`uploads/${photo.name}`)
       file.delete()
       .then((data) => {
 
