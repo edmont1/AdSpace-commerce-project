@@ -122,7 +122,7 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
         file.delete((err, apiResponse) => {
           console.log("ERROR", err)
           console.log("RESPONSE", apiResponse)
-          if(apiResponse?.statusCode !== 204){
+          if(apiResponse?.statusCode !== 204 || err){
             fileDeleted()
           }
         })
