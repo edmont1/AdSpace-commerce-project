@@ -8,7 +8,6 @@ import { FormValues } from "../utils/publishpage/formValues";
 import mongoose from "mongoose"
 import { PassThrough } from "stream";
 import * as gcs from "../../src/lib/gcs"
-import { Storage } from "@google-cloud/storage"
 
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
@@ -35,7 +34,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
       const stream = gcs.createWriteStream(
         file.newFilename,
-        file.mimetype ?? undefined
+        file.mimetype ?? undefined,
       );
       pass.pipe(stream);
 
@@ -114,16 +113,21 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
 
   const deleted = await ProductsModel.findOneAndDelete({ _id: productId })
 
+  
+
   if (deleted) {
     deleted.files.forEach((photo: any) => {
       const file = gcs.bucket.file(`uploads/${photo.name}`)
-      file.delete()
-      .then((data) => {
-
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+      function fileDeleted(){
+        file.delete((err, apiResponse) => {
+          console.log("ERROR", err)
+          console.log("RESPONSE", apiResponse)
+          if(apiResponse?.statusCode !== 204){
+            fileDeleted()
+          }
+        })
+      }
+      fileDeleted()
     })
     res.status(200).json({ success: true })
   }
