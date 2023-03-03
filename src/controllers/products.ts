@@ -121,8 +121,6 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
   const storage = new Storage({
     projectId: 'marine-aleph-379322',
     credentials: {
-      type: credential.type,
-      client_id: credential.client_id,
       client_email: credential.client_email,
       private_key: credential.private_key,
     },
@@ -130,9 +128,15 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
   const bucket = storage.bucket(process.env.GCS_BUCKET as string)
 
   if (deleted) {
-    deleted.files.forEach(async (photo: any) => {
+    deleted.files.forEach((photo: any) => {
       const file = bucket.file(`uploads/${photo.name}`)
-      await file.delete()
+      file.delete()
+      .then((data) => {
+
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     })
     res.status(200).json({ success: true })
   }
@@ -242,8 +246,6 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
     const storage = new Storage({
       projectId: 'marine-aleph-379322',
       credentials: {
-        type: credential.type,
-        client_id: credential.client_id,
         client_email: credential.client_email,
         private_key: credential.private_key,
       },
@@ -252,7 +254,13 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
 
     result.forEach(async (photo: any) => {
       const file = bucket.file(`uploads/${photo.name}`)
-      await file.delete()
+      file.delete()
+      .then((data) => {
+
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     })
 
 
