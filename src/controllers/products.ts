@@ -8,6 +8,7 @@ import { FormValues } from "../utils/publishpage/formValues";
 import mongoose from "mongoose"
 import { PassThrough } from "stream";
 import * as gcs from "../../src/lib/gcs"
+import { Storage } from "@google-cloud/storage"
 
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
@@ -113,16 +114,25 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
 
   const deleted = await ProductsModel.findOneAndDelete({ _id: productId })
 
-  if (deleted) {
-    deleted.files.forEach((photo: any) => {
-      const file = gcs.bucket.file(`uploads/${photo.name}`)
-      file.delete()
-        .then((data) => {
+  
+  const credential = JSON.parse(
+    Buffer.from(process.env.GOOGLE_SERVICE_KEY as string, "base64").toString().replace(/\n/g,"")
+  )
+  const storage = new Storage({
+    projectId: 'marine-aleph-379322',
+    credentials: {
+      type: credential.type,
+      client_id: credential.client_id,
+      client_email: credential.client_email,
+      private_key: credential.private_key,
+    },
+  })
+  const bucket = storage.bucket(process.env.GCS_BUCKET as string)
 
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+  if (deleted) {
+    deleted.files.forEach(async (photo: any) => {
+      const file = bucket.file(`uploads/${photo.name}`)
+      await file.delete()
     })
     res.status(200).json({ success: true })
   }
@@ -223,17 +233,26 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
     const previousStateArray = updated.files
 
     const result = previousStateArray.filter((file: any) =>
-      !filesRemainingArray.some((file2: any) => file.name === file2.name))
+    !filesRemainingArray.some((file2: any) => file.name === file2.name))
 
-    result.forEach((photo: any) => {
-      const file = gcs.bucket.file(`uploads/${photo.name}`)
-      file.delete()
-        .then((data) => {
 
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+    const credential = JSON.parse(
+      Buffer.from(process.env.GOOGLE_SERVICE_KEY as string, "base64").toString().replace(/\n/g,"")
+    )
+    const storage = new Storage({
+      projectId: 'marine-aleph-379322',
+      credentials: {
+        type: credential.type,
+        client_id: credential.client_id,
+        client_email: credential.client_email,
+        private_key: credential.private_key,
+      },
+    })
+    const bucket = storage.bucket(process.env.GCS_BUCKET as string)
+
+    result.forEach(async (photo: any) => {
+      const file = bucket.file(`uploads/${photo.name}`)
+      await file.delete()
     })
 
 
