@@ -312,7 +312,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email }) => {
                       <FormControl error={Boolean(errors.cep && touched.cep || cepHelperText)} fullWidth variant="standard">
                         <Input
                           size="small"
-                          placeholder="Cep (apenas números)"
+                          placeholder="Cep (apenas números, não obrigatório)"
                           value={values.cep}
                           onBlur={() => getCep(values.cep)}
                           onChange={handleChange}
@@ -341,7 +341,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email }) => {
                         <Input
                           autoComplete="none"
                           size="small"
-                          placeholder="Rua"
+                          placeholder="Rua (não obrigatória)"
                           value={values.rua}
                           onChange={handleChange}
                           onBlur={handleChange}
@@ -367,7 +367,7 @@ const Publish: NextPage<userProps> = ({ id, image, name, email }) => {
                         <Input
                           autoComplete="none"
                           size="small"
-                          placeholder="Bairro"
+                          placeholder="Bairro (não obrigatório)"
                           value={values.bairro}
                           onChange={handleChange}
                           onBlur={handleChange}
