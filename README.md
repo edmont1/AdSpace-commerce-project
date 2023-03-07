@@ -9,7 +9,7 @@
 
 This project aiming to build a complete full stack commerce website where the advetiser can register and login to upload your advertise like MercadoLivre, OLX, E-bay, etc. Users can see the advertises and interact with the products and contact the owner to buy them
 
-Este projeto tem como objetivo construir um site de comércio full stackcompleto onde o anunciante possa se cadastrar e fazer login para enviar seus anúncios como MercadoLivre, OLX, E-bay, etc. Os usuários poderão ver os anúncios, interagir com os produtos e contactar o proprietário do anúncio para comprar os produtos anunciados.
+Este projeto tem como objetivo construir um site de comércio full stack completo onde o anunciante possa se cadastrar e fazer login para enviar seus anúncios como MercadoLivre, OLX, E-bay, etc. Os usuários poderão ver os anúncios, interagir com os produtos e contactar o proprietário do anúncio para comprar os produtos anunciados.
 
 ### Libraries/Tools used:
 
@@ -23,9 +23,12 @@ Este projeto tem como objetivo construir um site de comércio full stackcompleto
 - React Dropzone
 - React Material UI Carousel
 - Slugify
-- Mongoose
+- Mongoose/MongoDB
 - Google Cloud Storage
+- Nookies
 
+### Issues:
+- Images upload in Google Cloud Storage is not saving properly on vercel deploy, but works perfectly in localhost.
 
 ## Deploy on Vercel
 
