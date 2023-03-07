@@ -14,8 +14,8 @@ const storage = new Storage({
 
 export const bucket = storage.bucket(process.env.GCS_BUCKET as string)
 
-export const createWriteStream = (filename: string, contentType?: string) => {
-    const ref = bucket.file(`uploads/${filename}`)
+export const createWriteStream = (productId: any, filename: string, contentType?: string) => {
+    const ref = bucket.file(`uploads/${productId}/${filename}`)
 
     const stream = ref.createWriteStream({
         gzip: true,

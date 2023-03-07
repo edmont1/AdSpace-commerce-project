@@ -11,6 +11,7 @@ import * as gcs from "../../src/lib/gcs"
 
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
+  const _id = new mongoose.Types.ObjectId()
   let filesToSave: any[] = []
   await dbConnect()
   const form = new formidable.IncomingForm({
@@ -33,6 +34,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       })
 
       const stream = gcs.createWriteStream(
+        _id,
         file.newFilename,
         file.mimetype ?? undefined,
       );
@@ -46,8 +48,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
     if (error) {
       res.status(500)
     }
-
-    const _id = new mongoose.Types.ObjectId()
 
     const {
       title,
@@ -107,27 +107,20 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
 }
 
+
 async function remove(req: NextApiRequest, res: NextApiResponse) {
   const { productId } = req.query
   await dbConnect()
 
   const deleted = await ProductsModel.findOneAndDelete({ _id: productId })
 
-  
-
   if (deleted) {
     deleted.files.forEach((photo: any) => {
-      const file = gcs.bucket.file(`uploads/${photo.name}`)
-      function fileDeleted(){
-        file.delete((err, apiResponse) => {
-          console.log("ERROR", err)
-          console.log("RESPONSE", apiResponse)
-          if(apiResponse?.statusCode !== 204 || err){
-            fileDeleted()
-          }
-        })
-      }
-      fileDeleted()
+      const file = gcs.bucket.file(`uploads/${productId}/${photo.name}`)
+      file.delete((err, apiResponse) => {
+        console.log("ERROR", err)
+        console.log("RESPONSE", apiResponse)
+      })
     })
     res.status(200).json({ success: true })
   }
@@ -137,7 +130,17 @@ async function remove(req: NextApiRequest, res: NextApiResponse) {
 
 }
 
+
 async function put(req: NextApiRequest, res: NextApiResponse) {
+  const cookies = req.headers.cookie as string
+  const cookiesArray = cookies.split(";")
+  const cookieObject = {} as {[index:string]:string}
+  cookiesArray.forEach((cookie : string) => {
+    const cookieSplitted = cookie.split("=")
+    cookieObject[cookieSplitted[0]] = cookieSplitted[1]
+    
+  })
+
   let filesToSave: any[] = []
   await dbConnect()
   const form = new formidable.IncomingForm({
@@ -157,9 +160,10 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
       filesToSave.push({
         name: file.newFilename,
         path: file.filepath
-      })
+      })      
 
       const stream = gcs.createWriteStream(
+        cookieObject.productId,
         file.newFilename,
         file.mimetype ?? undefined
       );

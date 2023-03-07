@@ -59,7 +59,7 @@ const Home: NextPage<Props> = ({ products, userId }) => {
                     style={{ textDecoration: "none" }}>
                     <Box sx={{position: "relative"}}>
                       <ProductCard
-                        image={`https://storage.googleapis.com/ad-space/uploads/${product.files[0].name}`}
+                        image={`https://storage.googleapis.com/ad-space/uploads/${product._id}/${product.files[0].name}`}
                         title={product.title}
                         description={product.description}
                         price={product.price}
@@ -77,7 +77,7 @@ const Home: NextPage<Props> = ({ products, userId }) => {
                   passHref
                   style={{ textDecoration: "none" }}>
                   <ProductCard
-                    image={`https://storage.googleapis.com/ad-space/uploads/${product.files[0].name}`}
+                    image={`https://storage.googleapis.com/ad-space/uploads/${product._id}/${product.files[0].name}`}
                     title={product.title}
                     description={product.description}
                     price={product.price}

@@ -30,6 +30,8 @@ import { useState } from "react"
 import dbConnect from "../../../../src/lib/dbConnect"
 import ProductsModel from "../../../../src/models/products.model"
 import { ProductDB } from "../../dashboard"
+import { setCookie } from 'nookies'
+
 
 
 interface ProductProps {
@@ -68,6 +70,10 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
 
 
   function handleFormSubmit(values: FormValues) {
+    setCookie(null, 'productId', values._id, {
+      maxAge: 60 * 5,
+      path: '/api/products',
+    })
     const date = new Date()
     const time = date.toLocaleTimeString("pt-br")
     const day = date.toLocaleDateString("pt-br")
