@@ -92,19 +92,22 @@ const SearchPage: NextPage<Props> = ({ products, userId }) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { params } = ctx.query
+  const params = ctx.query.params as string
+
+  const searchWithSpaces = params?.replace("-", " ")
+
   let userId
   const products = await ProductsModel.find({
     $or: [
       {
         title: {
-          $regex: diacriticSensitiveRegex(`${params}`),
+          $regex: diacriticSensitiveRegex(`${searchWithSpaces}`),
           $options: "i",
         },
       },
       {
         description: {
-          $regex: diacriticSensitiveRegex(`${params}`),
+          $regex: diacriticSensitiveRegex(`${searchWithSpaces}`),
           $options: "i"
         }
       },
