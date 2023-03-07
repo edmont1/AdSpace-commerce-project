@@ -111,41 +111,53 @@ const Product: NextPage<{ product: ProductDB, userLocalization: Localization }> 
             </Box>
           </Paper>
 
-          <Paper
-            sx={{
-              alignSelf: "start",
-              p: theme.spacing(4),
-              mb: theme.spacing(3)
-            }}
-          >
-            <Typography component="h3" fontWeight={700}>
-              Localização
-            </Typography>
-            <Typography component="h3">
-              {
-                product?.localization.cep &&
-                `Cep: ${product?.localization.cep}`
-              }
-            </Typography>
-            <Typography component="h3" >
-              {
-                product?.localization.rua &&
-                `Rua: ${product?.localization.rua}`
-              }
-            </Typography>
-            <Typography component="h3" >
-              {
-                product?.localization.bairro &&
-                `Bairro: ${product?.localization.bairro}`
-              }
-            </Typography>
-            <Typography component="h3" >
-              {`Cidade: ${product?.localization.cidade}`}
-            </Typography>
-            <Typography component="h3" >
-              {`Estado: ${product?.localization.estado}`}
-            </Typography>
-          </Paper>
+
+          {
+            userLocalization &&
+            <Paper
+              sx={{
+                alignSelf: "start",
+                p: theme.spacing(4),
+                mb: theme.spacing(3)
+              }}
+            >
+              <Typography component="h3" fontWeight={700}>
+                Localização
+              </Typography>
+              <Typography component="h3">
+                {
+                  userLocalization?.cep &&
+                  `Cep: ${userLocalization?.cep}`
+                }
+              </Typography>
+              <Typography component="h3" >
+                {
+                  userLocalization?.rua &&
+                  `Rua: ${userLocalization?.rua}`
+                }
+              </Typography>
+              <Typography component="h3" >
+                {
+                  userLocalization?.bairro &&
+                  `Bairro: ${userLocalization?.bairro}`
+                }
+              </Typography>
+              <Typography component="h3" >
+                {
+                  userLocalization?.cidade &&
+                  `Cidade: ${userLocalization?.cidade}`
+                }
+              </Typography>
+              <Typography component="h3" >
+                {
+                  userLocalization?.estado &&
+                  `Estado: ${userLocalization?.estado}`
+                }
+              </Typography>
+            </Paper>
+          }
+
+
           <Paper
             sx={{
               p: theme.spacing(4),
@@ -170,12 +182,18 @@ const Product: NextPage<{ product: ProductDB, userLocalization: Localization }> 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const productId = ctx.query.productId
   await dbConnect()
-  const product: ProductDB | null = await ProductsModel.findOne({ _id: productId },)
+  const product = await ProductsModel.findOne({ _id: productId } as ProductDB)
+  const profile = await ProfilesModel.findOne({ "user.id": product?.user.id })
+
   return (
     product ?
       {
         props: {
-          product: JSON.parse(JSON.stringify(product))
+          product: JSON.parse(JSON.stringify(product)),
+          ...profile?.localization &&
+          {
+            userLocalization: JSON.parse(JSON.stringify(profile.localization))
+          }
         }
       }
       :
