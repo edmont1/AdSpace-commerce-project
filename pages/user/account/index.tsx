@@ -14,6 +14,7 @@ import { useState } from "react"
 import { FormValues, initialValues, validationSchema, validationSchemaWithoutPassword } from "../../../src/utils/accounteditpage/formValues"
 import { signIn } from "next-auth/react"
 import useToasty from "../../../src/contexts/Toasty"
+import { useRouter } from "next/router"
 
 
 export interface Localization {
@@ -42,16 +43,17 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
   const [passwordIsCorrect, setPasswordIsCorrect] = useState(true)
   const [isSubmittingState, setIsSubmittingState] = useState(false)
   const { setToasty } = useToasty()
+  const router = useRouter()
 
   function handleFormSubmit(values: FormValues) {
     if (hasUserOnDb) {
       submitUserForm(values)
     }
-    else{
+    else {
       if (profile) {
         submitProfileFormPut(values)
       }
-      else{
+      else {
         submitProfileFormPost(values)
       }
     }
@@ -88,7 +90,7 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
           })
           setIsSubmittingState(true)
           setTimeout(() => {
-            window.location.href = "user/dashboard"
+            router.push("/user/dashboard")
           }, 2000)
         })
       })
@@ -129,7 +131,7 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
           })
           setIsSubmittingState(true)
           setTimeout(() => {
-            window.location.href = "user/dashboard"
+            router.push("/user/dashboard")
           }, 2000)
         })
 
@@ -162,7 +164,7 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
           if (profile) {
             submitProfileFormPut(values)
           }
-          else{
+          else {
             submitProfileFormPost(values)
           }
           await signIn("credentials", {

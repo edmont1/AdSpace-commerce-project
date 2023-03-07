@@ -19,8 +19,19 @@ import ProfilesModel from "../../../src/models/profiles.model"
 import { Localization } from "../../user/account"
 
 
-
-const Product: NextPage<{ product: ProductDB, userLocalization: Localization }> = ({ product, userLocalization }) => {
+interface Props {
+  product: ProductDB,
+  profile: {
+    user: {
+      id: string
+      name: string
+      email: string
+      image?: string
+    },
+    localization: Localization
+  }
+}
+const Product: NextPage<Props> = ({ product, profile }) => {
   const theme = useTheme()
 
   return (
@@ -97,23 +108,42 @@ const Product: NextPage<{ product: ProductDB, userLocalization: Localization }> 
         </Box>
 
         <Box>
-          <Paper
-            sx={{
-              p: theme.spacing(4),
-              display: "flex",
-              alignItems: "center",
-              mb: theme.spacing(3)
-            }}>
-            <Avatar alt={`${product?.user.name}`} src={`${product?.user.image}`} />
-            <Box sx={{ ml: theme.spacing(2) }}>
-              <Typography component="p">{product?.user.name}</Typography>
-              <Typography color="grey" component="p" variant="subtitle2">{product?.user.email}</Typography>
-            </Box>
-          </Paper>
+
+          {
+            profile ?
+              <Paper
+                sx={{
+                  p: theme.spacing(4),
+                  display: "flex",
+                  alignItems: "center",
+                  mb: theme.spacing(3)
+                }}>
+                <Avatar alt={`${profile?.user.name}`} src={`${product?.user.image}`} />
+                <Box sx={{ ml: theme.spacing(2) }}>
+                  <Typography component="p">{profile?.user.name}</Typography>
+                  <Typography color="grey" component="p" variant="subtitle2">{profile?.user.email}</Typography>
+                </Box>
+              </Paper>
+              :
+              <Paper
+                sx={{
+                  p: theme.spacing(4),
+                  display: "flex",
+                  alignItems: "center",
+                  mb: theme.spacing(3)
+                }}>
+                <Avatar alt={`${product?.user.name}`} src={`${product?.user.image}`} />
+                <Box sx={{ ml: theme.spacing(2) }}>
+                  <Typography component="p">{product?.user.name}</Typography>
+                  <Typography color="grey" component="p" variant="subtitle2">{product?.user.email}</Typography>
+                </Box>
+              </Paper>
+          }
+
 
 
           {
-            userLocalization &&
+            profile?.localization.estado &&
             <Paper
               sx={{
                 alignSelf: "start",
@@ -126,32 +156,32 @@ const Product: NextPage<{ product: ProductDB, userLocalization: Localization }> 
               </Typography>
               <Typography component="h3">
                 {
-                  userLocalization?.cep &&
-                  `Cep: ${userLocalization?.cep}`
+                  profile.localization?.cep &&
+                  `Cep: ${profile.localization?.cep}`
                 }
               </Typography>
               <Typography component="h3" >
                 {
-                  userLocalization?.rua &&
-                  `Rua: ${userLocalization?.rua}`
+                  profile.localization?.rua &&
+                  `Rua: ${profile.localization?.rua}`
                 }
               </Typography>
               <Typography component="h3" >
                 {
-                  userLocalization?.bairro &&
-                  `Bairro: ${userLocalization?.bairro}`
+                  profile.localization?.bairro &&
+                  `Bairro: ${profile.localization?.bairro}`
                 }
               </Typography>
               <Typography component="h3" >
                 {
-                  userLocalization?.cidade &&
-                  `Cidade: ${userLocalization?.cidade}`
+                  profile.localization?.cidade &&
+                  `Cidade: ${profile.localization?.cidade}`
                 }
               </Typography>
               <Typography component="h3" >
                 {
-                  userLocalization?.estado &&
-                  `Estado: ${userLocalization?.estado}`
+                  profile.localization?.estado &&
+                  `Estado: ${profile.localization?.estado}`
                 }
               </Typography>
             </Paper>
@@ -190,10 +220,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       {
         props: {
           product: JSON.parse(JSON.stringify(product)),
-          ...profile?.localization &&
+          ...profile &&
           {
-            userLocalization: JSON.parse(JSON.stringify(profile.localization))
-          }
+            userLocalization: JSON.parse(JSON.stringify(profile?.localization))
+          },
+          profile: JSON.parse(JSON.stringify(profile))
+
         }
       }
       :
