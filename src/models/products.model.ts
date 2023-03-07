@@ -38,13 +38,6 @@ const schema = new mongoose.Schema({
     tel:String,
     image:String
   },
-  localization:{
-    cep: String,
-    rua: String,
-    bairro: String,
-    cidade: String,
-    estado: String
-  }
 })
 
 

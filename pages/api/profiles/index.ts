@@ -1,9 +1,9 @@
 import nextConnect from 'next-connect'
-import { get, post, put } from '../../../src/controllers/users'
+import {post, put} from "../../../src/controllers/profiles"
+
 
 const route = nextConnect()
 
-route.get(get)
 route.post(post)
 route.put(put)
 

@@ -153,7 +153,7 @@ const Home: NextPage<ProductsDB> = ({ products }) => {
                     <Button size="small">Ver Mais</Button>
                   </Link>
                 ]}
-                image={`/uploads/${product.files[0].name}`}
+                image={`https://storage.googleapis.com/ad-space/uploads/${product._id}/${product.files[0].name}`}
               />
             )
           })

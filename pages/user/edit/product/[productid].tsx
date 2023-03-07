@@ -30,6 +30,8 @@ import { useState } from "react"
 import dbConnect from "../../../../src/lib/dbConnect"
 import ProductsModel from "../../../../src/models/products.model"
 import { ProductDB } from "../../dashboard"
+import { setCookie } from 'nookies'
+
 
 
 interface ProductProps {
@@ -66,7 +68,12 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
     return formValues
   }
 
+
   function handleFormSubmit(values: FormValues) {
+    setCookie(null, 'productId', values._id, {
+      maxAge: 60 * 5,
+      path: '/api/products',
+    })
     const date = new Date()
     const time = date.toLocaleTimeString("pt-br")
     const day = date.toLocaleDateString("pt-br")
@@ -140,29 +147,6 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
             setFieldValue,
             isSubmitting
           }) => {
-
-            async function getCep(cepValue: string) {
-              setCepHelperText("")
-              const cep = cepValue.replace(/\D/g, '')
-              const validacep = /^[0-9]{8}$/
-              if (validacep.test(cep)) {
-                const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                const data = await res.json()
-                if (!data.erro) {
-                  setFieldValue("rua", data.logradouro)
-                  setFieldValue("bairro", data.bairro)
-                  setFieldValue("cidade", data.localidade)
-                  setFieldValue("estado", data.uf)
-                }
-                else {
-                  setCepHelperText("Cep não encontrado")
-                  setFieldValue("rua", "")
-                  setFieldValue("bairro", "")
-                  setFieldValue("cidade", "")
-                  setFieldValue("estado", "")
-                }
-              }
-            }
 
             return (
               <form onSubmit={handleSubmit}>
@@ -245,7 +229,7 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
                         A primeira imagem é a foto principal do anúncio.
                       </Typography>
 
-                      <UploadFiles files={values.files} errors={errors.files} touched={touched.files} setFieldValue={setFieldValue} />
+                      <UploadFiles productId={values._id} files={values.files} errors={errors.files} touched={touched.files} setFieldValue={setFieldValue} />
 
                     </CustomDiv>
                   </Paper>
@@ -311,147 +295,6 @@ const EditProduct: NextPage<ProductProps> = ({ product }) => {
                         <FormHelperText>{errors.price}</FormHelperText>
                       }
                     </FormControl>
-                  </Paper>
-
-                  <Paper sx={{
-                    padding: theme.spacing(3),
-                    margin: theme.spacing(3, 0),
-                  }}>
-                    <CustomDiv>
-                      <Typography fontWeight={600} component="h3" variant="body1">
-                        Localização
-                      </Typography>
-                      <FormControl error={Boolean(errors.cep && touched.cep || cepHelperText)} fullWidth variant="standard">
-                        <Input
-                          size="small"
-                          placeholder="Cep (apenas números)"
-                          value={values.cep}
-                          onBlur={() => getCep(values.cep)}
-                          onChange={handleChange}
-                          id="cep"
-                          name="cep"
-                          sx={{
-                            input: {
-                              "&:-webkit-autofill": {
-                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
-                                "WebkitTextFillColor": `${theme.palette.text.primary}`
-                              }
-                            }
-                          }}
-                        />
-                        {
-                          errors.cep && touched.cep &&
-                          <FormHelperText>{errors.cep}</FormHelperText>
-                        }
-                        {
-                          <FormHelperText error={Boolean(cepHelperText)}>{cepHelperText}</FormHelperText>
-                        }
-                      </FormControl>
-                    </CustomDiv>
-                    <CustomDiv>
-                      <FormControl error={Boolean(errors.rua && touched.rua)} fullWidth variant="standard">
-                        <Input
-                          autoComplete="none"
-                          size="small"
-                          placeholder="Rua"
-                          value={values.rua}
-                          onChange={handleChange}
-                          onBlur={handleChange}
-                          id="rua"
-                          name="rua"
-                          sx={{
-                            input: {
-                              "&:-webkit-autofill": {
-                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
-                                "WebkitTextFillColor": `${theme.palette.text.primary}`
-                              }
-                            }
-                          }}
-                        />
-                        {
-                          errors.rua && touched.rua &&
-                          <FormHelperText>{errors.rua}</FormHelperText>
-                        }
-                      </FormControl>
-                    </CustomDiv>
-                    <CustomDiv>
-                      <FormControl error={Boolean(errors.bairro && touched.bairro)} fullWidth variant="standard">
-                        <Input
-                          autoComplete="none"
-                          size="small"
-                          placeholder="Bairro"
-                          value={values.bairro}
-                          onChange={handleChange}
-                          onBlur={handleChange}
-                          id="bairro"
-                          name="bairro"
-                          sx={{
-                            input: {
-                              "&:-webkit-autofill": {
-                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
-                                "WebkitTextFillColor": `${theme.palette.text.primary}`
-                              }
-                            }
-                          }}
-                        />
-                        {
-                          errors.bairro && touched.bairro &&
-                          <FormHelperText>{errors.bairro}</FormHelperText>
-                        }
-                      </FormControl>
-                    </CustomDiv>
-                    <CustomDiv>
-                      <FormControl error={Boolean(errors.cidade && touched.cidade)} fullWidth variant="standard">
-                        <Input
-                          autoComplete="none"
-                          size="small"
-                          placeholder="Cidade"
-                          value={values.cidade}
-                          onChange={handleChange}
-                          onBlur={handleChange}
-                          id="cidade"
-                          name="cidade"
-                          sx={{
-                            input: {
-                              "&:-webkit-autofill": {
-                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
-                                "WebkitTextFillColor": `${theme.palette.text.primary}`
-                              }
-                            }
-                          }}
-                        />
-                        {
-                          errors.cidade && touched.cidade &&
-                          <FormHelperText>{errors.cidade}</FormHelperText>
-                        }
-                      </FormControl>
-                    </CustomDiv>
-                    <CustomDiv>
-                      <FormControl error={Boolean(errors.estado && touched.estado)} fullWidth variant="standard">
-                        <Input
-                          autoComplete="none"
-                          size="small"
-                          placeholder="Estado"
-                          value={values.estado}
-                          onChange={handleChange}
-                          onBlur={handleChange}
-                          id="estado"
-                          name="estado"
-                          sx={{
-                            input: {
-                              "&:-webkit-autofill": {
-                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
-                                "WebkitTextFillColor": `${theme.palette.text.primary}`
-                              }
-                            }
-                          }}
-                        />
-                        {
-                          errors.estado && touched.estado &&
-                          <FormHelperText>{errors.estado}</FormHelperText>
-                        }
-                      </FormControl>
-                    </CustomDiv>
                   </Paper>
 
                   <Paper sx={{

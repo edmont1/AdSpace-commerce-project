@@ -15,10 +15,23 @@ import DefaultTemplate from "../../../src/templates/Default"
 import { ProductDB } from "../../user/dashboard"
 import Image from "next/image"
 import { formatCurrency } from "../../../src/utils/currency"
+import ProfilesModel from "../../../src/models/profiles.model"
+import { Localization } from "../../user/account"
 
 
-
-const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
+interface Props {
+  product: ProductDB,
+  profile: {
+    user: {
+      id: string
+      name: string
+      email: string
+      image?: string
+    },
+    localization: Localization
+  }
+}
+const Product: NextPage<Props> = ({ product, profile }) => {
   const theme = useTheme()
 
   return (
@@ -42,12 +55,18 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
             <Carousel swipe={false} autoPlay={false} animation="slide">
               {
                 product?.files.map((file, index) => (
-                  // <Box key={index} height="500px">
-                  //   <img style={{ width: "100%", height: "100%", objectFit: "contain" }} src={`/uploads/${file.name}`} alt="" />
-                  // </Box>
-                  <Box key={index} sx={{ height: "500px", position: "relative" }}>
-                    <Image loading="eager" priority={true} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 30vw" fill style={{ objectFit: "contain" }} src={`/uploads/${file.name}`} alt="" />
+                  <Box key={index} height="500px">
+                    <img style={{ width: "100%", height: "100%", objectFit: "contain" }} src={`https://storage.googleapis.com/ad-space/uploads/${product._id}/${file.name}`} alt="" />
                   </Box>
+                  // <Box key={index} sx={{ height: "500px", position: "relative" }}>
+                  //   <Image
+                  //     loading="eager"
+                  //     priority={true}
+                  //     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 30vw"
+                  //     fill style={{ objectFit: "contain" }}
+                  //     src={`https://storage.googleapis.com/ad-space/uploads/${file.name}`} alt=""
+                  //   />
+                  // </Box>
                 ))
               }
             </Carousel>
@@ -89,55 +108,86 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
         </Box>
 
         <Box>
-          <Paper
-            sx={{
-              p: theme.spacing(4),
-              display: "flex",
-              alignItems: "center",
-              mb: theme.spacing(3)
-            }}>
-            <Avatar alt={`${product?.user.name}`} src={`${product?.user.image}`} />
-            <Box sx={{ ml: theme.spacing(2) }}>
-              <Typography component="p">{product?.user.name}</Typography>
-              <Typography color="grey" component="p" variant="subtitle2">{product?.user.email}</Typography>
-            </Box>
-          </Paper>
 
-          <Paper
-            sx={{
-              alignSelf: "start",
-              p: theme.spacing(4),
-              mb: theme.spacing(3)
-            }}
-          >
-            <Typography component="h3" fontWeight={700}>
-              Localização
-            </Typography>
-            <Typography component="h3">
-              {
-                product?.localization.cep &&
-                `Cep: ${product?.localization.cep}`
-              }
-            </Typography>
-            <Typography component="h3" >
-              {
-                product?.localization.rua &&
-                `Rua: ${product?.localization.rua}`
-              }
-            </Typography>
-            <Typography component="h3" >
-              {
-                product?.localization.bairro &&
-                `Bairro: ${product?.localization.bairro}`
-              }
-            </Typography>
-            <Typography component="h3" >
-              {`Cidade: ${product?.localization.cidade}`}
-            </Typography>
-            <Typography component="h3" >
-              {`Estado: ${product?.localization.estado}`}
-            </Typography>
-          </Paper>
+          {
+            profile ?
+              <Paper
+                sx={{
+                  p: theme.spacing(4),
+                  display: "flex",
+                  alignItems: "center",
+                  mb: theme.spacing(3)
+                }}>
+                <Avatar alt={`${profile?.user.name}`} src={`${product?.user.image}`} />
+                <Box sx={{ ml: theme.spacing(2) }}>
+                  <Typography component="p">{profile?.user.name}</Typography>
+                  <Typography color="grey" component="p" variant="subtitle2">{profile?.user.email}</Typography>
+                </Box>
+              </Paper>
+              :
+              <Paper
+                sx={{
+                  p: theme.spacing(4),
+                  display: "flex",
+                  alignItems: "center",
+                  mb: theme.spacing(3)
+                }}>
+                <Avatar alt={`${product?.user.name}`} src={`${product?.user.image}`} />
+                <Box sx={{ ml: theme.spacing(2) }}>
+                  <Typography component="p">{product?.user.name}</Typography>
+                  <Typography color="grey" component="p" variant="subtitle2">{product?.user.email}</Typography>
+                </Box>
+              </Paper>
+          }
+
+
+
+          {
+            profile?.localization.estado &&
+            <Paper
+              sx={{
+                alignSelf: "start",
+                p: theme.spacing(4),
+                mb: theme.spacing(3)
+              }}
+            >
+              <Typography component="h3" fontWeight={700}>
+                Localização
+              </Typography>
+              <Typography component="h3">
+                {
+                  profile.localization?.cep &&
+                  `Cep: ${profile.localization?.cep}`
+                }
+              </Typography>
+              <Typography component="h3" >
+                {
+                  profile.localization?.rua &&
+                  `Rua: ${profile.localization?.rua}`
+                }
+              </Typography>
+              <Typography component="h3" >
+                {
+                  profile.localization?.bairro &&
+                  `Bairro: ${profile.localization?.bairro}`
+                }
+              </Typography>
+              <Typography component="h3" >
+                {
+                  profile.localization?.cidade &&
+                  `Cidade: ${profile.localization?.cidade}`
+                }
+              </Typography>
+              <Typography component="h3" >
+                {
+                  profile.localization?.estado &&
+                  `Estado: ${profile.localization?.estado}`
+                }
+              </Typography>
+            </Paper>
+          }
+
+
           <Paper
             sx={{
               p: theme.spacing(4),
@@ -148,7 +198,7 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
             <Typography component="h3" fontWeight={700}>
               {`Telefone:`}
             </Typography>
-            <Typography component="h3" sx={{pl: theme.spacing(0.5)}}>
+            <Typography component="h3" sx={{ pl: theme.spacing(0.5) }}>
               {`${product?.user.tel}`}
             </Typography>
           </Paper>
@@ -162,21 +212,29 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const productId = ctx.query.productId
   await dbConnect()
-  const product: ProductDB | null = await ProductsModel.findOne({ _id: productId }, )
+  const product = await ProductsModel.findOne({ _id: productId } as ProductDB)
+  const profile = await ProfilesModel.findOne({ "user.id": product?.user.id })
+
   return (
     product ?
-    {
-      props: {
-        product: JSON.parse(JSON.stringify(product))
+      {
+        props: {
+          product: JSON.parse(JSON.stringify(product)),
+          ...profile &&
+          {
+            userLocalization: JSON.parse(JSON.stringify(profile?.localization))
+          },
+          profile: JSON.parse(JSON.stringify(profile))
+
+        }
       }
-    }
-    :
-    {
-      redirect: {
-        permanent: false,
-        destination: "/"
+      :
+      {
+        redirect: {
+          permanent: false,
+          destination: "/"
+        }
       }
-    }
   )
 }
 

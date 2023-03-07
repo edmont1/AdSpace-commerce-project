@@ -29,7 +29,7 @@ const SearchField = () => {
     }}>
       <InputBase onKeyDown={handleKey} value={input} id="search" name="search" onChange={handleInputValue}
         placeholder="Ex.:iPhone, Computador, Notebook" fullWidth />
-      <IconButton href={`/search/${search}`}>
+      <IconButton href={search !== "" ? `/search/${search}` : ""}>
         <SearchIcon />
       </IconButton>
     </Paper>

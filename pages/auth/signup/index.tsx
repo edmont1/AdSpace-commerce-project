@@ -1,13 +1,9 @@
 import {
   Button,
   Container,
-  Input,
   Paper,
   Typography,
   useTheme,
-  styled,
-  FormControl,
-  FormHelperText,
   Box,
   Alert,
   CircularProgress,
@@ -37,7 +33,6 @@ const SignUp: NextPage = () => {
   const theme = useTheme()
   const router = useRouter()
   const [response, setResponse] = useState<Response>({})
-
 
   function submitForm(params: submitFormType) {
     fetch(`/api/users`, {

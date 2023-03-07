@@ -52,7 +52,7 @@ const ProductCard = ({ title, description, buttons, image, price, userAd }: Prop
       <CardContent sx={{
         color: theme.palette.text.primary,
         pb: "15px !important",
-        height: "180px"
+        height: "200px"
       }}>
         <Typography gutterBottom variant="h5" component="div">
           {title.length > 25 ? title.slice(0, 25) + "..." : title}

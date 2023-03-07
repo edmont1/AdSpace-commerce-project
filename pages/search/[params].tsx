@@ -59,7 +59,7 @@ const SearchPage: NextPage<Props> = ({ products, userId }) => {
                     style={{ textDecoration: "none" }}>
                     <Box sx={{ position: "relative" }}>
                       <ProductCard
-                        image={`/uploads/${product.files[0].name}`}
+                        image={`https://storage.googleapis.com/ad-space/uploads/${product._id}/${product.files[0].name}`}
                         title={product.title}
                         description={product.description}
                         price={product.price}
@@ -78,7 +78,7 @@ const SearchPage: NextPage<Props> = ({ products, userId }) => {
                   <ProductCard
                     title={product.title}
                     description={product.description}
-                    image={`/uploads/${product.files[0].name}`}
+                    image={`https://storage.googleapis.com/ad-space/uploads/${product._id}/${product.files[0].name}`}
                     price={product.price}
                   />
                 </Link>
