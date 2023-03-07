@@ -15,10 +15,12 @@ import DefaultTemplate from "../../../src/templates/Default"
 import { ProductDB } from "../../user/dashboard"
 import Image from "next/image"
 import { formatCurrency } from "../../../src/utils/currency"
+import ProfilesModel from "../../../src/models/profiles.model"
+import { Localization } from "../../user/account"
 
 
 
-const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
+const Product: NextPage<{ product: ProductDB, userLocalization: Localization }> = ({ product, userLocalization }) => {
   const theme = useTheme()
 
   return (
@@ -43,7 +45,7 @@ const Product: NextPage<{ product: ProductDB }> = ({ product }) => {
               {
                 product?.files.map((file, index) => (
                   <Box key={index} height="500px">
-                    <img style={{ width: "100%", height: "100%", objectFit: "contain" }} src={`https://storage.googleapis.com/ad-space/uploads/${file.name}`} alt="" />
+                    <img style={{ width: "100%", height: "100%", objectFit: "contain" }} src={`https://storage.googleapis.com/ad-space/uploads/${product._id}/${file.name}`} alt="" />
                   </Box>
                   // <Box key={index} sx={{ height: "500px", position: "relative" }}>
                   //   <Image

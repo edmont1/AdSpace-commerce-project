@@ -1,10 +1,10 @@
 import nextConnect from 'next-connect'
-import { get, post, put } from '../../../src/controllers/users'
+import {post} from "../../../src/controllers/profiles"
+
 
 const route = nextConnect()
 
-route.get(get)
+//route.get(get)
 route.post(post)
-route.put(put)
 
 export default route

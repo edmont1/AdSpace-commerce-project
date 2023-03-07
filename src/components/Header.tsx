@@ -20,7 +20,7 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 
 const pagesHidden = ["Home", "Publicar Anúncio", "Buscar"]
 const pages = ["Home"]
-const settings = ['Perfil', 'Conta', 'Dashboard', 'Sair']
+const settings = ['Minha Conta', 'Dashboard', 'Sair']
 
 const StyledButton = styled(Button)(({ theme }) => `
   position: relative;
@@ -83,8 +83,8 @@ const Header = () => {
         callbackUrl: "/"
       })
     }
-    else if (setting === "Profile") {
-      router.push("/user/profile")
+    else if (setting === "Minha Conta") {
+      router.push("/user/account")
     }
   }
 
@@ -185,7 +185,10 @@ const Header = () => {
               letterSpacing: '.2rem',
               color: 'inherit',
               textDecoration: 'none',
-              fontSize: "30px"
+              fontSize: {
+                xs: 0,
+                sm: "25px"
+              }
             }}
           >
             AdSpace

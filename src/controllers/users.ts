@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../lib/dbConnect";
-import { encrypt } from "../utils/password";
+import { compare, encrypt } from "../utils/password";
 import UsersModel from "../models/users.model"
 import mongoose from "mongoose";
+
 
 interface Data{
   message?: string
@@ -20,7 +21,7 @@ async function post(req: NextApiRequest, res: NextApiResponse<Data>) {
     const {
       name,
       email,
-      password
+      password,
     } = req.body
     const _id = new mongoose.Types.ObjectId()
     const cryptoPassword = await encrypt(password)
@@ -32,8 +33,13 @@ async function post(req: NextApiRequest, res: NextApiResponse<Data>) {
         email,
         password: cryptoPassword,
       })
-      user.save()
-      res.status(201).json({ success: true, message: "Cadastro bem sucedido." })
+      const isSaved = await user.save()
+      if(isSaved){
+        res.status(201).json({ success: true, message: "Cadastro bem sucedido." })
+      }
+      else{
+        res.status(500).json({success: false, message: "Erro ao cadastrar"})
+      }
     }
     else {
       res.status(201).json({ success: false, message: "E-mail já cadastrado." })
@@ -45,7 +51,29 @@ async function post(req: NextApiRequest, res: NextApiResponse<Data>) {
   }
 }
 
+async function put(req: NextApiRequest, res: NextApiResponse){
+  const { id, name, email, password } = req.body
+  await dbConnect()
+  try{
+    const user = await UsersModel.findOne({_id: id})
+    const passIsCorrect = await compare(password, user.password)
+    if(passIsCorrect){
+      const updated = await user.updateOne({name, email})
+      updated && res.status(200).send({success: true})
+    }
+    else{
+      res.status(401).send({success: false})
+    }
+  }
+  catch(error){
+    if(error){
+      res.status(500).send({success: false})
+    }
+  }
+}
+
 export {
   get,
-  post
+  post,
+  put
 }

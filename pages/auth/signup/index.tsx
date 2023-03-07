@@ -38,7 +38,6 @@ const SignUp: NextPage = () => {
   const router = useRouter()
   const [response, setResponse] = useState<Response>({})
 
-
   function submitForm(params: submitFormType) {
     fetch(`/api/users`, {
       method: "POST",
