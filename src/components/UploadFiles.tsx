@@ -10,6 +10,7 @@ import { FormikErrors, FormikTouched } from "formik"
 
 
 interface Props {
+  productId?: string
   files: any[]
   errors: string | string[] | FormikErrors<any>[] | undefined
   touched: boolean | FormikTouched<any>[] | undefined
@@ -17,7 +18,7 @@ interface Props {
 }
 
 
-const UploadFiles = ({ files, errors, touched, setFieldValue }: Props) => {
+const UploadFiles = ({ productId, files, errors, touched, setFieldValue }: Props) => {
   const theme = useTheme()
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -93,7 +94,7 @@ const UploadFiles = ({ files, errors, touched, setFieldValue }: Props) => {
                 }
               },
               //backgroundImage: `url(${photo.url ? photo.url : `/uploads/${photo.name}`})`,
-              backgroundImage: `url(${photo.url ? photo.url : `https://storage.googleapis.com/ad-space/uploads/${photo.name}`})`,
+              backgroundImage: `url(${photo.url ? photo.url : `https://storage.googleapis.com/ad-space/uploads/${productId}/${photo.name}`})`,
               backgroundSize: "cover",
             }}
             >

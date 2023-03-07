@@ -234,8 +234,8 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
     const result = previousStateArray.filter((file: any) =>
     !filesRemainingArray.some((file2: any) => file.name === file2.name))
 
-    result.forEach(async (photo: any) => {
-      const file = gcs.bucket.file(`uploads/${photo.name}`)
+    result.forEach((photo: any) => {
+      const file = gcs.bucket.file(`uploads/${_id}/${photo.name}`)
       file.delete()
       .then((data) => {
 

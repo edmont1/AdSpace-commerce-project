@@ -10,7 +10,7 @@ export interface FormValues {
   cidade: string
   estado: string
   image?: string
-  password: string
+  password?: string
 }
 
 const initialValues = {
@@ -41,8 +41,27 @@ const validationSchema = yup.object().shape({
     .min(8, "Mínimo de 8 caracteres"),
 })
 
+const validationSchemaWithoutPassword = yup.object().shape({
+  name: yup.string()
+    .required("Campo obrigatório"),
+  email: yup.string()
+    .email("Digite um email válido")
+    .required("Campo obrigatório"),
+  cep: yup.string()
+    .matches(/^[0-9]{8}$/, "Cep Inválido"),
+  rua: yup.string(),
+  bairro: yup.string(),
+  cidade: yup.string()
+    .required("Campo obrigatório"),
+  estado: yup.string()
+    .required("Campo obrigatório"),
+})
+
+
+
 
 export {
   initialValues,
-  validationSchema
+  validationSchema,
+  validationSchemaWithoutPassword
 }

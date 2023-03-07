@@ -3,7 +3,7 @@ import dbConnect from '../../src/lib/dbConnect'
 import ProfilesModel from '../../src/models/profiles.model'
 import mongoose from "mongoose"
 
-async function post (req: NextApiRequest, res: NextApiResponse) {
+async function post(req: NextApiRequest, res: NextApiResponse) {
   const { id, name, email, image, cep, rua, bairro, cidade, estado } = req.body
   await dbConnect()
   const _id = new mongoose.Types.ObjectId()
@@ -35,6 +35,33 @@ async function post (req: NextApiRequest, res: NextApiResponse) {
 
 }
 
-export{
-  post
+async function put(req: NextApiRequest, res: NextApiResponse) {
+  const { id, name, email, image, cep, rua, bairro, cidade, estado } = req.body
+  await dbConnect()
+  const profile = await ProfilesModel.findOneAndUpdate({ "user.id": id }, {
+    user: {
+      id,
+      name,
+      email,
+    },
+    localization: {
+      cep,
+      rua,
+      bairro,
+      cidade,
+      estado
+    }
+  })
+
+  if (profile) {
+    res.status(200).send({ success: true })
+  }
+  else {
+    res.status(500).send({ success: false })
+  }
+}
+
+export {
+  post,
+  put
 }

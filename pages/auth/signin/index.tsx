@@ -295,7 +295,7 @@ const SigninPage: NextPage = () => {
                               variant="contained"
                               sx={{ mt: 0.9, mb: 2, fontWeight: "600" }}
                             >
-                              Sign In
+                              Entrar
                             </Button>
 
                           )
@@ -317,7 +317,7 @@ const SigninPage: NextPage = () => {
                           </Link>
                         </Grid>
                       </Grid>
-                      <Copyright sx={{ mt: !isEmailLogin ? 30.1 : 17.4, color: theme.palette.primary.contrastText }} />
+                      <Copyright sx={{ mt: !isEmailLogin ? 30.1 : 12.4, color: theme.palette.primary.contrastText }} />
                     </Box>
                   </Box>
                 </Grid>

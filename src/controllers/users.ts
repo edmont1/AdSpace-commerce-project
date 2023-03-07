@@ -4,6 +4,8 @@ import { compare, encrypt } from "../utils/password";
 import UsersModel from "../models/users.model"
 import mongoose from "mongoose";
 
+import ProfilesModel from '../../src/models/profiles.model'
+
 
 interface Data{
   message?: string
@@ -23,19 +25,42 @@ async function post(req: NextApiRequest, res: NextApiResponse<Data>) {
       email,
       password,
     } = req.body
-    const _id = new mongoose.Types.ObjectId()
+
+    const userId = new mongoose.Types.ObjectId()
+    const profileId = new mongoose.Types.ObjectId()
+
     const cryptoPassword = await encrypt(password)
     const sameEmailArray = await UsersModel.find({ email })
     if (sameEmailArray.length === 0) {
       const user = new UsersModel({
-        _id,
+        _id: userId,
         name,
         email,
         password: cryptoPassword,
       })
-      const isSaved = await user.save()
-      if(isSaved){
-        res.status(201).json({ success: true, message: "Cadastro bem sucedido." })
+
+      const userIsSaved = await user.save()
+
+      const profile = new ProfilesModel({
+        _id: profileId,
+        user:{
+          id: userId,
+          name,
+          email
+        },
+        localization:{
+          cep: "",
+          rua: "",
+          bairro: "",
+          cidade: "",
+          estado: "",
+        }
+      })
+
+      const profileIsSaved = await profile.save()
+
+      if(userIsSaved && profileIsSaved){
+        res.status(201).json({ success: true, message: "Cadastro bem sucedido" })
       }
       else{
         res.status(500).json({success: false, message: "Erro ao cadastrar"})

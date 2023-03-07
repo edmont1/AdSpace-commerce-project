@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Container, FormControl, FormHelperText, Input, useTheme } from "@mui/material"
+import { Avatar, Box, Button, Container, FormControl, FormHelperText, Input, Typography, useTheme } from "@mui/material"
 import Paper from "@mui/material/Paper"
 import { Formik } from "formik"
 import { GetServerSideProps, NextPage } from "next"
@@ -11,8 +11,9 @@ import { authOptions } from "../../api/auth/[...nextauth]"
 import { styled } from "@mui/material"
 import UsersModel from "../../../src/models/users.model"
 import { useState } from "react"
-import { FormValues, initialValues, validationSchema } from "../../../src/utils/accounteditpage/formValues"
+import { FormValues, initialValues, validationSchema, validationSchemaWithoutPassword } from "../../../src/utils/accounteditpage/formValues"
 import { signIn } from "next-auth/react"
+import useToasty from "../../../src/contexts/Toasty"
 
 
 export interface Localization {
@@ -39,13 +40,103 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
   const [cepHelperText, setCepHelperText] = useState("")
   const [emailSuccess, setEmailSuccess] = useState(true)
   const [passwordIsCorrect, setPasswordIsCorrect] = useState(true)
-
+  const [isSubmittingState, setIsSubmittingState] = useState(false)
+  const { setToasty } = useToasty()
 
   function handleFormSubmit(values: FormValues) {
-    submitUserForm(values)
+    if (hasUserOnDb) {
+      submitUserForm(values)
+    }
+    else{
+      if (profile) {
+        submitProfileFormPut(values)
+      }
+      else{
+        submitProfileFormPost(values)
+      }
+    }
   }
 
-  function submitProfileForm() {
+  function submitProfileFormPut(values: FormValues) {
+    const { id, name, email, image, cep, rua, bairro, cidade, estado, password } = values
+    const formUpdate = {
+      id,
+      name,
+      email,
+      cep,
+      rua,
+      bairro,
+      cidade,
+      estado,
+      password
+    }
+
+    fetch("/api/profiles", {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formUpdate)
+    })
+      .then(async (res) => {
+        res.json().then((data) => {
+          setToasty({
+            open: true,
+            severity: "success",
+            autoHide: 2000,
+            message: "Dados salvos com sucesso"
+          })
+          setIsSubmittingState(true)
+          setTimeout(() => {
+            window.location.href = "user/dashboard"
+          }, 2000)
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  function submitProfileFormPost(values: FormValues) {
+    const { id, name, email, image, cep, rua, bairro, cidade, estado, password } = values
+    const formUpdate = {
+      id,
+      name,
+      email,
+      cep,
+      rua,
+      bairro,
+      cidade,
+      estado,
+      password
+    }
+
+    fetch("/api/profiles", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formUpdate)
+    })
+      .then(async (res) => {
+        res.json().then((data) => {
+          console.log(data)
+          setToasty({
+            open: true,
+            severity: "success",
+            autoHide: 2000,
+            message: "Dados salvos com sucesso"
+          })
+          setIsSubmittingState(true)
+          setTimeout(() => {
+            window.location.href = "user/dashboard"
+          }, 2000)
+        })
+
+      })
+      .catch((err) => {
+        console.log(err)
+      })
 
   }
 
@@ -65,19 +156,22 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
       body: JSON.stringify(formUpdate)
     })
       .then(async (res) => {
-        res.status === 401 && setPasswordIsCorrect(false)
-        res.status === 500 && setEmailSuccess(false)
-        if(res.status === 200){
-          const signResponse = await signIn("credentials", {
+        res.status === 401 && setPasswordIsCorrect(false), setIsSubmittingState(false)
+        res.status === 500 && setEmailSuccess(false), setIsSubmittingState(false)
+        if (res.status === 200) {
+          if (profile) {
+            submitProfileFormPut(values)
+          }
+          else{
+            submitProfileFormPost(values)
+          }
+          await signIn("credentials", {
             email,
             password,
             redirect: false
           })
-          if(signResponse?.ok){
-            window.location.href = "/user/dashboard"
-          }
         }
-        
+
       })
       .catch((err) => {
         console.log(err)
@@ -88,7 +182,10 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
     id,
     name,
     email,
-    password: "",
+    ...hasUserOnDb &&
+    {
+      password: ""
+    },
     ...profile ?
       {
         cep: profile.localization.cep,
@@ -108,7 +205,7 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
     <Formik
       initialValues={formValues}
       onSubmit={handleFormSubmit}
-      validationSchema={validationSchema}
+      validationSchema={hasUserOnDb ? validationSchema : validationSchemaWithoutPassword}
     >
       {({
         values,
@@ -154,9 +251,15 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
                 }}
                 >
 
+
                   {
                     hasUserOnDb &&
                     <>
+                      <Box sx={{ pt: theme.spacing(3) }}>
+                        <Typography fontWeight={600} component="h3" variant="body1">
+                          Nome e E-mail
+                        </Typography>
+                      </Box>
                       <CustomBox>
                         <FormControl error={Boolean(errors.name && touched.name)} fullWidth variant="standard">
                           <Input
@@ -214,6 +317,13 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
                       </CustomBox>
                     </>
                   }
+
+                  <Box sx={{ pt: theme.spacing(4) }}>
+                    <Typography fontWeight={600} component="h3" variant="body1">
+                      Localização
+                    </Typography>
+                  </Box>
+
                   <CustomBox>
                     <FormControl error={Boolean(errors.cep && touched.cep || cepHelperText)} fullWidth variant="standard">
                       <Input
@@ -242,6 +352,7 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
                       }
                     </FormControl>
                   </CustomBox>
+
                   <CustomBox>
                     <FormControl fullWidth variant="standard">
                       <Input
@@ -301,7 +412,7 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
                         }}
                       />
                       {
-                        touched.cidade &&
+                        touched.cidade && errors.cidade &&
                         <FormHelperText>{errors.cidade}</FormHelperText>
                       }
                     </FormControl>
@@ -326,44 +437,48 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
                         }}
                       />
                       {
-                        touched.estado &&
+                        touched.estado && errors.estado &&
                         <FormHelperText>{errors.estado}</FormHelperText>
                       }
                     </FormControl>
                   </CustomBox>
 
-                  <CustomBox>
-                    <FormControl error={Boolean(errors.password && touched.password || touched.password && !passwordIsCorrect)} fullWidth variant="standard">
-                      <Input
-                        size="small"
-                        placeholder="Confirmar senha"
-                        value={values.password}
-                        onChange={(e) => {
-                          handleChange(e)
-                          setPasswordIsCorrect(true)
-                        }}
-                        id="password"
-                        name="password"
-                        type="password"
-                        sx={{
-                          input: {
-                            "&:-webkit-autofill": {
-                              "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
-                              "WebkitTextFillColor": `${theme.palette.text.primary}`
+                  {
+                    hasUserOnDb &&
+                    <CustomBox>
+                      <FormControl error={Boolean(errors.password && touched.password || touched.password && !passwordIsCorrect)} fullWidth variant="standard">
+                        <Input
+                          size="small"
+                          autoComplete="none"
+                          placeholder="Confirmar senha"
+                          value={values.password}
+                          onChange={(e) => {
+                            handleChange(e)
+                            setPasswordIsCorrect(true)
+                          }}
+                          id="password"
+                          name="password"
+                          type="password"
+                          sx={{
+                            input: {
+                              "&:-webkit-autofill": {
+                                "WebkitBoxShadow": `0 0 0 100px ${theme.palette.background.default} inset`,
+                                "WebkitTextFillColor": `${theme.palette.text.primary}`
+                              }
                             }
-                          }
-                        }}
-                      />
-                      {
-                        touched.password && !passwordIsCorrect &&
-                        <FormHelperText>Senha incorreta</FormHelperText>
-                      }
-                      {
-                        touched.password &&
-                        <FormHelperText>{errors.password}</FormHelperText>
-                      }
-                    </FormControl>
-                  </CustomBox>
+                          }}
+                        />
+                        {
+                          touched.password && !passwordIsCorrect &&
+                          <FormHelperText>Senha incorreta</FormHelperText>
+                        }
+                        {
+                          touched.password && errors.password &&
+                          <FormHelperText>{errors.password}</FormHelperText>
+                        }
+                      </FormControl>
+                    </CustomBox>
+                  }
 
                   <Box textAlign="right">
                     <Button
@@ -373,8 +488,9 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
                         color: theme.palette.primary.contrastText
                       }}
                       variant="contained"
+                      disabled={isSubmittingState}
                     >
-                      Editar Perfil
+                      Alterar dados
                     </Button>
                   </Box>
                 </Paper>
@@ -405,7 +521,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const profile = await ProfilesModel.findOne({ "user.id": id })
   session?.user?.image ? session.user.image : null
 
-  console.log(profile)
 
   return ({
     props: {
