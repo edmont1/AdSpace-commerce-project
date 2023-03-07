@@ -1,6 +1,5 @@
 import path from "path"
 import ProductsModel from "../models/products.model";
-//const formidable = require("formidable-serverless")
 const formidable = require("formidable")
 import dbConnect from "../lib/dbConnect";
 import { NextApiRequest, NextApiResponse } from "next/types";
