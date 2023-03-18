@@ -249,7 +249,7 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
               <Container maxWidth="md">
                 <Titles title="Minha Conta" variantTitle="h4" />
                 <Paper sx={{
-                  p: theme.spacing(3, 10),
+                  p: theme.spacing(3),
                 }}
                 >
 
@@ -257,7 +257,7 @@ const EditAccount: NextPage<Props> = ({ id, name, email, profile, hasUserOnDb })
                   {
                     hasUserOnDb &&
                     <>
-                      <Box sx={{ pt: theme.spacing(3) }}>
+                      <Box>
                         <Typography fontWeight={600} component="h3" variant="body1">
                           Nome e E-mail
                         </Typography>
